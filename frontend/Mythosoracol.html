@@ -373,64 +373,313 @@ MYTHOS ORACLE v2 este un sistem esoteric pentru introspecție și orientare exis
 </div>
 
 <script>
-(function(){const bg=document.getElementById('cosmicBg');for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const size=Math.random()*2+0.5;s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${2+Math.random()*5}s;--delay:${Math.random()*6}s`;bg.appendChild(s);}})();
+// ── Stele cosmice ──
+(function(){const bg=document.getElementById('cosmicBg');for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+0.5;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${2+Math.random()*5}s;--delay:${Math.random()*6}s`;bg.appendChild(s);}})();
 
+// ── Tab sistem ──
 function showTab(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');}
-
 const handSel=new Set();
 document.getElementById('handOpts').addEventListener('click',e=>{const h=e.target.closest('.hopt');if(!h)return;const v=h.dataset.v;if(handSel.has(v)){handSel.delete(v);h.classList.remove('sel')}else{handSel.add(v);h.classList.add('sel')}});
-
 function addEventRow(){const c=document.getElementById('eventsContainer');const r=document.createElement('div');r.className='event-row';r.innerHTML='<input type="date" class="inp evDate" style="max-width:180px"><input type="text" class="inp evDesc" placeholder="Descriere...">';c.appendChild(r);}
 
-const EPHEM={sun:[280.5,0.9856,'Soare','☉','fast'],moon:[169.0,13.176,'Lună','☽','fast'],mercury:[245.0,1.383,'Mercur','☿','fast'],venus:[198.0,1.202,'Venus','♀','fast'],mars:[72.0,0.524,'Marte','♂','medium'],jupiter:[50.3,0.0831,'Jupiter','♃','slow'],saturn:[354.5,0.0335,'Saturn','♄','slow'],uranus:[51.5,0.0116,'Uranus','♅','slow'],neptune:[357.0,0.0060,'Neptun','♆','slow'],pluto:[300.0,0.0040,'Pluton','♇','slow'],northNode:[16.0,-0.0529,'Nod Nord','☊','slow'],};
+// ── Ephemeris ──
+const EPHEM={sun:[280.5,0.9856,'Soare','☉'],moon:[169.0,13.176,'Lună','☽'],mercury:[245.0,1.383,'Mercur','☿'],venus:[198.0,1.202,'Venus','♀'],mars:[72.0,0.524,'Marte','♂'],jupiter:[50.3,0.0831,'Jupiter','♃'],saturn:[354.5,0.0335,'Saturn','♄'],uranus:[51.5,0.0116,'Uranus','♅'],neptune:[357.0,0.0060,'Neptun','♆'],pluto:[300.0,0.0040,'Pluton','♇'],northNode:[16.0,-0.0529,'Nod Nord','☊']};
+function daysSinceRef(d){return(d-new Date('2024-01-01'))/(1000*60*60*24);}
+function getPlanetLon(p,d){const[b,r]=EPHEM[p];return((b+r*daysSinceRef(d))%360+360)%360;}
+function lonToSign(lon){const S=['Berbec','Taur','Gemeni','Rac','Leu','Fecioară','Balanță','Scorpion','Săgetător','Capricorn','Vărsător','Pești'];const Y=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];const i=Math.floor(lon/30)%12;return{name:S[i],sym:Y[i],deg:Math.floor(lon%30)};}
+function getAspect(a,b){let d=Math.abs(a-b);if(d>180)d=360-d;const orb=8;if(d<=orb)return{name:'Conjuncție',sym:'☌',nature:'intense'};if(Math.abs(d-60)<=orb)return{name:'Sextil',sym:'⚹',nature:'harmonious'};if(Math.abs(d-90)<=orb)return{name:'Pătrat',sym:'□',nature:'tense'};if(Math.abs(d-120)<=orb)return{name:'Trigon',sym:'△',nature:'harmonious'};if(Math.abs(d-180)<=orb)return{name:'Opoziție',sym:'☍',nature:'tense'};return null;}
 
-function daysSinceRef(date){const ref=new Date('2024-01-01');return(date-ref)/(1000*60*60*24);}
+// ── Zodiac ──
+function getZodiacSign(day,month){const R=[{s:'Capricorn',sy:'♑',m1:12,d1:22,m2:1,d2:19},{s:'Vărsător',sy:'♒',m1:1,d1:20,m2:2,d2:18},{s:'Pești',sy:'♓',m1:2,d1:19,m2:3,d2:20},{s:'Berbec',sy:'♈',m1:3,d1:21,m2:4,d2:19},{s:'Taur',sy:'♉',m1:4,d1:20,m2:5,d2:20},{s:'Gemeni',sy:'♊',m1:5,d1:21,m2:6,d2:20},{s:'Rac',sy:'♋',m1:6,d1:21,m2:7,d2:22},{s:'Leu',sy:'♌',m1:7,d1:23,m2:8,d2:22},{s:'Fecioară',sy:'♍',m1:8,d1:23,m2:9,d2:22},{s:'Balanță',sy:'♎',m1:9,d1:23,m2:10,d2:22},{s:'Scorpion',sy:'♏',m1:10,d1:23,m2:11,d2:21},{s:'Săgetător',sy:'♐',m1:11,d1:22,m2:12,d2:21}];for(const r of R){if((month===r.m1&&day>=r.d1)||(month===r.m2&&day<=r.d2))return r;}return R[0];}
+function getElement(s){if(['Berbec','Leu','Săgetător'].includes(s))return{name:'Foc',sym:'🔥'};if(['Taur','Fecioară','Capricorn'].includes(s))return{name:'Pământ',sym:'🌿'};if(['Gemeni','Balanță','Vărsător'].includes(s))return{name:'Aer',sym:'💨'};return{name:'Apă',sym:'💧'};}
+function getModality(s){if(['Berbec','Rac','Balanță','Capricorn'].includes(s))return'Cardinal';if(['Taur','Leu','Scorpion','Vărsător'].includes(s))return'Fix';return'Mutabil';}
+function getRuler(s){const R={Berbec:'Marte ♂',Taur:'Venus ♀',Gemeni:'Mercur ☿',Rac:'Luna ☽',Leu:'Soarele ☉',Fecioară:'Mercur ☿',Balanță:'Venus ♀',Scorpion:'Pluton ♇',Săgetător:'Jupiter ♃',Capricorn:'Saturn ♄',Vărsător:'Uranus ♅',Pești:'Neptun ♆'};return R[s]||'—';}
+function getChineseZodiac(y){return['Maimuță','Cocoș','Câine','Porc','Șobolan','Bou','Tigru','Iepure','Dragon','Șarpe','Cal','Capră'][y%12];}
 
-function getPlanetLon(planet,date){const[baseLon,degDay]=EPHEM[planet];const days=daysSinceRef(date);return((baseLon+degDay*days)%360+360)%360;}
+// ── Zodiac Profiles ──
+const ZP={Berbec:{core:'Nativul Berbec este întruchiparea forței vitale. Guvernat de Marte, trăiește cu o intensitate rareori egalată. Există în firea sa un impuls organic de a fi primul, de a cuceri teritorii existențiale noi.',pos:'Curaj excepțional, decizie rapidă, entuziasm contagios, loialitate directă, recuperare rapidă după eșecuri.',neg:'Impulsivitate, nerăbdare, tendința de a acționa înaintea gândirii, egocentrismul spontan.',love:'Pasional, direct și intens. Caută partenerul care să îl provoace. Rutina sentimentală îl sufocă.',career:'Antreprenoriat, sport, armată, chirurgie, drept. Lider înnăscut.',health:'Zone vulnerabile: capul, creierul, fața. Predispoziție la hipertensiune și migrene.'},
+Taur:{core:'Taurul trăiește printr-un sistem senzorial rafinat: gustul, textura, sunetul sunt modalități de acces la realitate. Există o eleganță intrinsecă în modul în care Taurul se raportează la materie.',pos:'Răbdare remarcabilă, loialitate neclintită, perseverență, simț estetic, stabilitate emoțională.',neg:'Încăpățânare excesivă, rezistență la schimbare, posesivitate.',love:'Cel mai devotat partener din zodiac. Romantic în sens clasic — gesturi concrete, nu vorbe goale.',career:'Finanțe, imobiliare, artă, gastronomie, muzică.',health:'Zone vulnerabile: gâtul, tiroida. Tendință spre sedentarism.'},
+Gemeni:{core:'Gemenii ating cea mai înaltă mobilitate mentală. Guvernați de Mercur, trăiesc simultan pe mai multe planuri de realitate.',pos:'Inteligență versatilă, comunicare excepțională, curiozitate, adaptabilitate, umor rafinat.',neg:'Inconsecvență, superficialitate ocazională, dualitate confuzantă.',love:'Iubire cerebrală — partenerul trebuie să stimuleze mintea. Comunicarea este limbajul de iubire.',career:'Jurnalism, scriere, marketing, predare, diplomație.',health:'Zone vulnerabile: plămânii, sistemul nervos, brațele.'},
+Rac:{core:'Racul trăiește cu o intensitate emoțională profundă. Memoria afectivă este extraordinară — nu uită niciodată cum l-ai făcut să se simtă.',pos:'Empatie profundă, intuiție, loialitate, creativitate, inteligență emoțională.',neg:'Hipersensibilitate, retragere în carapace, agățare de trecut.',love:'Partener complet — emoțional, fizic, domestic. Cere securitate emoțională totală.',career:'Psihologie, medicină, gastronomie, pedagogie.',health:'Zone vulnerabile: stomacul, sânii, sistemul digestiv.'},
+Leu:{core:'Leul nu poate exista în anonimitate totală. Există în el un principiu de iradiere care, dacă este autentic, devine magnetism pur.',pos:'Generozitate regală, loialitate, curaj, creativitate spectaculoasă, căldură umană.',neg:'Orgoliu, nevoia excesivă de recunoaștere, autoritarism.',love:'Romantic în cea mai clasică expresie. Necesită admirație și oferă în schimb o iubire regală.',career:'Actorie, artă, conducere politică, entertainment, chirurgie cardiacă.',health:'Zone vulnerabile: inima, coloana toracică, circulația.'},
+Fecioară:{core:'Fecioara posedă o minte care disecă realitatea în componente și identifică imperfecțiunile. Nu există un alt semn cu o etică a muncii mai profundă.',pos:'Analiză impecabilă, atenție la detaliu, discernământ, umilință autentică.',neg:'Autocritică excesivă, perfecționism paralizant, anxietate.',love:'Iubire discretă exprimată prin gesturi concrete de îngrijire.',career:'Medicină, farmacie, nutriție, contabilitate, cercetare.',health:'Zone vulnerabile: intestinul subțire, pancreasul.'},
+Balanță:{core:'Balanța percepe viața ca o relație continuă cu ceilalți, cu esteticul și cu dreptatea.',pos:'Echilibru, diplomație, simț estetic rafinat, inteligență socială, farmec.',neg:'Indecizie cronică, dependență de validarea externă.',love:'Partener care știe să creeze frumos în relație. Caută un partener intelectual rafinat.',career:'Drept, diplomație, design, artă, psihologie.',health:'Zone vulnerabile: rinichii, suprarenalele, pielea.'},
+Scorpion:{core:'Scorpionul trăiește la extremele experienței umane, dintr-o nevoie organică de autenticitate. Nu poate exista în zona superficială.',pos:'Intensitate emoțională, transformare și renaștere, inteligență psihologică, voință de fier.',neg:'Gelozie, posesivitate, secretomanie excesivă, vindictivitate.',love:'Cea mai intensă iubire din zodiac. Ori total, ori deloc.',career:'Psihologie, psihiatrie, chirurgie, cercetare, finanțe.',health:'Zone vulnerabile: organele reproductive, vezica.'},
+Săgetător:{core:'Săgetătorul trăiește cu convingerea că viața este o aventură al cărei sens se descoperă în mișcare, nu în stagnare.',pos:'Optimism, generozitate, dragoste pentru libertate, viziune filozofică, onestitate.',neg:'Imaturitate emoțională, exces de onestitate fără tact, nestatornicie.',love:'Partener iubitor dar dificil de capturat. Fidelitatea devine posibilă când nu simte că și-a pierdut independența.',career:'Filozofie, drept internațional, turism, sport, predare universitară.',health:'Zone vulnerabile: șoldurile, ficatul.'},
+Capricorn:{core:'Capricornul înțelege că nimic valoros nu vine fără efort și că viața devine mai ușoară cu vârsta.',pos:'Ambiție structurată, disciplină, responsabilitate, pragmatism superior.',neg:'Rigiditate emoțională, pesimism cronic, tendința de sacrificiu excesiv.',love:'Partener devotat și responsabil. Iubirea se exprimă prin fapte — stabilitate, protecție.',career:'Management, politică, arhitectură, economie, drept corporativ.',health:'Zone vulnerabile: oasele, articulațiile, genunchii.'},
+Vărsător:{core:'Vărsătorul gândește cu câteva decenii înainte. Aceasta îl face genial sau excentric, depinzând de contextul epocii.',pos:'Viziune revoluționară, umanitarism, originalitate intelectuală, toleranță.',neg:'Detașare emoțională percepută ca răceală, impredictibilitate.',love:'Partener intelectual și prieten înainte de orice. Are nevoie de libertate.',career:'Tehnologie, astronomie, activism social, programare.',health:'Zone vulnerabile: gleznele, venele, sistemul nervos.'},
+Pești:{core:'Peștii trăiesc cu granițele propriului eu permanent poroase față de emoțiile celorlalți. Empatia lor nu este o calitate cultivată — este o condiție a existenței.',pos:'Empatie, intuiție quasi-mistică, creativitate artistică, compasiune, spiritualitate.',neg:'Evazionism, hipersensibilitate, tendința de a se pierde în iluzii.',love:'Iubire romantică — idealizare, dăruire totală, fuziune emoțională.',career:'Artă, muzică, film, psihologie transpersonală, medicină holistică.',health:'Zone vulnerabile: picioarele, limfa, sistemul imunitar.'}};
 
-function lonToSign(lon){const signs=['Berbec','Taur','Gemeni','Rac','Leu','Fecioară','Balanță','Scorpion','Săgetător','Capricorn','Vărsător','Pești'];const syms=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];const idx=Math.floor(lon/30);return{name:signs[idx%12],sym:syms[idx%12],deg:Math.floor(lon%30)};}
-
-function getZodiacSign(day,month){const ranges=[{s:'Capricorn',sy:'♑',m1:12,d1:22,m2:1,d2:19},{s:'Vărsător',sy:'♒',m1:1,d1:20,m2:2,d2:18},{s:'Pești',sy:'♓',m1:2,d1:19,m2:3,d2:20},{s:'Berbec',sy:'♈',m1:3,d1:21,m2:4,d2:19},{s:'Taur',sy:'♉',m1:4,d1:20,m2:5,d2:20},{s:'Gemeni',sy:'♊',m1:5,d1:21,m2:6,d2:20},{s:'Rac',sy:'♋',m1:6,d1:21,m2:7,d2:22},{s:'Leu',sy:'♌',m1:7,d1:23,m2:8,d2:22},{s:'Fecioară',sy:'♍',m1:8,d1:23,m2:9,d2:22},{s:'Balanță',sy:'♎',m1:9,d1:23,m2:10,d2:22},{s:'Scorpion',sy:'♏',m1:10,d1:23,m2:11,d2:21},{s:'Săgetător',sy:'♐',m1:11,d1:22,m2:12,d2:21}];for(const r of ranges){if((month===r.m1&&day>=r.d1)||(month===r.m2&&day<=r.d2))return r;}return ranges[0];}
-
-function getElement(s){const f=['Berbec','Leu','Săgetător'];const e=['Taur','Fecioară','Capricorn'];const a=['Gemeni','Balanță','Vărsător'];if(f.includes(s))return{name:'Foc',sym:'🔥',desc:'Energie, pasiune, creativitate'};if(e.includes(s))return{name:'Pământ',sym:'🌿',desc:'Stabilitate, pragmatism, construcție'};if(a.includes(s))return{name:'Aer',sym:'💨',desc:'Intelect, comunicare, adaptabilitate'};return{name:'Apă',sym:'💧',desc:'Empatie, intuiție, profunzime'};}
-
-function getChineseZodiac(year){const a=['Maimuță','Cocoș','Câine','Porc','Șobolan','Bou','Tigru','Iepure','Dragon','Șarpe','Cal','Capră'];return a[year%12];}
-
+// ── Numerologie ──
 function reduce(n){while(n>9&&n!==11&&n!==22&&n!==33){n=String(n).split('').reduce((a,c)=>a+parseInt(c),0);}return n;}
+function calcLifePath(day,month,year){return reduce(String(day+month+year).split('').reduce((a,c)=>a+parseInt(c),0));}
+function nameToNum(name){const m={a:1,b:2,c:3,d:4,e:5,f:8,g:3,h:5,i:1,j:1,k:2,l:3,m:4,n:5,o:7,p:8,r:2,s:3,t:4,u:6,v:6,w:6,x:5,y:1,z:7,ă:1,â:1,î:1,ș:3,ț:4};return reduce(name.toLowerCase().replace(/\s/g,'').split('').reduce((a,c)=>a+(m[c]||0),0))||1;}
+function personalYear(day,month,year){return reduce(day+month+reduce(year));}
+const lpMeanings={1:'Liderul și pionierul. Destinul dvs. este de a fi independent, de a inova și de a deschide drumuri noi.',2:'Diplomatul și partenerul. Relațiile sunt vehiculul evoluției.',3:'Artistul și comunicatorul. Destinul dvs. este de a exprima și de a inspira.',4:'Constructorul. Munca sistematică și integritatea sunt pilonii identitari.',5:'Liberul și aventurierul. Schimbarea nu este eșec — este vehiculul evoluției dvs.',6:'Responsabilul și vindecătorul. Casa, familia și comunitatea sunt misiunea.',7:'Misticul și cercetătorul. Înțelepciunea interioară este marele dvs. activ.',8:'Executivul. Destinul dvs. este de a manifesta în planul material.',9:'Umanitarul. Destinul dvs. este de a sluji și de a dărui fără returnul așteptat.',11:'Numărul Maestru al Iluminării. Potențial intuitiv excepțional, misiune spirituală majoră.',22:'Numărul Maestru al Constructorului Universal. Viziune grandioasă cu capacitate de manifestare.',33:'Numărul Maestru al Profesorului Cosmic. Slujire dezinteresată și înțelepciune universală.'};
+const pyThemes={1:'An de Inițiative Noi.',2:'An de Relații și Diplomație.',3:'An de Expresie și Creativitate.',4:'An de Muncă și Disciplină.',5:'An de Schimbare și Libertate.',6:'An de Responsabilitate și Familie.',7:'An de Reflecție și Retragere.',8:'An de Putere și Manifestare Materială.',9:'An de Completare și Eliberare.'};
 
-function calcLifePath(day,month,year){return reduce(day+month+year);}
+// ── Biorhythm ──
+function bioValue(bDate,tDate,cycle){const days=Math.round((tDate-bDate)/(1000*60*60*24));return Math.sin(2*Math.PI*days/cycle)*100;}
+function getBio(bDate,tDate){return{physical:bioValue(bDate,tDate,23),emotional:bioValue(bDate,tDate,28),intellectual:bioValue(bDate,tDate,33)};}
+function getBioInterp(bio){const p=[];if(bio.physical>60)p.push('Ciclul fizic este în faza înaltă — vitalitate crescută, moment optim pentru efort.');else if(bio.physical<-60)p.push('Ciclul fizic este în faza joasă — evitați efortul excesiv, acordați corpului odihnă.');else p.push('Ciclul fizic funcționează la parametri normali.');if(bio.emotional>60)p.push('Ciclul emoțional este în faza înaltă — empatie crescută, comunicare fluidă.');else if(bio.emotional<-60)p.push('Ciclul emoțional este în faza joasă — sensibilitate crescută, evitați conflictele majore.');else p.push('Ciclul emoțional este stabil și echilibrat.');if(bio.intellectual>60)p.push('Ciclul intelectual este în faza înaltă — claritate mentală, ideal pentru studiu.');else if(bio.intellectual<-60)p.push('Ciclul intelectual este în faza joasă — evitați deciziile complexe.');else p.push('Ciclul intelectual funcționează la parametri normali.');return p.join(' ');}
 
-function bioValue(birthDate,targetDate,cycle){const days=Math.round((targetDate-birthDate)/(1000*60*60*24));return Math.sin(2*Math.PI*days/cycle)*100;}
+// ── Compatibilitate ──
+const boostsMap={Berbec:{Leu:15,Săgetător:12,Gemeni:8,Rac:-15,Capricorn:-10},Taur:{Fecioară:15,Capricorn:12,Pești:8,Leu:-12},Gemeni:{Balanță:15,Vărsător:12,Berbec:8,Fecioară:-12},Rac:{Scorpion:15,Pești:12,Taur:8,Berbec:-12},Leu:{Berbec:15,Săgetător:12,Gemeni:8,Scorpion:-15},Fecioară:{Taur:15,Capricorn:12,Rac:8,Gemeni:-12},Balanță:{Gemeni:15,Vărsător:12,Leu:8,Rac:-12},Scorpion:{Rac:15,Pești:12,Capricorn:8,Leu:-15},Săgetător:{Leu:15,Berbec:12,Balanță:8,Fecioară:-12},Capricorn:{Taur:15,Fecioară:12,Scorpion:8,Rac:-12},Vărsător:{Gemeni:15,Balanță:12,Berbec:8,Taur:-12},Pești:{Rac:15,Scorpion:12,Taur:8,Gemeni:-12}};
 
-function getBio(birthDate,targetDate){return{physical:bioValue(birthDate,targetDate,23),emotional:bioValue(birthDate,targetDate,28),intellectual:bioValue(birthDate,targetDate,33)};}
+// ── Ba Zi ──
+const HEAVENLY_STEMS=[{cn:'甲',py:'Jiǎ',el:'Lemn',pol:'Yang',sym:'🌳',desc:'Copacul înalt — ambiție, viziune, integritate morală.'},{cn:'乙',py:'Yǐ',el:'Lemn',pol:'Yin',sym:'🌿',desc:'Vița de vie — diplomație, eleganță, adaptabilitate.'},{cn:'丙',py:'Bǐng',el:'Foc',pol:'Yang',sym:'☀️',desc:'Soarele — charismă, generozitate, entuziasm.'},{cn:'丁',py:'Dīng',el:'Foc',pol:'Yin',sym:'🕯️',desc:'Lumânarea — intuiție, creativitate, dedicare.'},{cn:'戊',py:'Wù',el:'Pământ',pol:'Yang',sym:'⛰️',desc:'Muntele — stabilitate, loialitate, putere interioară.'},{cn:'己',py:'Jǐ',el:'Pământ',pol:'Yin',sym:'🌾',desc:'Solul fertil — răbdare, practicism, atenție la detalii.'},{cn:'庚',py:'Gēng',el:'Metal',pol:'Yang',sym:'⚔️',desc:'Sabia — curaj, principii, voință de fier.'},{cn:'辛',py:'Xīn',el:'Metal',pol:'Yin',sym:'💎',desc:'Bijuteria — perfecționism, estetică, analiză.'},{cn:'壬',py:'Rén',el:'Apă',pol:'Yang',sym:'🌊',desc:'Oceanul — inteligență, strategie, ambiție.'},{cn:'癸',py:'Guǐ',el:'Apă',pol:'Yin',sym:'💧',desc:'Ploaia — intuiție, empatie, creativitate mistică.'}];
+const EARTHLY_BRANCHES=[{cn:'子',py:'Zǐ',animal:'Șobolan',sym:'🐭',el:'Apă',pol:'Yang',h:'23-01',nature:'Inteligent, adaptabil, charismatic, strategic. Detectează oportunitățile înaintea celorlalți.',compat_best:'Dragon, Maimuță, Bou',compat_hard:'Cal, Iepure'},{cn:'丑',py:'Chǒu',animal:'Bou',sym:'🐮',el:'Pământ',pol:'Yin',h:'01-03',nature:'Disciplinat, fiabil, perseverent, onest. Construiește pe termen lung fără să cedeze.',compat_best:'Șobolan, Șarpe, Cocoș',compat_hard:'Capră, Dragon'},{cn:'寅',py:'Yín',animal:'Tigru',sym:'🐯',el:'Lemn',pol:'Yang',h:'03-05',nature:'Curajos, entuziast, generos, protector. Trăiește intens și lasă amprente de neșters.',compat_best:'Câine, Cal, Dragon',compat_hard:'Maimuță, Șarpe'},{cn:'卯',py:'Mǎo',animal:'Iepure',sym:'🐰',el:'Lemn',pol:'Yin',h:'05-07',nature:'Elegant, diplomatic, empatic, creativ. Evită conflictele și creează armonie.',compat_best:'Capră, Porc, Câine',compat_hard:'Cocoș, Șobolan'},{cn:'辰',py:'Chén',animal:'Dragon',sym:'🐲',el:'Pământ',pol:'Yang',h:'07-09',nature:'Charismatic, vizionar, entuziast, norocos. Singurul animal mitologic al ciclului.',compat_best:'Șobolan, Maimuță, Cocoș',compat_hard:'Câine, Bou'},{cn:'巳',py:'Sì',animal:'Șarpe',sym:'🐍',el:'Foc',pol:'Yin',h:'09-11',nature:'Intuitiv, inteligent, elegant, discret. Nu acționează niciodată fără intenție deliberată.',compat_best:'Bou, Cocoș, Porc',compat_hard:'Tigru, Porc'},{cn:'午',py:'Wǔ',animal:'Cal',sym:'🐴',el:'Foc',pol:'Yang',h:'11-13',nature:'Energic, sociabil, independent, optimist. Refuză orice formă de captivitate existențială.',compat_best:'Tigru, Câine, Capră',compat_hard:'Șobolan, Bou'},{cn:'未',py:'Wèi',animal:'Capră',sym:'🐐',el:'Pământ',pol:'Yin',h:'13-15',nature:'Empatic, creativ, artistic, intuitiv, blând. Preferă armonia în orice formă.',compat_best:'Iepure, Porc, Cal',compat_hard:'Bou, Câine'},{cn:'申',py:'Shēn',animal:'Maimuță',sym:'🐵',el:'Metal',pol:'Yang',h:'15-17',nature:'Inventiv, versatil, umoristic, strategic. Cel mai inventiv animal din ciclu.',compat_best:'Șobolan, Dragon, Tigru',compat_hard:'Tigru, Porc'},{cn:'酉',py:'Yǒu',animal:'Cocoș',sym:'🐓',el:'Metal',pol:'Yin',h:'17-19',nature:'Meticulos, onest, organizat, charismatic. Perfecționist, nu tolerează dezordinea.',compat_best:'Bou, Dragon, Șarpe',compat_hard:'Iepure, Capră'},{cn:'戌',py:'Xū',animal:'Câine',sym:'🐕',el:'Pământ',pol:'Yang',h:'19-21',nature:'Loial, onest, empatic, principial. Apără cu fermitate cei iubiți și valorile.',compat_best:'Tigru, Cal, Iepure',compat_hard:'Dragon, Porc'},{cn:'亥',py:'Hài',animal:'Porc',sym:'🐷',el:'Apă',pol:'Yin',h:'21-23',nature:'Generos, sincer, empatic, optimist. Nu cunoaște răutatea și o înțelege cu greu la ceilalți.',compat_best:'Iepure, Capră, Tigru',compat_hard:'Șarpe, Maimuță'}];
 
-const HEAVENLY_STEMS=[{cn:'甲',py:'Jiǎ',el:'Lemn',pol:'Yang',sym:'🌳'},{cn:'乙',py:'Yǐ',el:'Lemn',pol:'Yin',sym:'🌿'},{cn:'丙',py:'Bǐng',el:'Foc',pol:'Yang',sym:'☀️'},{cn:'丁',py:'Dīng',el:'Foc',pol:'Yin',sym:'🕯️'},{cn:'戊',py:'Wù',el:'Pământ',pol:'Yang',sym:'⛰️'},{cn:'己',py:'Jǐ',el:'Pământ',pol:'Yin',sym:'🌾'},{cn:'庚',py:'Gēng',el:'Metal',pol:'Yang',sym:'⚔️'},{cn:'辛',py:'Xīn',el:'Metal',pol:'Yin',sym:'💎'},{cn:'壬',py:'Rén',el:'Apă',pol:'Yang',sym:'🌊'},{cn:'癸',py:'Guǐ',el:'Apă',pol:'Yin',sym:'💧'}];
+function getBaZiYearPillar(year){const si=((year-4)%10+10)%10;const bi=((year-4)%12+12)%12;return{si,bi,stem:HEAVENLY_STEMS[si],branch:EARTHLY_BRANCHES[bi]};}
+function getBaZiMonthPillar(month,ySi){const bMap=[1,2,3,4,5,6,7,8,9,10,11,0];const bi=bMap[month-1];const ts=[2,4,6,8,0,2,4,6,8,0][ySi];const si=(ts+(bi-2+12)%12)%10;return{si,bi,stem:HEAVENLY_STEMS[si],branch:EARTHLY_BRANCHES[bi]};}
+function getBaZiDayPillar(date){const ref=new Date('1900-01-01T00:00:00Z');const days=Math.floor((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-ref.getTime())/(1000*60*60*24));const si=((days+6)%10+10)%10;const bi=((days+10)%12+12)%12;return{si,bi,stem:HEAVENLY_STEMS[si],branch:EARTHLY_BRANCHES[bi]};}
+function getBaZiHourPillar(hour,dSi){if(hour===null)return null;const bi=Math.floor((hour+1)/2)%12;const si=([0,2,4,6,8,0,2,4,6,8][dSi]+bi)%10;return{si,bi,stem:HEAVENLY_STEMS[si],branch:EARTHLY_BRANCHES[bi]};}
 
-const EARTHLY_BRANCHES=[{cn:'子',py:'Zǐ',animal:'Șobolan',sym:'🐭',el:'Apă',pol:'Yang'},{cn:'丑',py:'Chǒu',animal:'Bou',sym:'🐮',el:'Pământ',pol:'Yin'},{cn:'寅',py:'Yín',animal:'Tigru',sym:'🐯',el:'Lemn',pol:'Yang'},{cn:'卯',py:'Mǎo',animal:'Iepure',sym:'🐰',el:'Lemn',pol:'Yin'},{cn:'辰',py:'Chén',animal:'Dragon',sym:'🐲',el:'Pământ',pol:'Yang'},{cn:'巳',py:'Sì',animal:'Șarpe',sym:'🐍',el:'Foc',pol:'Yin'},{cn:'午',py:'Wǔ',animal:'Cal',sym:'🐴',el:'Foc',pol:'Yang'},{cn:'未',py:'Wèi',animal:'Capră',sym:'🐐',el:'Pământ',pol:'Yin'},{cn:'申',py:'Shēn',animal:'Maimuță',sym:'🐵',el:'Metal',pol:'Yang'},{cn:'酉',py:'Yǒu',animal:'Cocoș',sym:'🐓',el:'Metal',pol:'Yin'},{cn:'戌',py:'Xū',animal:'Câine',sym:'🐕',el:'Pământ',pol:'Yang'},{cn:'亥',py:'Hài',animal:'Porc',sym:'🐷',el:'Apă',pol:'Yin'}];
+function buildBaZiSection(day,month,year,hour){
+const yP=getBaZiYearPillar(year);const mP=getBaZiMonthPillar(month,yP.si);const dP=getBaZiDayPillar(new Date(year,month-1,day));const hP=getBaZiHourPillar(hour,dP.si);
+const pillars=[{lbl:'AN',info:'Energia fundamentală — cum ești perceput de lume',p:yP},{lbl:'LUNĂ',info:'Mediul formativ — vocația profesională',p:mP},{lbl:'ZI',info:'Sinele autentic — natura relației de parteneriat',p:dP},{lbl:'ORĂ',info:'Scopul spiritual — creativitate și urmași',p:hP}];
+const els={'Lemn':0,'Foc':0,'Pământ':0,'Metal':0,'Apă':0};const all=[yP,mP,dP];if(hP)all.push(hP);
+all.forEach(p=>{els[p.stem.el]++;els[p.branch.el]++;});
+let yang=0,yin=0;all.forEach(p=>{p.stem.pol==='Yang'?yang++:yin++;p.branch.pol==='Yang'?yang++:yin++;});
+let html='<div class="sh">Cei Patru Stâlpi Ba Zi (八字)</div><div class="bazi-grid">';
+pillars.forEach(({lbl,info,p})=>{if(!p){html+=`<div class="bazi-pillar bazi-disabled"><div class="bazi-label">ORĂ</div><div class="bazi-cn">—</div><div class="bazi-py" style="color:var(--text-dd);font-size:12px;font-style:italic">Ora nașterii<br>nu a fost furnizată</div></div>`;return;}html+=`<div class="bazi-pillar"><div class="bazi-label">STÂLPUL ${lbl}</div><div class="bazi-cn">${p.stem.cn}${p.branch.cn}</div><div class="bazi-py">${p.stem.py} ${p.branch.py}</div><div class="bazi-el">${p.stem.sym} ${p.stem.pol} ${p.stem.el}</div><div class="bazi-animal">${p.branch.sym} ${p.branch.animal}</div><div class="bazi-hours" style="font-size:10px;color:var(--text-d);margin:4px 0">${p.branch.h}</div><div class="bazi-desc">${info}</div></div>`;});
+html+='</div>';
+html+='<div class="sh">Balanța Celor Cinci Elemente</div><div class="bazi-elements">';
+const eS={'Lemn':'🌳','Foc':'🔥','Pământ':'🌾','Metal':'⚔️','Apă':'💧'};
+Object.entries(els).forEach(([el,cnt])=>{html+=`<div class="bazi-el-card${cnt===0?' bazi-el-absent':cnt>=3?' bazi-el-dominant':''}"><span style="font-size:20px">${eS[el]}</span><span style="font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-d);display:block;margin:4px 0">${el}</span><span style="font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold)">${cnt}</span></div>`;});
+html+='</div>';
+html+=`<div class="sh">Balanța Yin-Yang</div><p>Cei ${all.length*2} simboluri (Tulpini+Ramuri) prezintă: <strong style="color:var(--gold-l)">Yang: ${yang}</strong> · <strong style="color:var(--viol-l)">Yin: ${yin}</strong>. ${yang>yin?'Predominanța Yang indică o natură activă, expansivă, orientată spre manifestare exterioară.':yin>yang?'Predominanța Yin indică o natură receptivă, profundă, orientată spre lumea interioară.':'Echilibrul perfect Yang-Yin — capacitate de a alterna fluid între acțiune și receptivitate.'}</p>`;
+html+=`<div class="sh">Tulpina Zilei — Sinele Autentic</div><p>Tulpina Zilei <strong style="color:var(--gold-l)">${dP.stem.cn} (${dP.stem.py})</strong> — ${dP.stem.pol} ${dP.stem.el} — este cel mai personal simbol Ba Zi, revelând natura sinelui autentic și tiparul relației cu partenerul major. <em>${dP.stem.desc}</em></p>`;
+const yBr=yP.branch;html+=`<div class="sh">Profilul Animalului Anului — ${yBr.sym} ${yBr.animal}</div><p>${yBr.nature}</p><p><strong style="color:var(--jade-l)">Compatibilitate maximă:</strong> ${yBr.compat_best}</p><p><strong style="color:var(--crim-l)">Relații dificile:</strong> ${yBr.compat_hard}</p>`;
+html+='<div class="sh">Metodologie</div><p>Ba Zi (八字 — Cele Opt Caractere) este sistemul de astrologie chineză bazat pe data și ora nașterii convertite în opt simboluri: patru Tulpini Cerești (天干) și patru Ramuri Terestre (地支). Calculele urmează ciclul sexagenar de 60 de ani, cu aproximarea calendarului solar gregorian pentru luna nașterii.</p>';
+return html;}
 
-function getBaZiYearPillar(year){const stemIdx=((year-4)%10+10)%10;const branchIdx=((year-4)%12+12)%12;return{stemIdx,branchIdx,stem:HEAVENLY_STEMS[stemIdx],branch:EARTHLY_BRANCHES[branchIdx]};}
+// ── Interpretare vis ──
+function buildDreamInterp(text){if(!text)return'<p style="color:var(--text-d);font-style:italic">Nu a fost furnizat un vis.</p>';const kw={apă:'Revelă viața emoțională profundă și inconștientul.',foc:'Simbolul transformării și al energiei vitale.',zbor:'Dorința de transcendere și aspirația spre libertate.',cădere:'Anxietate și sentiment de pierdere a controlului.',urmărire:'Evitarea unui aspect al propriei personalități.',casă:'Psihicul propriu — fiecare cameră o dimensiune a sinelui.',moarte:'Tranziție și nașterea unui nou aspect al sinelui.',lumina:'Conștiință, înțelegere și revelație.'};const lc=text.toLowerCase();const found=[];for(const[k,m]of Object.entries(kw)){if(lc.includes(k))found.push({k,m});}if(!found.length)return'<p>Visul utilizează un limbaj metaforic personal. Construiți un jurnal oniric pentru a identifica temele recurente.</p>';let h='<div class="sh">Simboluri Identificate</div>';found.forEach(f=>{h+=`<p><strong style="color:var(--gold-l)">${f.k.charAt(0).toUpperCase()+f.k.slice(1)}</strong> — ${f.m}</p>`;});return h;}
 
-function getBaZiMonthPillar(month,yearStemIdx){const monthBranchMap=[1,2,3,4,5,6,7,8,9,10,11,0];const branchIdx=monthBranchMap[month-1];const tigerStemStart=[2,4,6,8,0,2,4,6,8,0][yearStemIdx];const monthOffset=(branchIdx-2+12)%12;const stemIdx=(tigerStemStart+monthOffset)%10;return{stemIdx,branchIdx,stem:HEAVENLY_STEMS[stemIdx],branch:EARTHLY_BRANCHES[branchIdx]};}
+// ── Construcție secțiune ──
+function buildSection(ico,title,content){return`<div class="sec"><div class="sec-hd" onclick="toggleSec(this)"><span class="sec-ico">${ico}</span><span class="sec-title">${title}</span><span class="sec-toggle">▼</span></div><div class="sec-body">${content}</div></div>`;}
+function toggleSec(hd){const b=hd.nextElementSibling,t=hd.querySelector('.sec-toggle');b.classList.toggle('open');t.classList.toggle('open');}
 
-function getBaZiDayPillar(date){const ref=new Date('1900-01-01T00:00:00Z');const days=Math.floor((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-ref.getTime())/(1000*60*60*24));const stemIdx=((days+6)%10+10)%10;const branchIdx=((days+10)%12+12)%12;return{stemIdx,branchIdx,stem:HEAVENLY_STEMS[stemIdx],branch:EARTHLY_BRANCHES[branchIdx]};}
-
-function getBaZiHourPillar(hour,dayStemIdx){if(hour===null)return null;const hourBranchIdx=Math.floor((hour+1)/2)%12;const ziStemStart=[0,2,4,6,8,0,2,4,6,8][dayStemIdx];const stemIdx=(ziStemStart+hourBranchIdx)%10;return{stemIdx,branchIdx:hourBranchIdx,stem:HEAVENLY_STEMS[stemIdx],branch:EARTHLY_BRANCHES[hourBranchIdx]};}
-
-function buildBaZiSection(day,month,year,hour){const yearPillar=getBaZiYearPillar(year);const monthPillar=getBaZiMonthPillar(month,yearPillar.stemIdx);const dayPillar=getBaZiDayPillar(new Date(year,month-1,day));const hourPillar=hour!==null?getBaZiHourPillar(hour,dayPillar.stemIdx):null;const pillars=[{label:'AN',desc:'Energia fundamentală a destinului',p:yearPillar},{label:'LUNĂ',desc:'Mediul formativ și vocația',p:monthPillar},{label:'ZI',desc:'Sinele autentic și parteneriat',p:dayPillar},{label:'ORĂ',desc:'Scopul spiritual și creativitate',p:hourPillar}];const elements={'Lemn':0,'Foc':0,'Pământ':0,'Metal':0,'Apă':0};const allPillars=[yearPillar,monthPillar,dayPillar];if(hourPillar)allPillars.push(hourPillar);allPillars.forEach(p=>{elements[p.stem.el]++;elements[p.branch.el]++;});let yangCount=0,yinCount=0;allPillars.forEach(p=>{if(p.stem.pol==='Yang')yangCount++;else yinCount++;if(p.branch.pol==='Yang')yangCount++;else yinCount++;});let html='<div class="sh">Cei Patru Stâlpi ai Destinului</div><div class="bazi-grid">';pillars.forEach(({label,desc,p})=>{if(!p){html+=`<div class="bazi-pillar bazi-disabled"><div class="bazi-label">ORĂ</div><div class="bazi-cn">—</div><div class="bazi-py" style="color:var(--text-dd);font-style:italic;font-size:12px">Nu furnizată</div></div>`;}else{html+=`<div class="bazi-pillar"><div class="bazi-label">STÂLPUL ${label}</div><div class="bazi-cn">${p.stem.cn} ${p.branch.cn}</div><div class="bazi-py">${p.stem.py} ${p.branch.py}</div><div class="bazi-el">${p.stem.sym} ${p.stem.pol} ${p.stem.el}</div><div class="bazi-animal">${p.branch.sym} ${p.branch.animal}</div><div class="bazi-desc">${desc}</div></div>`;}});html+='</div><div class="sh">Balanța Elementelor</div><div class="bazi-elements">';const elSyms={'Lemn':'🌳','Foc':'🔥','Pământ':'🌾','Metal':'⚔️','Apă':'💧'};Object.entries(elements).forEach(([el,count])=>{html+=`<div class="bazi-el-card${count===0?' bazi-el-absent':count>=3?' bazi-el-dominant':''}"><span style="font-size:20px">${elSyms[el]}</span><span style="font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-d);display:block">${el}</span><span style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold)">${count}</span></div>`;});html+='</div><div class="sh">Balanța Yin-Yang</div><p>Proporție: <strong style="color:var(--gold-l)">Yang: '+yangCount+'</strong> și <strong style="color:var(--viol-l)">Yin: '+yinCount+'</strong>.</p>';return html;}
-
+// ── Oracle engine ──
 function launchOracle(){const name=document.getElementById('fullName').value.trim();const gender=document.getElementById('gender').value;const bd=document.getElementById('birthDate').value;const err=document.getElementById('errMsg');if(!name||!gender||!bd){err.classList.add('show');return;}err.classList.remove('show');document.getElementById('formSection').style.display='none';const loader=document.getElementById('loaderSection');loader.classList.add('show');const steps=['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'];let si=0;const iv=setInterval(()=>{if(si>0)document.getElementById(steps[si-1]).className='step-item done';if(si<steps.length)document.getElementById(steps[si]).className='step-item active';si++;if(si>steps.length)clearInterval(iv);},600);setTimeout(()=>{clearInterval(iv);loader.classList.remove('show');buildResult();},7200);}
 
-function buildResult(){const now=new Date();const name=document.getElementById('fullName').value.trim();const gender=document.getElementById('gender').value;const bd=new Date(document.getElementById('birthDate').value);const bt=document.getElementById('birthTime').value;const day=bd.getDate(),month=bd.getMonth()+1,year=bd.getFullYear();const hour=bt?parseInt(bt.split(':')[0]):null;const zodiac=getZodiacSign(day,month);const element=getElement(zodiac.s);const chinese=getChineseZodiac(year);const bio=getBio(bd,now);const lp=calcLifePath(day,month,year);const el=document.getElementById('resultSection');el.innerHTML=`<div class="id-banner"><div class="id-name">${name}</div><div class="id-subtitle">${zodiac.s} · ${element.name} · ${year}<br>Drumul Vieții ${lp}</div><div class="id-badges"><span class="id-badge">☉ ${zodiac.sy}</span><span class="id-badge">🐉 ${chinese}</span></div></div>
-${buildSection('🐲','XIII · ZODIAC CHINEZESC BA ZI',buildBaZiSection(day,month,year,hour))}
-<button class="reset-btn" onclick="resetOracle()">↺ Consultație Nouă</button>`;el.classList.add('show');}
+function buildResult(){
+const now=new Date();
+const name=document.getElementById('fullName').value.trim();
+const gender=document.getElementById('gender').value;
+const bd=new Date(document.getElementById('birthDate').value);
+const bt=document.getElementById('birthTime').value;
+const bplace=document.getElementById('birthPlace').value.trim();
+const bname=document.getElementById('birthName').value.trim()||name;
+const sens=document.getElementById('sensType').value;
+const question=document.getElementById('question').value.trim();
+const partnerDate=document.getElementById('partnerDate').value;
+const dreamText=document.getElementById('dreamText').value.trim();
 
-function buildSection(icon,title,content){return`<div class="sec"><div class="sec-hd" onclick="toggleSec(this)"><span class="sec-ico">${icon}</span><span class="sec-title">${title}</span><span class="sec-toggle">▼</span></div><div class="sec-body">${content}</div></div>`;}
+const day=bd.getDate(),month=bd.getMonth()+1,year=bd.getFullYear();
+const age=now.getFullYear()-year-(now<new Date(now.getFullYear(),month-1,day)?1:0);
+const hour=bt?parseInt(bt.split(':')[0]):null;
 
-function toggleSec(hd){const body=hd.nextElementSibling;const tog=hd.querySelector('.sec-toggle');body.classList.toggle('open');tog.classList.toggle('open');}
+const zodiac=getZodiacSign(day,month);
+const element=getElement(zodiac.s);
+const modality=getModality(zodiac.s);
+const ruler=getRuler(zodiac.s);
+const chinese=getChineseZodiac(year);
+const profile=ZP[zodiac.s]||ZP.Berbec;
+
+// Planete la naștere
+const BP={};for(const p in EPHEM)BP[p]={lon:getPlanetLon(p,bd),sign:lonToSign(getPlanetLon(p,bd))};
+const sunLon=BP.sun.lon;
+
+// Planete acum
+const NP={};for(const p in EPHEM)NP[p]={lon:getPlanetLon(p,now),sign:lonToSign(getPlanetLon(p,now))};
+
+// Tranzite
+const transits=[];
+['jupiter','saturn','uranus','neptune','pluto'].forEach(tp=>{
+['sun','moon','mercury','venus','mars','jupiter','saturn'].forEach(np=>{
+const asp=getAspect(NP[tp].lon,BP[np].lon);
+if(asp){const sev=tp==='pluto'||tp==='neptune'||tp==='uranus'?'major':(tp==='saturn'?'moderate':'minor');transits.push({tp,np,asp,sev,tSign:NP[tp].sign.name,nSign:BP[np].sign.name});}
+});});
+transits.sort((a,b)=>({major:0,moderate:1,minor:2}[a.sev]-{major:0,moderate:1,minor:2}[b.sev]));
+
+// Numerologie
+const lp=calcLifePath(day,month,year);
+const nn=nameToNum(bname);
+const py=personalYear(day,month,now.getFullYear());
+const pm=reduce(py+(now.getMonth()+1));
+
+// Bioritm
+const bio=getBio(bd,now);
+const dailyScore=Math.round((bio.physical+bio.emotional+bio.intellectual)/3);
+const dailyEnergy=dailyScore>40?'Ridicată ↑':dailyScore>0?'Moderată →':dailyScore>-40?'Joasă ↓':'Critică ⚠';
+
+// Compatibilitate
+const allSigns=['Berbec','Taur','Gemeni','Rac','Leu','Fecioară','Balanță','Scorpion','Săgetător','Capricorn','Vărsător','Pești'];
+const syms2=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+const myB=boostsMap[zodiac.s]||{};
+const compat=allSigns.filter(s=>s!==zodiac.s).map(s=>({sign:s,sym:syms2[allSigns.indexOf(s)],pct:Math.max(15,Math.min(97,65+(myB[s]||0)))})).sort((a,b)=>b.pct-a.pct).slice(0,8);
+
+// Sinastrie
+let synHTML='<p style="color:var(--text-d);font-style:italic">Nu a fost furnizată data nașterii unui partener.</p>';
+if(partnerDate){const pd2=new Date(partnerDate);const pZ=getZodiacSign(pd2.getDate(),pd2.getMonth()+1);const pBio=getBio(pd2,now);synHTML=`<div class="syn-grid"><div class="syn-person"><div style="font-family:'Cinzel Decorative',serif;color:var(--gold)">${name}</div><div style="font-size:22px;margin:6px 0">${zodiac.sy}</div></div><div class="syn-vs">⟷</div><div class="syn-person"><div style="font-family:'Cinzel Decorative',serif;color:var(--gold)">Partener</div><div style="font-size:22px;margin:6px 0">${pZ.sy}</div></div></div><div class="sh">Analiză Sinastrie</div><p>Combinația ${zodiac.s}–${pZ.s} unește energiile ${element.name} cu ${getElement(pZ.s).name}. ${['Foc','Aer'].includes(element.name)&&['Foc','Aer'].includes(getElement(pZ.s).name)?'Elemente complementare — dinamism și comunicare naturală.':['Apă','Pământ'].includes(element.name)&&['Apă','Pământ'].includes(getElement(pZ.s).name)?'Elemente complementare — profunzime și stabilitate.':'Elemente contrastante — creează dinamică de creștere sau tensiune, depinzând de conștiință.'}</p>`;}
+
+// Tranzite HTML
+const pSym={sun:'☉',moon:'☽',mercury:'☿',venus:'♀',mars:'♂',jupiter:'♃',saturn:'♄',uranus:'♅',neptune:'♆',pluto:'♇',northNode:'☊'};
+let transitHTML=transits.slice(0,6).map(t=>{const pn=EPHEM[t.tp][2],psym=pSym[t.tp]||'✦',nn2=EPHEM[t.np][2];const interp=`${pn} în ${t.tSign} formează ${t.asp.name} cu ${nn2} natal. ${t.asp.nature==='harmonious'?'Influență fluidă și benefică.':t.asp.nature==='tense'?'Tensiune ce cere acțiune conștientă.':'Ajustare necesară în domeniu.'}`;return`<div class="transit-item ${t.sev}"><span class="t-sym">${psym}</span><div class="t-info"><div class="t-name">${pn} ${t.asp.sym} ${nn2} natal</div><div class="t-desc">${interp}</div></div><span class="t-badge ${t.sev==='major'?'maj':t.sev==='moderate'?'mod':'min'}">${t.sev==='major'?'MAJOR':t.sev==='moderate'?'MODERAT':'MINOR'}</span></div>`;}).join('');
+if(!transitHTML)transitHTML='<p style="color:var(--text-d);font-style:italic">Nu s-au detectat tranzite majore active. Perioadă de stabilitate relativă.</p>';
+
+// Compatibilitate HTML
+const compatHTML=compat.map(c=>`<div class="cbar-row"><span class="cbar-lbl">${c.sym} ${c.sign}</span><div class="cbar-track"><div class="cbar-fill" data-w="${c.pct}" style="width:0%"></div></div><span class="cbar-val">${c.pct}%</span></div>`).join('');
+
+// BUILD HTML
+const el=document.getElementById('resultSection');
+el.innerHTML=`
+<div class="id-banner">
+<div class="id-name">${name}</div>
+<div class="id-subtitle">${zodiac.s} ${zodiac.sy} · ${element.name} ${element.sym} · ${modality} · ${age} ani<br>Drumul Vieții ${lp} · ${bplace||'Loc nespecificat'}</div>
+<div class="id-badges">
+<span class="id-badge">☉ ${zodiac.sy} ${zodiac.s}</span>
+<span class="id-badge">${element.sym} ${element.name}</span>
+${hour!==null?`<span class="id-badge">🌅 Ora ${bt}</span>`:''}
+<span class="id-badge">🐉 ${chinese}</span>
+<span class="id-badge">✦ LP ${lp}</span>
+<span class="id-badge">☀ An ${py}</span>
+</div>
+</div>
+
+${buildSection('☉','I · PROFIL ASTROLOGIC NATAL',`
+<div class="sh">Identitatea Zodiacală</div>
+<div class="planet-grid">
+<div class="pcard"><span class="ps">${zodiac.sy}</span><span class="pn">Semn Solar</span><span class="pv">${zodiac.s}</span></div>
+<div class="pcard"><span class="ps">${element.sym}</span><span class="pn">Element</span><span class="pv">${element.name}</span></div>
+<div class="pcard"><span class="ps">◈</span><span class="pn">Modalitate</span><span class="pv">${modality}</span></div>
+<div class="pcard"><span class="ps">⭐</span><span class="pn">Conducător</span><span class="pv">${ruler}</span></div>
+</div>
+<div class="sh">Natură și Caracter</div>
+<p>${profile.core}</p>
+<div class="sh">Calități și Provocări</div>
+<p><strong>Calități:</strong> ${profile.pos}</p>
+<p><strong>Provocări:</strong> ${profile.neg}</p>
+<div class="sh">Iubire · Carieră · Sănătate</div>
+<p><strong>Iubire:</strong> ${profile.love}</p>
+<p><strong>Carieră:</strong> ${profile.career}</p>
+<p><strong>Sănătate:</strong> ${profile.health}</p>
+<div class="sh">Planete la Naștere</div>
+<div class="planet-grid">${['sun','moon','mercury','venus','mars','jupiter','saturn'].map(p=>`<div class="pcard"><span class="ps">${pSym[p]}</span><span class="pn">${EPHEM[p][2]}</span><span class="pv">${BP[p].sign.name} ${BP[p].sign.deg}°</span></div>`).join('')}</div>
+`)}
+
+${buildSection('⟳','II · TRANZITE PLANETARE ACTIVE',`
+<div class="sh">Configurația Cerului față de Harta Natală</div>
+<p>Tranzitele sunt deplasările actuale ale planetelor față de pozițiile lor la nașterea dvs. Planetele lente (Saturn, Uranus, Neptun, Pluton) produc efecte durabile pe luni sau ani.</p>
+<div class="transit-list">${transitHTML}</div>
+`)}
+
+${buildSection('✦','III · NUMEROLOGIE PITAGOREICĂ',`
+<div class="sh">Numerele Fundamentale</div>
+<div class="num-row">
+<div class="nbadge"><span class="n">${lp}</span><span class="nl">Drumul Vieții</span></div>
+<div class="nbadge"><span class="n">${nn}</span><span class="nl">Expresie / Destin</span></div>
+<div class="nbadge"><span class="n">${py}</span><span class="nl">An Personal</span></div>
+<div class="nbadge"><span class="n">${pm}</span><span class="nl">Lună Personală</span></div>
+</div>
+<div class="sh">Drumul Vieții ${lp}</div>
+<p>${lpMeanings[lp]||'Număr de integrat pe parcursul întregii vieți.'}</p>
+<div class="sh">An Personal ${now.getFullYear()}</div>
+<p>${pyThemes[py]||pyThemes[1]} ${py<=3?'Moment favorabil pentru conexiuni noi și oportunități.':py<=6?'An al angajamentelor și responsabilizărilor.':py<=8?'Cariera și finanțele în prim-plan.':'An de completare — finalizați ce a rămas în urmă.'}</p>
+`)}
+
+${buildSection('◎','IV · BIORITM TRIDIMENSIONAL',`
+<div class="sh">Starea Bioritmică Actuală — ${dailyEnergy}</div>
+<div class="do-indicators">
+<div class="do-ind"><div class="do-ind-val">${Math.round(bio.physical)}%</div><div class="do-ind-lbl">Fizic (23z)</div></div>
+<div class="do-ind"><div class="do-ind-val">${Math.round(bio.emotional)}%</div><div class="do-ind-lbl">Emoțional (28z)</div></div>
+<div class="do-ind"><div class="do-ind-val">${Math.round(bio.intellectual)}%</div><div class="do-ind-lbl">Intelectual (33z)</div></div>
+</div>
+<canvas id="bioCanvas"></canvas>
+<div class="sh">Interpretare</div>
+<p>${getBioInterp(bio)}</p>
+`)}
+
+${buildSection('◑','V · ORACOL ZILNIC INTEGRAT',`
+<div class="daily-oracle">
+<div class="do-date">${now.toLocaleDateString('ro-RO',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
+<div class="do-energy">${dailyEnergy}</div>
+<div class="do-theme">Zi Personală ${reduce(py+(now.getMonth()+1)+now.getDate())} · An Personal ${py}</div>
+<div class="do-indicators">
+<div class="do-ind"><div class="do-ind-val">${Math.round(bio.physical)}</div><div class="do-ind-lbl">Fizic</div></div>
+<div class="do-ind"><div class="do-ind-val">${Math.round(bio.emotional)}</div><div class="do-ind-lbl">Emoțional</div></div>
+<div class="do-ind"><div class="do-ind-val">${Math.round(bio.intellectual)}</div><div class="do-ind-lbl">Intelectual</div></div>
+</div>
+<div class="do-body">Energia zilei, calculată din convergența sistemelor predictive (bioritm, numerologie, tranzite, zodiac), indică un nivel <strong>${dailyScore>40?'ridicat — zi propice acțiunilor importante':dailyScore>0?'moderat — zi echilibrată':dailyScore>-40?'mai scăzut — zi recomandată pentru muncă reflexivă':'critic — prudență maximă, evitați deciziile ireparabile'}</strong>. Elementul ${element.name} al configurației natale ${element.name==='Foc'?'vă îndeamnă la acțiune directă și inițiativă':element.name==='Pământ'?'vă îndeamnă la concret și practic':element.name==='Aer'?'favorizează comunicarea și schimbul de idei':'face intuiția un ghid mai fiabil decât logica liniară'} astăzi.</div>
+</div>
+`)}
+
+${buildSection('☽','VI · INTERPRETAREA VISULUI',`
+<div class="sh">Visul Furnizat</div>
+${dreamText?`<div class="sabian-box"><div class="sabian-symbol" style="font-style:italic">"${dreamText}"</div></div>`:''}
+${buildDreamInterp(dreamText)}
+`)}
+
+${buildSection('♡','VII · SINASTRIE & BIORITM DE CUPLU',synHTML)}
+
+${buildSection('◎','VIII · COMPATIBILITATE ZODIACALĂ',`
+<div class="sh">Compatibilitate ${zodiac.s} cu Celelalte Semne</div>
+<p>Compatibilitatea analizează interacțiunea elementelor, modalităților și energiilor planetare. Este o indicație de tendință, nu determinism.</p>
+${compatHTML}
+`)}
+
+${buildSection('🐲','IX · ZODIAC CHINEZESC BA ZI — CEI PATRU STÂLPI AI DESTINULUI',buildBaZiSection(day,month,year,hour))}
+
+${question?buildSection('✧','X · RĂSPUNS LA ÎNTREBAREA SPECIFICĂ',`
+<div class="sh">Context Astrologic și Numerologic</div>
+<p>Întrebarea dvs. este abordată din perspectiva profilului integrat: ${zodiac.s} (${element.name}, ${modality}), Drumul Vieții ${lp}, An Personal ${py}.</p>
+<p>${profile.core}</p>
+<div class="sh">Orientare</div>
+<p>${lpMeanings[lp]||''} ${pyThemes[py]||''}</p>
+`):''}
+
+<button class="reset-btn" onclick="resetOracle()">↺ Consultație Nouă</button>`;
+
+el.classList.add('show');
+
+// Deschide prima secțiune automat
+setTimeout(()=>{const first=el.querySelector('.sec-body');if(first){first.classList.add('open');const tog=el.querySelector('.sec-toggle');if(tog)tog.classList.add('open');}},200);
+
+// Animație bare compatibilitate
+setTimeout(()=>{el.querySelectorAll('.cbar-fill').forEach(b=>{b.style.width=b.dataset.w+'%';});},400);
+
+// Grafic bioritm
+setTimeout(()=>drawBio(bio,bd,now),350);
+}
+
+function drawBio(bio,birthDate,now){
+const canvas=document.getElementById('bioCanvas');
+if(!canvas)return;
+canvas.width=canvas.offsetWidth*window.devicePixelRatio||800;
+canvas.height=180*window.devicePixelRatio||180;
+const ctx=canvas.getContext('2d');
+const scale=window.devicePixelRatio||1;
+ctx.scale(scale,scale);
+const W=canvas.offsetWidth||800,H=180;
+ctx.fillStyle='rgba(4,3,10,0.6)';ctx.fillRect(0,0,W,H);
+const midY=H/2;
+ctx.strokeStyle='rgba(201,168,76,0.1)';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(0,midY);ctx.lineTo(W,midY);ctx.stroke();
+for(let i=0;i<=60;i+=10){const x=i*(W/60);ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+const drawCurve=(cycle,color)=>{ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<=60;i++){const d=new Date(now.getTime()+(i-30)*24*60*60*1000);const v=bioValue(birthDate,d,cycle);const x=(i/60)*W;const y=midY-(v/100)*(midY-8);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();};
+drawCurve(23,'rgba(232,160,48,0.85)');
+drawCurve(28,'rgba(74,139,210,0.85)');
+drawCurve(33,'rgba(46,204,154,0.85)');
+const tx=(30/60)*W;ctx.strokeStyle='rgba(201,168,76,0.7)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(tx,0);ctx.lineTo(tx,H);ctx.stroke();ctx.setLineDash([]);
+ctx.font='10px Raleway,sans-serif';
+ctx.fillStyle='rgba(232,160,48,0.9)';ctx.fillText('— Fizic',8,H-8);
+ctx.fillStyle='rgba(74,139,210,0.9)';ctx.fillText('— Emoțional',65,H-8);
+ctx.fillStyle='rgba(46,204,154,0.9)';ctx.fillText('— Intelectual',155,H-8);
+}
 
 function resetOracle(){document.getElementById('formSection').style.display='block';const r=document.getElementById('resultSection');r.classList.remove('show');r.innerHTML='';window.scrollTo({top:0,behavior:'smooth'});}
-
-function drawBio(bio,birthDate,now){const canvas=document.getElementById('bioCanvas');if(!canvas)return;const ctx=canvas.getContext('2d');const W=canvas.offsetWidth||800,H=180;ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(4,3,10,0.5)';ctx.fillRect(0,0,W,H);const midY=H/2;ctx.strokeStyle='rgba(201,168,76,0.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,midY);ctx.lineTo(W,midY);ctx.stroke();}
 </script>
 </body>
 </html>
