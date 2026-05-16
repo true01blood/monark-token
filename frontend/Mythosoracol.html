@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MYTHOS ORACLE v2 — Sistem Predictiv Integrat</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Raleway:wght@200;300;400;500;600;700&display=swap');
+:root {--void:#04030a;--deep:#0a0718;--cosmic:#120b28;--nebula:#1a1035;--gold:#c9a84c;--gold-l:#f0d98a;--gold-d:#7a6030;--gold-faint:rgba(201,168,76,0.08);--silver:#9ba8c0;--silver-l:#cdd5e8;--silver-d:#5a6278;--crimson:#8b1a3a;--crim-l:#c4395e;--violet:#4a1f7a;--viol-l:#9b59d0;--viol-faint:rgba(74,31,122,0.15);--jade:#1a5c4a;--jade-l:#2ecc9a;--cobalt:#1a3a6b;--cob-l:#4a8fd4;--amber:#8b4a00;--amb-l:#e8a030;--text:#e0d8f4;--text-d:#8a82a0;--text-dd:#4a4560;--border:rgba(201,168,76,0.2);--border-b:rgba(201,168,76,0.55);--border-s:rgba(201,168,76,0.08);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;line-height:1.75;min-height:100vh;overflow-x:hidden;}
+.cosmic-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.cosmic-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(74,31,122,0.18) 0%,transparent 70%),radial-gradient(ellipse 60% 30% at 0% 100%,rgba(26,60,107,0.12) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 100% 50%,rgba(26,92,74,0.08) 0%,transparent 60%);}
+.star{position:absolute;border-radius:50%;background:rgba(201,168,76,0.7);animation:star-twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+@keyframes star-twinkle{0%,100%{opacity:0.2;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+.wrapper{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:32px 20px 100px}
+.header{text-align:center;padding:60px 0 44px;position:relative}
+.header-sigil{font-size:56px;display:block;margin-bottom:18px;animation:sigil-drift 20s ease-in-out infinite;filter:drop-shadow(0 0 24px rgba(201,168,76,0.6));}
+@keyframes sigil-drift{0%,100%{transform:rotate(0deg) scale(1)}33%{transform:rotate(3deg) scale(1.04)}66%{transform:rotate(-3deg) scale(0.97)}}
+.header h1{font-family:'Cinzel Decorative',serif;font-size:clamp(24px,5.5vw,54px);font-weight:900;letter-spacing:5px;background:linear-gradient(135deg,var(--gold-d) 0%,var(--gold-l) 35%,var(--gold) 60%,var(--gold-d) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:6px;}
+.header-version{font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:8px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.header-tagline{font-style:italic;color:var(--silver);font-size:15px;max-width:620px;margin:0 auto 30px;line-height:1.9;}
+.header-modules{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:20px;}
+.mod-tag{font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);color:var(--gold-d);background:var(--gold-faint);}
+.divider{display:flex;align-items:center;gap:14px;margin:36px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-d),transparent)}
+.divider span{color:var(--gold);font-size:16px}
+.tab-nav{display:flex;gap:2px;margin-bottom:2px;flex-wrap:wrap}
+.tab-btn{font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:10px 18px;border:1px solid var(--border);background:rgba(4,3,10,0.8);color:var(--text-d);cursor:pointer;transition:all 0.25s;flex:1;min-width:100px;text-align:center;}
+.tab-btn:hover{color:var(--gold);border-color:var(--gold-d)}
+.tab-btn.active{background:var(--gold-faint);border-color:var(--gold);color:var(--gold)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.form-card{background:linear-gradient(135deg,rgba(18,11,40,0.97) 0%,rgba(10,7,24,0.99) 100%);border:1px solid var(--border);position:relative;overflow:hidden;}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-l),var(--gold),transparent);}
+.form-inner{padding:40px 44px}
+.form-section-title{font-family:'Cinzel Decorative',serif;font-size:12px;letter-spacing:3px;color:var(--gold);text-align:center;margin-bottom:32px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-group.fw{grid-column:1/-1}
+.lbl{font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px;}
+.inp{background:rgba(4,3,10,0.85);border:1px solid var(--border);padding:13px 16px;color:var(--text);font-family:'Cormorant Garamond',serif;font-size:15px;outline:none;transition:all 0.28s;width:100%;}
+.inp:focus{border-color:var(--gold);box-shadow:0 0 16px rgba(201,168,76,0.1)}
+.inp::placeholder{color:var(--text-dd);font-style:italic}
+.inp option{background:var(--deep)}
+.hint{font-size:12px;color:var(--text-d);font-style:italic}
+.hand-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.hopt{background:rgba(4,3,10,0.7);border:1px solid var(--border);padding:9px 12px;cursor:pointer;font-size:13px;color:var(--silver);font-family:'Cormorant Garamond',serif;text-align:center;transition:all 0.22s;}
+.hopt:hover,.hopt.sel{border-color:var(--gold);color:var(--gold);background:var(--gold-faint)}
+.event-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-end}
+.event-row .inp{flex:1}
+.btn-add-event{background:transparent;border:1px solid var(--border);color:var(--gold-d);padding:13px 16px;cursor:pointer;font-size:18px;transition:all 0.2s;flex-shrink:0;}
+.btn-add-event:hover{border-color:var(--gold);color:var(--gold)}
+.oracle-btn{display:block;width:100%;margin-top:36px;padding:20px 48px;background:linear-gradient(135deg,rgba(201,168,76,0.1) 0%,rgba(201,168,76,0.22) 50%,rgba(201,168,76,0.1) 100%);border:1px solid var(--gold);color:var(--gold-l);font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:5px;cursor:pointer;transition:all 0.4s;position:relative;overflow:hidden;}
+.oracle-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.18),transparent);transition:left 0.5s;}
+.oracle-btn:hover::before{left:100%}
+.oracle-btn:hover{box-shadow:0 0 40px rgba(201,168,76,0.25);letter-spacing:7px}
+.oracle-btn:disabled{opacity:0.4;cursor:not-allowed}
+.err{background:rgba(139,26,58,0.18);border:1px solid rgba(196,57,94,0.35);padding:14px 20px;color:var(--crim-l);font-style:italic;margin-top:16px;display:none;}
+.err.show{display:block}
+.loader{display:none;text-align:center;padding:80px 0}
+.loader.show{display:block}
+.loader-ring{width:110px;height:110px;margin:0 auto 28px;position:relative}
+.loader-ring::before,.loader-ring::after{content:'';position:absolute;border-radius:50%;inset:0;}
+.loader-ring::before{border:1px solid rgba(201,168,76,0.25);animation:ring-spin 3.5s linear infinite}
+.loader-ring::after{inset:16px;border:1px solid rgba(201,168,76,0.5);animation:ring-spin 2.2s linear infinite reverse;}
+.loader-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;animation:pulse-g 1.4s ease-in-out infinite;}
+@keyframes ring-spin{to{transform:rotate(360deg)}}
+@keyframes pulse-g{0%,100%{opacity:0.35}50%{opacity:1}}
+.loader-msg{font-family:'Raleway',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-d);animation:pulse-g 1.4s ease-in-out infinite;}
+.loader-step{display:flex;flex-direction:column;gap:6px;margin:28px auto 0;max-width:320px;}
+.step-item{font-size:12px;color:var(--text-dd);font-style:italic;padding:4px 0;border-bottom:1px solid var(--border-s);transition:color 0.4s;}
+.step-item.done{color:var(--gold-d)}
+.step-item.active{color:var(--gold);font-weight:600}
+.result{display:none;animation:reveal 0.7s ease-out}
+.result.show{display:block}
+@keyframes reveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.id-banner{background:linear-gradient(135deg,rgba(18,11,40,0.98) 0%,rgba(10,7,24,0.99) 100%);border:1px solid var(--border-b);padding:44px 36px;text-align:center;position:relative;overflow:hidden;}
+.id-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 70%);}
+.id-name{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,40px);color:var(--gold-l);letter-spacing:3px;margin-bottom:10px;}
+.id-subtitle{font-style:italic;color:var(--silver);font-size:15px;line-height:1.8;margin-bottom:20px}
+.id-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px}
+.id-badge{background:var(--gold-faint);border:1px solid var(--border);padding:7px 16px;font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);}
+.sec{background:linear-gradient(135deg,rgba(18,11,40,0.9) 0%,rgba(10,7,24,0.95) 100%);border:1px solid var(--border);margin-top:16px;position:relative;}
+.sec::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--gold-d));}
+.sec-hd{padding:20px 28px 16px 32px;border-bottom:1px solid var(--border-s);display:flex;align-items:center;gap:12px;cursor:pointer;transition:background 0.22s;user-select:none;}
+.sec-hd:hover{background:var(--gold-faint)}
+.sec-ico{font-size:20px;flex-shrink:0}
+.sec-title{font-family:'Cinzel Decorative',serif;font-size:11px;letter-spacing:2.5px;color:var(--gold);flex:1}
+.sec-toggle{color:var(--gold-d);font-size:13px;transition:transform 0.28s}
+.sec-toggle.open{transform:rotate(180deg)}
+.sec-body{padding:28px 32px;display:none;line-height:1.9}
+.sec-body.open{display:block}
+.sec-body p{margin-bottom:16px;color:var(--text);font-size:15.5px}
+.sec-body p:last-child{margin-bottom:0}
+.sh{font-family:'Cinzel Decorative',serif;font-size:10px;letter-spacing:2.5px;color:var(--gold-d);text-transform:uppercase;margin:22px 0 12px;display:flex;align-items:center;gap:10px;}
+.sh::after{content:'';flex:1;height:1px;background:var(--border-s)}
+.num-row{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+.nbadge{background:rgba(4,3,10,0.8);border:1px solid var(--border);padding:14px 18px;text-align:center;min-width:88px;}
+.nbadge .n{display:block;font-family:'Cinzel Decorative',serif;font-size:30px;color:var(--gold);line-height:1;}
+.nbadge .nl{display:block;font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:4px;}
+.planet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin:16px 0}
+.pcard{background:rgba(4,3,10,0.65);border:1px solid var(--border);padding:14px 10px;text-align:center}
+.pcard .ps{display:block;font-size:22px;margin-bottom:4px}
+.pcard .pn{font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);display:block;margin-bottom:3px}
+.pcard .pv{font-style:italic;color:var(--silver-l);font-size:13px}
+.transit-list{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.transit-item{background:rgba(4,3,10,0.6);border:1px solid var(--border);padding:14px 18px;display:flex;align-items:flex-start;gap:14px;}
+.transit-item.major{border-color:rgba(201,168,76,0.5);background:var(--gold-faint)}
+.transit-item.moderate{border-color:rgba(74,31,122,0.4)}
+.transit-item.minor{border-color:var(--border-s)}
+.t-sym{font-size:24px;flex-shrink:0;line-height:1.3}
+.t-info{flex:1}
+.t-name{font-family:'Raleway',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.t-desc{font-size:14px;color:var(--silver);font-style:italic;line-height:1.6}
+.t-period{font-size:11px;color:var(--text-d);margin-top:4px;font-family:'Raleway',sans-serif}
+.t-badge{font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border:1px solid;flex-shrink:0;align-self:flex-start;}
+.t-badge.maj{border-color:var(--gold);color:var(--gold)}
+.t-badge.mod{border-color:var(--viol-l);color:var(--viol-l)}
+.t-badge.min{border-color:var(--silver-d);color:var(--silver-d)}
+.cbar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cbar-lbl{font-size:13px;color:var(--silver);width:90px;flex-shrink:0}
+.cbar-track{flex:1;height:3px;background:rgba(201,168,76,0.1);overflow:hidden}
+.cbar-fill{height:100%;background:linear-gradient(to right,var(--gold-d),var(--gold));transition:width 1.2s ease-out}
+.cbar-val{font-size:12px;color:var(--gold);width:34px;text-align:right;font-family:'Raleway',sans-serif}
+#bioCanvas{width:100%;height:180px;display:block;border:1px solid var(--border);background:rgba(4,3,10,0.7);padding:8px;box-sizing:border-box;}
+.sabian-box{background:rgba(4,3,10,0.75);border:1px solid var(--border);padding:18px 22px;margin:14px 0;position:relative;}
+.sabian-degree{font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+.sabian-symbol{font-style:italic;font-size:15px;color:var(--gold-l);margin-bottom:8px}
+.sabian-interp{font-size:14px;color:var(--silver);line-height:1.7}
+.month-card{background:rgba(4,3,10,0.65);border:1px solid var(--border);padding:14px 12px;text-align:center;}
+.month-card.current{border-color:var(--gold);background:var(--gold-faint)}
+.month-name{font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+.month-num{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold)}
+.month-theme{font-size:12px;color:var(--silver);margin-top:4px;font-style:italic}
+.daily-oracle{background:linear-gradient(135deg,rgba(26,15,55,0.98) 0%,rgba(10,7,24,0.99) 100%);border:1px solid var(--border-b);padding:32px 30px;margin:16px 0;position:relative;text-align:center;}
+.daily-oracle::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 70%);}
+.do-date{font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d);margin-bottom:12px}
+.do-energy{font-family:'Cinzel Decorative',serif;font-size:32px;color:var(--gold);margin-bottom:6px}
+.do-theme{font-style:italic;font-size:17px;color:var(--silver-l);margin-bottom:18px}
+.do-body{font-size:15px;color:var(--text);line-height:1.9;text-align:left;margin-top:16px}
+.do-indicators{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:20px 0;}
+.do-ind{text-align:center}
+.do-ind-val{font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold)}
+.do-ind-lbl{font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:2px}
+.syn-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin:16px 0}
+.syn-person{text-align:center;padding:16px;background:rgba(4,3,10,0.6);border:1px solid var(--border)}
+.syn-vs{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold-d)}
+.tag-row{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+.tag{background:var(--gold-faint);border:1px solid var(--border);padding:4px 12px;font-size:12px;color:var(--silver-l);font-style:italic;}
+.tag.hl{border-color:rgba(201,168,76,0.4);color:var(--gold-l)}
+.reset-btn{display:block;margin:50px auto 0;padding:13px 36px;background:transparent;border:1px solid var(--gold-d);color:var(--gold-d);font-family:'Raleway',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.reset-btn:hover{border-color:var(--gold);color:var(--gold)}
+.disclaimer{margin-top:60px;padding:18px 20px;border:1px solid var(--border-s);background:rgba(4,3,10,0.35);font-size:12px;color:var(--text-dd);font-style:italic;text-align:center;line-height:1.8;}
+.bazi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0;}
+.bazi-pillar{background:rgba(4,3,10,0.75);border:1px solid var(--border);padding:16px 12px;text-align:center;position:relative;}
+.bazi-pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);}
+.bazi-disabled{opacity:0.4;border-style:dashed;}
+.bazi-label{font-family:'Raleway',sans-serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.bazi-cn{font-size:28px;color:var(--gold-l);letter-spacing:4px;margin-bottom:4px;font-weight:bold;}
+.bazi-py{font-family:'Raleway',sans-serif;font-size:10px;color:var(--silver);letter-spacing:1px;margin-bottom:8px;}
+.bazi-el{font-size:12px;color:var(--gold);margin-bottom:4px;}
+.bazi-animal{font-size:14px;color:var(--silver-l);font-style:italic;}
+.bazi-hours{font-size:11px;color:var(--text-d);}
+.bazi-desc{font-size:12px;color:var(--silver);font-style:italic;margin-top:8px;}
+.bazi-elements{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;}
+.bazi-el-card{flex:1;min-width:60px;background:rgba(4,3,10,0.65);border:1px solid var(--border);padding:12px 8px;text-align:center;}
+.bazi-el-dominant{border-color:var(--gold);background:var(--gold-faint)}
+.bazi-el-absent{opacity:0.35}
+@media(max-width:680px){.form-inner{padding:24px 16px}.form-grid{grid-template-columns:1fr}.sec-body{padding:18px 18px}.bazi-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="cosmic-bg" id="cosmicBg"></div>
+<div class="wrapper">
+<div class="header">
+<span class="header-sigil">☽ ✦ ☾</span>
+<div class="header-version">v 2 . 0  ·  Sistem Predictiv Complet</div>
+<h1>MYTHOS ORACLE</h1>
+<p class="header-tagline">
+Harta natală completă · Tranzite planetare · Revoluție solară · Progresii secundare · Cicluri numerologice · Bioritm tridimensional · Pinnacle-uri · Simbolistica sabiană · Ba Zi chinezesc · Oracol zilnic integrat
+</p>
+<div class="header-modules">
+<span class="mod-tag">☉ Astrologie Natală</span>
+<span class="mod-tag">⟳ Tranzite Planetare</span>
+<span class="mod-tag">☀ Revoluție Solară</span>
+<span class="mod-tag">↗ Progresii Secundare</span>
+<span class="mod-tag">✦ Numerologie</span>
+<span class="mod-tag">◎ Bioritm</span>
+<span class="mod-tag">△ Pinnacle-uri</span>
+<span class="mod-tag">☽ Cicluri Lunare</span>
+<span class="mod-tag">☊ Noduri Karmice</span>
+<span class="mod-tag">✧ Simbolistica Sabiană</span>
+<span class="mod-tag">🐲 Ba Zi Chinezesc</span>
+<span class="mod-tag">◑ Oracol Zilnic</span>
+</div>
+</div>
+<div class="divider"><span>✦</span></div>
+
+<div id="formSection">
+<div class="tab-nav">
+<button class="tab-btn active" onclick="showTab('t1',this)">I · Date Natale</button>
+<button class="tab-btn" onclick="showTab('t2',this)">II · Chiromantie</button>
+<button class="tab-btn" onclick="showTab('t3',this)">III · Sinastrie & Vise</button>
+<button class="tab-btn" onclick="showTab('t4',this)">IV · Context & Calibrare</button>
+</div>
+
+<div class="form-card">
+<div class="tab-panel active" id="t1">
+<div class="form-inner">
+<div class="form-section-title">Date Natale Fundamentale</div>
+<div class="form-grid">
+<div class="form-group">
+<label class="lbl">✦ Prenume și Nume</label>
+<input type="text" id="fullName" class="inp" placeholder="Prenumele și numele complet">
+</div>
+<div class="form-group">
+<label class="lbl">♀♂ Gen</label>
+<select id="gender" class="inp">
+<option value="">— Selectați —</option>
+<option value="feminin">Feminin</option>
+<option value="masculin">Masculin</option>
+<option value="neutru">Prefer să nu specific</option>
+</select>
+</div>
+<div class="form-group">
+<label class="lbl">☉ Data Nașterii</label>
+<input type="date" id="birthDate" class="inp" min="1920-01-01" max="2010-12-31">
+</div>
+<div class="form-group">
+<label class="lbl">☽ Ora Nașterii</label>
+<input type="time" id="birthTime" class="inp">
+<span class="hint">Necesară pentru ascendent și case astrologice</span>
+</div>
+<div class="form-group fw">
+<label class="lbl">♁ Locul Nașterii</label>
+<input type="text" id="birthPlace" class="inp" placeholder="Oraș, Țară">
+</div>
+<div class="form-group fw">
+<label class="lbl">☿ Numele Oficial la Naștere (pentru numerologie)</label>
+<input type="text" id="birthName" class="inp" placeholder="Exact din certificatul de naștere">
+</div>
+<div class="form-group">
+<label class="lbl">🧠 Tip Senzorial Dominant</label>
+<select id="sensType" class="inp">
+<option value="">— Necunoscut —</option>
+<option value="vizual">Vizual</option>
+<option value="auditiv">Auditiv</option>
+<option value="kinestezic">Kinestezic</option>
+<option value="mix">Mixt</option>
+</select>
+</div>
+<div class="form-group fw">
+<label class="lbl">✧ Întrebare Principal</label>
+<input type="text" id="question" class="inp" placeholder="Dragoste, carieră, sănătate, misiune...">
+</div>
+</div>
+</div>
+</div>
+
+<div class="tab-panel" id="t2">
+<div class="form-inner">
+<div class="form-section-title">Chiromantie — Lectura Palmei</div>
+<div class="form-grid">
+<div class="form-group fw">
+<label class="lbl">✋ Mâna Dominantă</label>
+<select id="dominantHand" class="inp">
+<option value="dreapta">Dreapta</option>
+<option value="stanga">Stânga</option>
+<option value="ambidextru">Ambidextru</option>
+</select>
+</div>
+<div class="form-group fw">
+<label class="lbl">✦ Liniile Mâinii (selectați cele aplicabile)</label>
+<div class="hand-grid" id="handOpts">
+<div class="hopt" data-v="vl_lunga">☽ Linia Vieții — Lungă</div>
+<div class="hopt" data-v="vl_scurta">☽ Linia Vieții — Scurtă</div>
+<div class="hopt" data-v="il_curbata">♡ Linia Inimii — Curbată</div>
+<div class="hopt" data-v="ml_lunga">☿ Linia Minții — Lungă</div>
+<div class="hopt" data-v="dl_prezenta">✦ Linia Destinului — Prezentă</div>
+<div class="hopt" data-v="sl_prezenta">☉ Linia Soarelui — Prezentă</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="tab-panel" id="t3">
+<div class="form-inner">
+<div class="form-section-title">Sinastrie & Interpretarea Viselor</div>
+<div class="form-grid">
+<div class="form-group fw">
+<label class="lbl">♡ Data Nașterii Partenerului (pentru Sinastrie)</label>
+<input type="date" id="partnerDate" class="inp" min="1920-01-01" max="2010-12-31">
+</div>
+<div class="form-group fw">
+<label class="lbl">☽ Vis Recent Semnificativ</label>
+<textarea id="dreamText" class="inp" rows="4" placeholder="Descrieți un vis recurent sau intens..."></textarea>
+</div>
+</div>
+</div>
+</div>
+
+<div class="tab-panel" id="t4">
+<div class="form-inner">
+<div class="form-section-title">Context de Viață & Calibrare Retrospectivă</div>
+<div class="form-grid">
+<div class="form-group fw">
+<label class="lbl">💼 Domeniu Profesional Actual</label>
+<select id="profession" class="inp">
+<option value="">— Selectați —</option>
+<option value="antreprenor">Antreprenor</option>
+<option value="corporativ">Angajat corporativ</option>
+<option value="creativ">Artă / Creație</option>
+<option value="medical">Medicină</option>
+<option value="spiritual">Vocație spirituală</option>
+<option value="altele">Altele</option>
+</select>
+</div>
+<div class="form-group fw">
+<label class="lbl">💍 Stare Civilă Actuală</label>
+<select id="marital" class="inp">
+<option value="">— Selectați —</option>
+<option value="singur">Singur</option>
+<option value="relatie">În relație</option>
+<option value="casatorit">Căsătorit</option>
+<option value="divortat">Divorțat</option>
+</select>
+</div>
+<div class="form-group fw">
+<label class="lbl">📅 Evenimente Majore de Calibrare</label>
+<div id="eventsContainer">
+<div class="event-row">
+<input type="date" class="inp evDate" style="max-width:180px">
+<input type="text" class="inp evDesc" placeholder="Ex: căsătorie, schimbare job...">
+</div>
+</div>
+<button class="btn-add-event" onclick="addEventRow()">+</button>
+</div>
+</div>
+<div class="err" id="errMsg">✦ Vă rugăm să completați: numele, genul și data nașterii în Tab-ul I.</div>
+<button class="oracle-btn" id="oracleBtn" onclick="launchOracle()">
+✦ ACTIVEAZĂ MYTHOS ORACLE ✦
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="loader" id="loaderSection">
+<div class="loader-ring"><span class="loader-core">✦</span></div>
+<p class="loader-msg">Calculul temei natale...</p>
+<div class="loader-step" id="loaderSteps">
+<div class="step-item" id="s1">☉ Poziționarea planetară</div>
+<div class="step-item" id="s2">⟳ Tranzite actuale</div>
+<div class="step-item" id="s3">☀ Revoluția solară</div>
+<div class="step-item" id="s4">↗ Progresii</div>
+<div class="step-item" id="s5">✦ Numerologie</div>
+<div class="step-item" id="s6">◎ Bioritm</div>
+<div class="step-item" id="s7">△ Pinnacle-uri</div>
+<div class="step-item" id="s8">☽ Faze lunare</div>
+<div class="step-item" id="s9">🐲 Ba Zi</div>
+<div class="step-item" id="s10">◑ Oracol final</div>
+</div>
+</div>
+
+<div class="result" id="resultSection"></div>
+
+<div class="disclaimer">
+MYTHOS ORACLE v2 este un sistem esoteric pentru introspecție și orientare existențială. Calculele sunt aproximări. Nu constituie consultanță medicală sau juridică. Consultați profesionistul uman pentru decizii majore.
+</div>
+</div>
+
+<script>
+(function(){const bg=document.getElementById('cosmicBg');for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const size=Math.random()*2+0.5;s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${2+Math.random()*5}s;--delay:${Math.random()*6}s`;bg.appendChild(s);}})();
+
+function showTab(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');}
+
+const handSel=new Set();
+document.getElementById('handOpts').addEventListener('click',e=>{const h=e.target.closest('.hopt');if(!h)return;const v=h.dataset.v;if(handSel.has(v)){handSel.delete(v);h.classList.remove('sel')}else{handSel.add(v);h.classList.add('sel')}});
+
+function addEventRow(){const c=document.getElementById('eventsContainer');const r=document.createElement('div');r.className='event-row';r.innerHTML='<input type="date" class="inp evDate" style="max-width:180px"><input type="text" class="inp evDesc" placeholder="Descriere...">';c.appendChild(r);}
+
+const EPHEM={sun:[280.5,0.9856,'Soare','☉','fast'],moon:[169.0,13.176,'Lună','☽','fast'],mercury:[245.0,1.383,'Mercur','☿','fast'],venus:[198.0,1.202,'Venus','♀','fast'],mars:[72.0,0.524,'Marte','♂','medium'],jupiter:[50.3,0.0831,'Jupiter','♃','slow'],saturn:[354.5,0.0335,'Saturn','♄','slow'],uranus:[51.5,0.0116,'Uranus','♅','slow'],neptune:[357.0,0.0060,'Neptun','♆','slow'],pluto:[300.0,0.0040,'Pluton','♇','slow'],northNode:[16.0,-0.0529,'Nod Nord','☊','slow'],};
+
+function daysSinceRef(date){const ref=new Date('2024-01-01');return(date-ref)/(1000*60*60*24);}
+
+function getPlanetLon(planet,date){const[baseLon,degDay]=EPHEM[planet];const days=daysSinceRef(date);return((baseLon+degDay*days)%360+360)%360;}
+
+function lonToSign(lon){const signs=['Berbec','Taur','Gemeni','Rac','Leu','Fecioară','Balanță','Scorpion','Săgetător','Capricorn','Vărsător','Pești'];const syms=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];const idx=Math.floor(lon/30);return{name:signs[idx%12],sym:syms[idx%12],deg:Math.floor(lon%30)};}
+
+function getZodiacSign(day,month){const ranges=[{s:'Capricorn',sy:'♑',m1:12,d1:22,m2:1,d2:19},{s:'Vărsător',sy:'♒',m1:1,d1:20,m2:2,d2:18},{s:'Pești',sy:'♓',m1:2,d1:19,m2:3,d2:20},{s:'Berbec',sy:'♈',m1:3,d1:21,m2:4,d2:19},{s:'Taur',sy:'♉',m1:4,d1:20,m2:5,d2:20},{s:'Gemeni',sy:'♊',m1:5,d1:21,m2:6,d2:20},{s:'Rac',sy:'♋',m1:6,d1:21,m2:7,d2:22},{s:'Leu',sy:'♌',m1:7,d1:23,m2:8,d2:22},{s:'Fecioară',sy:'♍',m1:8,d1:23,m2:9,d2:22},{s:'Balanță',sy:'♎',m1:9,d1:23,m2:10,d2:22},{s:'Scorpion',sy:'♏',m1:10,d1:23,m2:11,d2:21},{s:'Săgetător',sy:'♐',m1:11,d1:22,m2:12,d2:21}];for(const r of ranges){if((month===r.m1&&day>=r.d1)||(month===r.m2&&day<=r.d2))return r;}return ranges[0];}
+
+function getElement(s){const f=['Berbec','Leu','Săgetător'];const e=['Taur','Fecioară','Capricorn'];const a=['Gemeni','Balanță','Vărsător'];if(f.includes(s))return{name:'Foc',sym:'🔥',desc:'Energie, pasiune, creativitate'};if(e.includes(s))return{name:'Pământ',sym:'🌿',desc:'Stabilitate, pragmatism, construcție'};if(a.includes(s))return{name:'Aer',sym:'💨',desc:'Intelect, comunicare, adaptabilitate'};return{name:'Apă',sym:'💧',desc:'Empatie, intuiție, profunzime'};}
+
+function getChineseZodiac(year){const a=['Maimuță','Cocoș','Câine','Porc','Șobolan','Bou','Tigru','Iepure','Dragon','Șarpe','Cal','Capră'];return a[year%12];}
+
+function reduce(n){while(n>9&&n!==11&&n!==22&&n!==33){n=String(n).split('').reduce((a,c)=>a+parseInt(c),0);}return n;}
+
+function calcLifePath(day,month,year){return reduce(day+month+year);}
+
+function bioValue(birthDate,targetDate,cycle){const days=Math.round((targetDate-birthDate)/(1000*60*60*24));return Math.sin(2*Math.PI*days/cycle)*100;}
+
+function getBio(birthDate,targetDate){return{physical:bioValue(birthDate,targetDate,23),emotional:bioValue(birthDate,targetDate,28),intellectual:bioValue(birthDate,targetDate,33)};}
+
+const HEAVENLY_STEMS=[{cn:'甲',py:'Jiǎ',el:'Lemn',pol:'Yang',sym:'🌳'},{cn:'乙',py:'Yǐ',el:'Lemn',pol:'Yin',sym:'🌿'},{cn:'丙',py:'Bǐng',el:'Foc',pol:'Yang',sym:'☀️'},{cn:'丁',py:'Dīng',el:'Foc',pol:'Yin',sym:'🕯️'},{cn:'戊',py:'Wù',el:'Pământ',pol:'Yang',sym:'⛰️'},{cn:'己',py:'Jǐ',el:'Pământ',pol:'Yin',sym:'🌾'},{cn:'庚',py:'Gēng',el:'Metal',pol:'Yang',sym:'⚔️'},{cn:'辛',py:'Xīn',el:'Metal',pol:'Yin',sym:'💎'},{cn:'壬',py:'Rén',el:'Apă',pol:'Yang',sym:'🌊'},{cn:'癸',py:'Guǐ',el:'Apă',pol:'Yin',sym:'💧'}];
+
+const EARTHLY_BRANCHES=[{cn:'子',py:'Zǐ',animal:'Șobolan',sym:'🐭',el:'Apă',pol:'Yang'},{cn:'丑',py:'Chǒu',animal:'Bou',sym:'🐮',el:'Pământ',pol:'Yin'},{cn:'寅',py:'Yín',animal:'Tigru',sym:'🐯',el:'Lemn',pol:'Yang'},{cn:'卯',py:'Mǎo',animal:'Iepure',sym:'🐰',el:'Lemn',pol:'Yin'},{cn:'辰',py:'Chén',animal:'Dragon',sym:'🐲',el:'Pământ',pol:'Yang'},{cn:'巳',py:'Sì',animal:'Șarpe',sym:'🐍',el:'Foc',pol:'Yin'},{cn:'午',py:'Wǔ',animal:'Cal',sym:'🐴',el:'Foc',pol:'Yang'},{cn:'未',py:'Wèi',animal:'Capră',sym:'🐐',el:'Pământ',pol:'Yin'},{cn:'申',py:'Shēn',animal:'Maimuță',sym:'🐵',el:'Metal',pol:'Yang'},{cn:'酉',py:'Yǒu',animal:'Cocoș',sym:'🐓',el:'Metal',pol:'Yin'},{cn:'戌',py:'Xū',animal:'Câine',sym:'🐕',el:'Pământ',pol:'Yang'},{cn:'亥',py:'Hài',animal:'Porc',sym:'🐷',el:'Apă',pol:'Yin'}];
+
+function getBaZiYearPillar(year){const stemIdx=((year-4)%10+10)%10;const branchIdx=((year-4)%12+12)%12;return{stemIdx,branchIdx,stem:HEAVENLY_STEMS[stemIdx],branch:EARTHLY_BRANCHES[branchIdx]};}
+
+function getBaZiMonthPillar(month,yearStemIdx){const monthBranchMap=[1,2,3,4,5,6,7,8,9,10,11,0];const branchIdx=monthBranchMap[month-1];const tigerStemStart=[2,4,6,8,0,2,4,6,8,0][yearStemIdx];const monthOffset=(branchIdx-2+12)%12;const stemIdx=(tigerStemStart+monthOffset)%10;return{stemIdx,branchIdx,stem:HEAVENLY_STEMS[stemIdx],branch:EARTHLY_BRANCHES[branchIdx]};}
+
+function getBaZiDayPillar(date){const ref=new Date('1900-01-01T00:00:00Z');const days=Math.floor((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())-ref.getTime())/(1000*60*60*24));const stemIdx=((days+6)%10+10)%10;const branchIdx=((days+10)%12+12)%12;return{stemIdx,branchIdx,stem:HEAVENLY_STEMS[stemIdx],branch:EARTHLY_BRANCHES[branchIdx]};}
+
+function getBaZiHourPillar(hour,dayStemIdx){if(hour===null)return null;const hourBranchIdx=Math.floor((hour+1)/2)%12;const ziStemStart=[0,2,4,6,8,0,2,4,6,8][dayStemIdx];const stemIdx=(ziStemStart+hourBranchIdx)%10;return{stemIdx,branchIdx:hourBranchIdx,stem:HEAVENLY_STEMS[stemIdx],branch:EARTHLY_BRANCHES[hourBranchIdx]};}
+
+function buildBaZiSection(day,month,year,hour){const yearPillar=getBaZiYearPillar(year);const monthPillar=getBaZiMonthPillar(month,yearPillar.stemIdx);const dayPillar=getBaZiDayPillar(new Date(year,month-1,day));const hourPillar=hour!==null?getBaZiHourPillar(hour,dayPillar.stemIdx):null;const pillars=[{label:'AN',desc:'Energia fundamentală a destinului',p:yearPillar},{label:'LUNĂ',desc:'Mediul formativ și vocația',p:monthPillar},{label:'ZI',desc:'Sinele autentic și parteneriat',p:dayPillar},{label:'ORĂ',desc:'Scopul spiritual și creativitate',p:hourPillar}];const elements={'Lemn':0,'Foc':0,'Pământ':0,'Metal':0,'Apă':0};const allPillars=[yearPillar,monthPillar,dayPillar];if(hourPillar)allPillars.push(hourPillar);allPillars.forEach(p=>{elements[p.stem.el]++;elements[p.branch.el]++;});let yangCount=0,yinCount=0;allPillars.forEach(p=>{if(p.stem.pol==='Yang')yangCount++;else yinCount++;if(p.branch.pol==='Yang')yangCount++;else yinCount++;});let html='<div class="sh">Cei Patru Stâlpi ai Destinului</div><div class="bazi-grid">';pillars.forEach(({label,desc,p})=>{if(!p){html+=`<div class="bazi-pillar bazi-disabled"><div class="bazi-label">ORĂ</div><div class="bazi-cn">—</div><div class="bazi-py" style="color:var(--text-dd);font-style:italic;font-size:12px">Nu furnizată</div></div>`;}else{html+=`<div class="bazi-pillar"><div class="bazi-label">STÂLPUL ${label}</div><div class="bazi-cn">${p.stem.cn} ${p.branch.cn}</div><div class="bazi-py">${p.stem.py} ${p.branch.py}</div><div class="bazi-el">${p.stem.sym} ${p.stem.pol} ${p.stem.el}</div><div class="bazi-animal">${p.branch.sym} ${p.branch.animal}</div><div class="bazi-desc">${desc}</div></div>`;}});html+='</div><div class="sh">Balanța Elementelor</div><div class="bazi-elements">';const elSyms={'Lemn':'🌳','Foc':'🔥','Pământ':'🌾','Metal':'⚔️','Apă':'💧'};Object.entries(elements).forEach(([el,count])=>{html+=`<div class="bazi-el-card${count===0?' bazi-el-absent':count>=3?' bazi-el-dominant':''}"><span style="font-size:20px">${elSyms[el]}</span><span style="font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--gold-d);display:block">${el}</span><span style="font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold)">${count}</span></div>`;});html+='</div><div class="sh">Balanța Yin-Yang</div><p>Proporție: <strong style="color:var(--gold-l)">Yang: '+yangCount+'</strong> și <strong style="color:var(--viol-l)">Yin: '+yinCount+'</strong>.</p>';return html;}
+
+function launchOracle(){const name=document.getElementById('fullName').value.trim();const gender=document.getElementById('gender').value;const bd=document.getElementById('birthDate').value;const err=document.getElementById('errMsg');if(!name||!gender||!bd){err.classList.add('show');return;}err.classList.remove('show');document.getElementById('formSection').style.display='none';const loader=document.getElementById('loaderSection');loader.classList.add('show');const steps=['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'];let si=0;const iv=setInterval(()=>{if(si>0)document.getElementById(steps[si-1]).className='step-item done';if(si<steps.length)document.getElementById(steps[si]).className='step-item active';si++;if(si>steps.length)clearInterval(iv);},600);setTimeout(()=>{clearInterval(iv);loader.classList.remove('show');buildResult();},7200);}
+
+function buildResult(){const now=new Date();const name=document.getElementById('fullName').value.trim();const gender=document.getElementById('gender').value;const bd=new Date(document.getElementById('birthDate').value);const bt=document.getElementById('birthTime').value;const day=bd.getDate(),month=bd.getMonth()+1,year=bd.getFullYear();const hour=bt?parseInt(bt.split(':')[0]):null;const zodiac=getZodiacSign(day,month);const element=getElement(zodiac.s);const chinese=getChineseZodiac(year);const bio=getBio(bd,now);const lp=calcLifePath(day,month,year);const el=document.getElementById('resultSection');el.innerHTML=`<div class="id-banner"><div class="id-name">${name}</div><div class="id-subtitle">${zodiac.s} · ${element.name} · ${year}<br>Drumul Vieții ${lp}</div><div class="id-badges"><span class="id-badge">☉ ${zodiac.sy}</span><span class="id-badge">🐉 ${chinese}</span></div></div>
+${buildSection('🐲','XIII · ZODIAC CHINEZESC BA ZI',buildBaZiSection(day,month,year,hour))}
+<button class="reset-btn" onclick="resetOracle()">↺ Consultație Nouă</button>`;el.classList.add('show');}
+
+function buildSection(icon,title,content){return`<div class="sec"><div class="sec-hd" onclick="toggleSec(this)"><span class="sec-ico">${icon}</span><span class="sec-title">${title}</span><span class="sec-toggle">▼</span></div><div class="sec-body">${content}</div></div>`;}
+
+function toggleSec(hd){const body=hd.nextElementSibling;const tog=hd.querySelector('.sec-toggle');body.classList.toggle('open');tog.classList.toggle('open');}
+
+function resetOracle(){document.getElementById('formSection').style.display='block';const r=document.getElementById('resultSection');r.classList.remove('show');r.innerHTML='';window.scrollTo({top:0,behavior:'smooth'});}
+
+function drawBio(bio,birthDate,now){const canvas=document.getElementById('bioCanvas');if(!canvas)return;const ctx=canvas.getContext('2d');const W=canvas.offsetWidth||800,H=180;ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(4,3,10,0.5)';ctx.fillRect(0,0,W,H);const midY=H/2;ctx.strokeStyle='rgba(201,168,76,0.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,midY);ctx.lineTo(W,midY);ctx.stroke();}
+</script>
+</body>
+</html>
