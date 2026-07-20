@@ -207,10 +207,31 @@ canvas{width:100%;height:180px;display:block}
 .czp-branch{font-family:"Raleway",sans-serif;font-size:10px;color:var(--text-d);letter-spacing:1px;margin-bottom:8px}
 .czp-interp{font-size:13px;color:var(--silver);font-style:italic;line-height:1.6;text-align:left}
 .czp-missing{opacity:.5;border-style:dashed}
+/* AUTH BAR */
+.authbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:10px 0;flex-wrap:wrap}
+.authbar .au-status{font-family:"Raleway",sans-serif;font-size:11px;color:var(--text-d);letter-spacing:1px}
+.authbar .au-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;background:var(--gold-f);border:1px solid var(--border);color:var(--gold);cursor:pointer;transition:all .2s}
+.authbar .au-btn:hover{border-color:var(--gold)}
+.au-modal{display:none;position:fixed;z-index:9998;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center}
+.au-modal.show{display:flex}
+.au-box{background:linear-gradient(135deg,rgba(18,11,40,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:340px;width:90%}
+.au-box h3{font-family:"Cinzel Decorative",serif;font-size:14px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
+.au-box .ip{margin-bottom:12px}
+.au-box .au-err{color:#c4395e;font-size:12px;font-style:italic;margin-bottom:10px;display:none}
+.au-box .au-err.sh{display:block}
+.au-box .au-msg{color:var(--jade-l);font-size:12px;font-style:italic;margin-bottom:10px;display:none}
+.au-box .au-msg.sh{display:block}
+.au-toggle{text-align:center;font-size:12px;color:var(--text-d);margin-top:14px;cursor:pointer;text-decoration:underline}
+.au-close{position:absolute;top:14px;right:18px;color:var(--text-d);cursor:pointer;font-size:18px}
 </style>
 </head>
 <body>
 <div class="w">
+<div class="authbar" id="authBar">
+  <span class="au-status" id="authStatus">&#10022; Neautentificat</span>
+  <button class="au-btn" id="authBtn" onclick="openAuthModal()">Autentificare</button>
+  <button class="au-btn" id="logoutBtn" onclick="doLogout()" style="display:none">Deconectare</button>
+</div>
 <div class="hdr">
   <span class="hdr-sig">&#9789; &#10022; &#9788;</span>
   <div class="hdr-v">V 3 . 1 &nbsp;&middot;&nbsp; S I S T E M &nbsp; E S O T E R I C &nbsp; C O M P L E T </div>
@@ -2517,6 +2538,17 @@ function buildResult() {
   try {
     RS.innerHTML = html;
     RS.classList.add("sh");
+    try {
+      if (currentUser) {
+        saveProfileAndReading({
+          name: name, zodiac: zodiac.s, element: element.name, lifePath: lp,
+          chineseYear: (chinese && chinese.name) ? chinese.name : chinese,
+          personalYear: py, personalMonth: pm, personalDay: pd,
+          biorhythm: bio, age: age, ascendant: asc ? asc.name : null,
+          question: question || null, generatedAt: now.toISOString()
+        });
+      }
+    } catch(saveErr) { console.error("save reading error:", saveErr); }
   } catch(e) {
     RS.innerHTML = "<div class=\"idb\"><div class=\"idb-name\" style=\"color:#c4395e\">Eroare la generarea profilului</div><p style=\"padding:20px;color:var(--silver)\">Eroare: " + (e.message||String(e)) + ". V&#259; rug&#259;m reîncerca&#355;i.</p></div>";
     RS.classList.add("sh");
@@ -2588,6 +2620,144 @@ function hidePalmModal() {
 <div id="palmModal" class="palm-modal" onclick="hidePalmModal()">
   <img id="palmModalImg" src="" alt="Hartă palmă - zoom" />
 </div>
+
+<!-- AUTH MODAL -->
+<div id="authModal" class="au-modal">
+  <div class="au-box" style="position:relative">
+    <span class="au-close" onclick="closeAuthModal()">&#10005;</span>
+    <h3 id="authModalTitle">&#10022; AUTENTIFICARE</h3>
+    <div class="au-err" id="authErr"></div>
+    <div class="au-msg" id="authMsg"></div>
+    <input type="email" id="authEmail" class="ip" placeholder="Email">
+    <input type="password" id="authPass" class="ip" placeholder="Parola (min. 6 caractere)">
+    <button class="ob" id="authSubmitBtn" onclick="submitAuth()" style="padding:13px">Login</button>
+    <div class="au-toggle" id="authToggle" onclick="toggleAuthMode()">Nu ai cont? Înregistrează-te</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ═══ SUPABASE INTEGRATION ═══
+var SUPABASE_URL = "https://uhvmyswhlmdsqujfyfrk.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVodm15c3dobG1kc3F1amZ5ZnJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MDg1OTcsImV4cCI6MjEwMDA4NDU5N30.b3ChjCmB18foHUo8I-1efTslvGzXr82Iuf-wClZs8oA";
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var authMode = "login"; // "login" | "signup"
+var currentUser = null;
+var currentProfile = null;
+
+function openAuthModal() {
+  document.getElementById("authModal").classList.add("show");
+}
+function closeAuthModal() {
+  document.getElementById("authModal").classList.remove("show");
+  document.getElementById("authErr").classList.remove("sh");
+  document.getElementById("authMsg").classList.remove("sh");
+}
+function toggleAuthMode() {
+  authMode = authMode === "login" ? "signup" : "login";
+  document.getElementById("authModalTitle").innerHTML = authMode === "login" ? "&#10022; AUTENTIFICARE" : "&#10022; CREEAZĂ CONT";
+  document.getElementById("authSubmitBtn").textContent = authMode === "login" ? "Login" : "Înregistrare";
+  document.getElementById("authToggle").textContent = authMode === "login" ? "Nu ai cont? Înregistrează-te" : "Ai deja cont? Autentifică-te";
+  document.getElementById("authErr").classList.remove("sh");
+  document.getElementById("authMsg").classList.remove("sh");
+}
+
+async function submitAuth() {
+  var email = document.getElementById("authEmail").value.trim();
+  var pass = document.getElementById("authPass").value;
+  var errEl = document.getElementById("authErr");
+  var msgEl = document.getElementById("authMsg");
+  errEl.classList.remove("sh"); msgEl.classList.remove("sh");
+  if (!email || !pass || pass.length < 6) {
+    errEl.textContent = "Introduceți un email valid și o parolă de minim 6 caractere.";
+    errEl.classList.add("sh");
+    return;
+  }
+  if (authMode === "login") {
+    var res = await sb.auth.signInWithPassword({ email: email, password: pass });
+    if (res.error) { errEl.textContent = res.error.message; errEl.classList.add("sh"); return; }
+    closeAuthModal();
+  } else {
+    var res2 = await sb.auth.signUp({ email: email, password: pass });
+    if (res2.error) { errEl.textContent = res2.error.message; errEl.classList.add("sh"); return; }
+    msgEl.textContent = "Cont creat! Verificați emailul pentru confirmare, apoi autentificați-vă.";
+    msgEl.classList.add("sh");
+  }
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+}
+
+async function loadProfile(userId) {
+  var res = await sb.from("profiles").select("*").eq("user_id", userId).maybeSingle();
+  if (res.data) {
+    currentProfile = res.data;
+    prefillFormFromProfile(res.data);
+  }
+}
+
+function prefillFormFromProfile(profile) {
+  if (profile.full_name) document.getElementById("fullName").value = profile.full_name;
+  if (profile.gender) document.getElementById("gender").value = profile.gender;
+  if (profile.birth_date) document.getElementById("birthDate").value = profile.birth_date;
+  if (profile.birth_time) document.getElementById("birthTime").value = profile.birth_time.substring(0,5);
+  if (profile.birth_place) document.getElementById("birthPlace").value = profile.birth_place;
+}
+
+async function saveProfileAndReading(readingData) {
+  if (!currentUser) return;
+  var name = document.getElementById("fullName").value.trim();
+  var gender = document.getElementById("gender").value;
+  var birthDate = document.getElementById("birthDate").value;
+  var birthTime = document.getElementById("birthTime").value;
+  var birthPlace = document.getElementById("birthPlace").value.trim();
+
+  await sb.from("profiles").upsert({
+    user_id: currentUser.id,
+    display_name: name,
+    full_name: name,
+    gender: gender || null,
+    birth_date: birthDate,
+    birth_time: birthTime || null,
+    birth_place: birthPlace || null
+  }, { onConflict: "user_id" });
+
+  await sb.from("readings").insert({
+    user_id: currentUser.id,
+    reading_type: "synthesis",
+    reading_data: readingData
+  });
+}
+
+function updateAuthUI() {
+  var statusEl = document.getElementById("authStatus");
+  var loginBtn = document.getElementById("authBtn");
+  var logoutBtn = document.getElementById("logoutBtn");
+  if (currentUser) {
+    statusEl.textContent = "&#10022; Autentificat: " + currentUser.email;
+    statusEl.innerHTML = "&#10022; Autentificat: " + currentUser.email;
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+  } else {
+    statusEl.innerHTML = "&#10022; Neautentificat";
+    loginBtn.style.display = "inline-block";
+    logoutBtn.style.display = "none";
+  }
+}
+
+sb.auth.onAuthStateChange(function(event, session) {
+  currentUser = session ? session.user : null;
+  updateAuthUI();
+  if (currentUser) loadProfile(currentUser.id);
+});
+
+sb.auth.getSession().then(function(res) {
+  currentUser = res.data.session ? res.data.session.user : null;
+  updateAuthUI();
+  if (currentUser) loadProfile(currentUser.id);
+});
+</script>
 
 </body>
 </html>
