@@ -30,6 +30,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .hdr-tag{font-style:italic;color:var(--silver);font-size:14px;max-width:580px;margin:0 auto 20px;line-height:1.85}
 .mod-row{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:14px}
 .mod-t{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 11px;border:1px solid var(--border);color:var(--gold-d);background:var(--gold-f)}
+.mod-toggle{cursor:pointer;background:transparent;border-style:dashed;transition:all .2s}
+.mod-toggle:hover{border-color:var(--gold);color:var(--gold)}
 /* DIVIDER */
 .dv{display:flex;align-items:center;gap:12px;margin:30px 0}
 .dv::before,.dv::after{content:"";flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-d),transparent)}
@@ -41,11 +43,14 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .tb.act{background:var(--gold-f);border-color:var(--gold);color:var(--gold)}
 .tp{display:none}.tp.act{display:block}
 /* RESULT TABS (by module) */
-.rtab-nav{display:flex;gap:2px;flex-wrap:wrap;margin:22px 0 0}
-.rtb{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:12px 16px;border:1px solid var(--border);background:rgba(4,3,10,0.8);color:var(--text-d);cursor:pointer;transition:all .25s;flex:1;min-width:110px;text-align:center}
+.rtab-nav{display:flex;gap:5px;flex-wrap:wrap;margin:22px 0 0}
+.rtb{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:12px 14px;border:1px solid var(--border);background:rgba(4,3,10,0.8);color:var(--text-d);cursor:pointer;transition:all .25s;flex:1;min-width:100px;text-align:center}
 .rtb:hover{color:var(--gold);border-color:var(--gold-d)}
 .rtb.act{background:var(--gold-f);border-color:var(--gold);color:var(--gold)}
 .rtp{display:none}.rtp.act{display:block}
+.tab-toolbar{display:flex;justify-content:flex-end;gap:8px;margin:16px 0 2px}
+.ttb{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;background:transparent;border:1px solid var(--border);color:var(--text-d);cursor:pointer;transition:all .2s}
+.ttb:hover{border-color:var(--gold);color:var(--gold)}
 /* FORM CARD */
 .fc{background:linear-gradient(135deg,rgba(18,11,40,.97) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border);position:relative;overflow:hidden}
 .fc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-l),var(--gold),transparent)}
@@ -293,27 +298,34 @@ canvas{width:100%;height:180px;display:block}
   <span class="hdr-sig">&#9789; &#10022; &#9788;</span>
   <div class="hdr-v">V 3 . 1 &nbsp;&middot;&nbsp; S I S T E M &nbsp; E S O T E R I C &nbsp; C O M P L E T </div>
   <h1>MYTHOS ORACLE <span style="font-size:0.55em;letter-spacing:3px;opacity:0.75;font-weight:400"></span></h1>
-  <p class="hdr-tag">Harta natal&#259; complet&#259; &middot; Tranzite &middot; Case Astrologice &middot; Chiron &amp; Asteroizi &middot; Lilith &middot; Stele Fixe &middot; Aspecte Natale &middot; Planeta Dominant&#259; &middot; Profile Psihologice Jungiene &middot; Zodiac Chinezesc Ba Zi &middot; Bioritm &middot; Calendar Zile Favorabile &middot; Mercur Retrograd &middot; Eclipsa &middot; Oracol Zilnic</p>
+  <p class="hdr-tag">Harta natal&#259; complet&#259; &middot; Tranzite &middot; Case Astrologice &middot; Numerologie &middot; Bioritm &middot; Tarot &middot; I Ching &middot; Rune &middot; Human Design &middot; Zodiac Chinezesc Ba Zi &middot; Profile Psihologice Jungiene &middot; Calendar Zile Favorabile &middot; Mercur Retrograd &amp; Eclipse &middot; Oracol Zilnic</p>
   <div class="mod-row">
     <span class="mod-t">&#9737; Astrologie Natal&#259;</span>
     <span class="mod-t">&#8635; Tranzite</span>
-    <span class="mod-t">&#9788; Revoluție Solar&#259;</span>
     <span class="mod-t">&#10022; Numerologie</span>
     <span class="mod-t">&#9675; Bioritm</span>
-    <span class="mod-t">&#9651; Pinnacle-uri</span>
-    <span class="mod-t">&#9789; Cicluri Lunare</span>
-    <span class="mod-t">&#9738; Noduri Karmice</span>
-    <span class="mod-t">&#10023; Simbolistica Sabian&#259;</span>
-    <span class="mod-t">&#9825; Sinastrie</span>
-    <span class="mod-t">&#9711; Oracol Zilnic</span>
-    <span class="mod-t">&#9775; Ba Zi (4 Stalpi)</span>
-    <span class="mod-t">&#9742; Chiron &amp; Asteroizi</span>
-    <span class="mod-t">&#8962; 12 Case Astrologice</span>
-    <span class="mod-t">&#9733; Stele Fixe</span>
-    <span class="mod-t">&#9632; Aspecte Natale</span>
-    <span class="mod-t">&#9670; Profil Psihologic Jungian</span>
-    <span class="mod-t">&#9660; Calendar Zile Favorabile</span>
-    <span class="mod-t">&#9790; Mercur Retrograd &amp; Eclipse</span>
+    <span class="mod-t">&#127183; Tarot</span>
+    <span class="mod-t">&#9775; I Ching</span>
+    <span class="mod-t">&#5792; Rune</span>
+    <span class="mod-t">&#9784; Human Design</span>
+    <span id="modMoreTags" style="display:none">
+      <span class="mod-t">&#9788; Revoluție Solar&#259;</span>
+      <span class="mod-t">&#9651; Pinnacle-uri</span>
+      <span class="mod-t">&#9789; Cicluri Lunare</span>
+      <span class="mod-t">&#9738; Noduri Karmice</span>
+      <span class="mod-t">&#10023; Simbolistica Sabian&#259;</span>
+      <span class="mod-t">&#9825; Sinastrie</span>
+      <span class="mod-t">&#9711; Oracol Zilnic</span>
+      <span class="mod-t">&#9775; Ba Zi (4 Stalpi)</span>
+      <span class="mod-t">&#9742; Chiron &amp; Asteroizi</span>
+      <span class="mod-t">&#8962; 12 Case Astrologice</span>
+      <span class="mod-t">&#9733; Stele Fixe</span>
+      <span class="mod-t">&#9632; Aspecte Natale</span>
+      <span class="mod-t">&#9670; Profil Psihologic Jungian</span>
+      <span class="mod-t">&#9660; Calendar Zile Favorabile</span>
+      <span class="mod-t">&#9790; Mercur Retrograd &amp; Eclipse</span>
+    </span>
+    <span class="mod-t mod-toggle" onclick="toggleModTags()" id="modToggleBtn">+15 module &#8595;</span>
   </div>
 </div>
 <div class="dv"><span>&#10022;</span></div>
@@ -781,8 +793,43 @@ function toggleSec(hd) {
 function showResultTab(id, btn) {
   document.querySelectorAll(".rtp").forEach(function(p){p.classList.remove("act")});
   document.querySelectorAll(".rtb").forEach(function(b){b.classList.remove("act")});
-  document.getElementById(id).classList.add("act");
+  var panel = document.getElementById(id);
+  panel.classList.add("act");
   btn.classList.add("act");
+  // Each report tab's sections start collapsed; without this, switching to a
+  // tab you haven't opened before shows a wall of empty-looking headers.
+  var firstHead = panel.querySelector(".sh2");
+  if (firstHead && !firstHead.nextElementSibling.classList.contains("op")) {
+    firstHead.nextElementSibling.classList.add("op");
+    firstHead.querySelector(".stg").classList.add("op");
+  }
+}
+
+function buildTabToolbar(tabId) {
+  return "<div class=\"tab-toolbar\">" +
+    "<button class=\"ttb\" onclick=\"expandAllInTab('" + tabId + "')\">&#9660; Extinde tot</button>" +
+    "<button class=\"ttb\" onclick=\"collapseAllInTab('" + tabId + "')\">&#9650; Restrange tot</button>" +
+    "</div>";
+}
+function expandAllInTab(tabId) {
+  document.querySelectorAll("#" + tabId + " .sh2").forEach(function(hd) {
+    hd.nextElementSibling.classList.add("op");
+    hd.querySelector(".stg").classList.add("op");
+  });
+}
+function collapseAllInTab(tabId) {
+  document.querySelectorAll("#" + tabId + " .sh2").forEach(function(hd) {
+    hd.nextElementSibling.classList.remove("op");
+    hd.querySelector(".stg").classList.remove("op");
+  });
+}
+
+function toggleModTags() {
+  var extra = document.getElementById("modMoreTags");
+  var btn = document.getElementById("modToggleBtn");
+  var isHidden = extra.style.display === "none";
+  extra.style.display = isHidden ? "contents" : "none";
+  btn.innerHTML = isHidden ? "Arata mai puține &#8593;" : "+15 module &#8595;";
 }
 
 // ═══ EPHEMERIS ═══
@@ -3687,12 +3734,12 @@ async function buildResult() {
   html += "<button class=\"rtb\" onclick=\"showResultTab('rt-hd',this)\">&#9784; Human Design</button>";
   html += "<button class=\"rtb\" onclick=\"showResultTab('rt-syn',this)\">&#9670; Sinteza Zilnica</button>";
   html += "</div>";
-  html += "<div id=\"rt-astro\" class=\"rtp act\">" + htmlAstro + "</div>";
-  html += "<div id=\"rt-num\" class=\"rtp\">" + htmlNum + "</div>";
-  html += "<div id=\"rt-bio\" class=\"rtp\">" + htmlBio + "</div>";
-  html += "<div id=\"rt-div\" class=\"rtp\">" + htmlDiv + "</div>";
-  html += "<div id=\"rt-hd\" class=\"rtp\">" + htmlHD + "</div>";
-  html += "<div id=\"rt-syn\" class=\"rtp\">" + htmlSyn + "</div>";
+  html += "<div id=\"rt-astro\" class=\"rtp act\">" + buildTabToolbar("rt-astro") + htmlAstro + "</div>";
+  html += "<div id=\"rt-num\" class=\"rtp\">" + buildTabToolbar("rt-num") + htmlNum + "</div>";
+  html += "<div id=\"rt-bio\" class=\"rtp\">" + buildTabToolbar("rt-bio") + htmlBio + "</div>";
+  html += "<div id=\"rt-div\" class=\"rtp\">" + buildTabToolbar("rt-div") + htmlDiv + "</div>";
+  html += "<div id=\"rt-hd\" class=\"rtp\">" + buildTabToolbar("rt-hd") + htmlHD + "</div>";
+  html += "<div id=\"rt-syn\" class=\"rtp\">" + buildTabToolbar("rt-syn") + htmlSyn + "</div>";
 
   html += "<button class=\"rb\" onclick=\"resetOracle()\">&#8635; Consultatie Noua</button>";
 
