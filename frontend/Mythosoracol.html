@@ -1822,29 +1822,31 @@ function shuffleWithRandom(arr, rndFn) {
 }
 
 // ── TAROT: 22 Arcane Majore (interpretari individuale) ──
+function wmFile(filename) { return "https://commons.wikimedia.org/wiki/Special:FilePath/" + filename; }
+
 var TAROT_MAJOR = [
-  {name:"Nebunul", sym:"&#127752;", upright:"Un nou inceput, spontaneitate, increderea in necunoscut, potential nelimitat. Momentul de a face primul pas fara sa cunoasteti toate raspunsurile.", reversed:"Imprudenta, decizii pripite, teama de a incepe ceva nou, haos nesustinut de o directie clara."},
-  {name:"Magicianul", sym:"&#10024;", upright:"Vointa manifestata in actiune, resurse disponibile, abilitatea de a transforma o idee in realitate concreta. Aveti toate uneltele necesare acum.", reversed:"Potential nefolosit, manipulare, inselatorie de sine, o vointa care nu se traduce in actiune concreta."},
-  {name:"Marea Preoteasa", sym:"&#127765;", upright:"Intuiție profunda, cunoastere ascunsa, mister care cere rabdare. Raspunsul e in interior, nu in analiza logica.", reversed:"Secrete refulate, deconectare de la intuiție, informatii ascunse care ies la iveala fortat."},
-  {name:"Imparateasa", sym:"&#127807;", upright:"Abundenta, creativitate, fertilitate in sens larg (proiecte, idei, relatii), conexiune cu natura si senzualitatea.", reversed:"Blocaj creativ, dependenta excesiva, neglijarea nevoilor proprii in favoarea altora."},
-  {name:"Imparatul", sym:"&#9819;", upright:"Structura, autoritate, disciplina, control asupra circumstantelor prin ordine si strategie clara.", reversed:"Rigiditate excesiva, abuz de putere, sau opusul - lipsa totala de structura si disciplina."},
-  {name:"Ieratul", sym:"&#9962;", upright:"Traditie, invatatura, structuri institutionale, ghidare spirituala sau educationala conventionala.", reversed:"Rebeliune fata de conventii, dogmatism excesiv, sau eliberare binevenita de reguli invechite."},
-  {name:"Indragostitii", sym:"&#128149;", upright:"O alegere importanta, armonie in relatii, aliniere de valori intre doua parti. Uniune autentica.", reversed:"Dezechilibru relational, o alegere amanata sau gresita, valori nealiniate intre parteneri."},
-  {name:"Carul", sym:"&#128663;", upright:"Victorie prin vointa si directie clara, control asupra fortelor opuse, avans determinat catre un obiectiv.", reversed:"Pierdere de directie, lupta interna nerezolvata, agresivitate care saboteaza progresul."},
-  {name:"Puterea", sym:"&#129409;", upright:"Curaj launtric, blandete care domina forta bruta, stapanire de sine prin compasiune, nu prin coercitie.", reversed:"Indoiala de sine, putere folosita gresit, sau slabiciune care lasa fricile sa preia controlul."},
-  {name:"Eremitul", sym:"&#128293;", upright:"Introspectie, cautare de intelepciune interioara, retragere temporara necesara pentru claritate.", reversed:"Izolare excesiva, singuratate nedorita, refuz de a cere ajutor cand e cu adevarat necesar."},
-  {name:"Roata Norocului", sym:"&#9784;", upright:"Ciclu care se schimba, destin in miscare, un punct de cotitura adus de fortele vietii, nu de vointa personala.", reversed:"Ghinion perceput, rezistenta la schimbare inevitabila, un ciclu negativ care se repeta."},
-  {name:"Dreptatea", sym:"&#9878;", upright:"Echilibru, adevar, consecinte corecte ale actiunilor trecute, o decizie legala sau etica clara.", reversed:"Nedreptate, dezechilibru, evitarea responsabilitatii pentru propriile actiuni."},
-  {name:"Spanzuratul", sym:"&#127796;", upright:"Suspendare voluntara, perspectiva noua prin renuntare, intelepciune castigata prin asteptare, nu prin actiune.", reversed:"Stagnare fortata, martiraj inutil, rezistenta la o perspectiva care ar putea elibera."},
-  {name:"Moartea", sym:"&#127807;", upright:"Transformare radicala, sfarsitul unui capitol care deschide calea pentru altul, nu literalmente moarte fizica.", reversed:"Rezistenta la o schimbare necesara, stagnare dureroasa, teama de a lasa in urma ce nu mai serveste."},
-  {name:"Cumpatarea", sym:"&#9879;", upright:"Echilibru intre extreme, rabdare, integrare armonioasa a unor forte aparent opuse.", reversed:"Exces, dezechilibru, lipsa de rabdare care saboteaza un proces care avea nevoie de timp."},
-  {name:"Diavolul", sym:"&#128520;", upright:"Atasament, dependenta, iluzii care par lanturi dar sunt de fapt alegeri - constientizarea e primul pas spre eliberare.", reversed:"Eliberare dintr-un tipar toxic, constientizare a unei dependente, recuperarea puterii personale."},
-  {name:"Turnul", sym:"&#127960;", upright:"Prabusire brusca a unei structuri false, revelatie soc care, desi dureroasa, elibereaza de o fundatie nesigura.", reversed:"Aceeasi criza, dar evitata sau amanata temporar - colapsul devine inevitabil mai tarziu."},
-  {name:"Steaua", sym:"&#11088;", upright:"Speranta reinnoita dupa o criza, inspiratie, vindecare, incredere ca universul sustine directia aleasa.", reversed:"Deznadejde, pierderea increderii, deconectare de la sursa proprie de inspiratie."},
-  {name:"Luna", sym:"&#127769;", upright:"Iluzie, frici subconstiente, incertitudine care cere navigare intuitiva prin zone neclare ale psihicului.", reversed:"Confuzie care se limpezeste, frici infruntate direct, iesirea dintr-o perioada de anxietate."},
-  {name:"Soarele", sym:"&#9728;", upright:"Bucurie autentica, succes vizibil, claritate totala, vitalitate si optimism binemeritat.", reversed:"Optimism temporar blocat, succes intarziat, o bucurie care nu s-a manifestat inca pe deplin."},
-  {name:"Judecata", sym:"&#128302;", upright:"Chemare la o trezire, evaluare onesta a trecutului, o a doua sansa sau o renastere spirituala.", reversed:"Autocritica excesiva, refuzul unei chemari importante, ramanere blocat in judecati vechi."},
-  {name:"Lumea", sym:"&#127760;", upright:"Implinire completa, incheierea cu succes a unui ciclu major, integrare totala, sentimentul de a fi ajuns.", reversed:"Ciclu neincheiat, sentiment de incompletitudine, un pas final care intarzie sa vina."}
+  {name:"Nebunul", sym:"&#127752;", img:wmFile("RWS_Tarot_00_Fool.jpg"), upright:"Un nou inceput, spontaneitate, increderea in necunoscut, potential nelimitat. Momentul de a face primul pas fara sa cunoasteti toate raspunsurile.", reversed:"Imprudenta, decizii pripite, teama de a incepe ceva nou, haos nesustinut de o directie clara."},
+  {name:"Magicianul", sym:"&#10024;", img:wmFile("RWS_Tarot_01_Magician.jpg"), upright:"Vointa manifestata in actiune, resurse disponibile, abilitatea de a transforma o idee in realitate concreta. Aveti toate uneltele necesare acum.", reversed:"Potential nefolosit, manipulare, inselatorie de sine, o vointa care nu se traduce in actiune concreta."},
+  {name:"Marea Preoteasa", sym:"&#127765;", img:wmFile("RWS_Tarot_02_High_Priestess.jpg"), upright:"Intuiție profunda, cunoastere ascunsa, mister care cere rabdare. Raspunsul e in interior, nu in analiza logica.", reversed:"Secrete refulate, deconectare de la intuiție, informatii ascunse care ies la iveala fortat."},
+  {name:"Imparateasa", sym:"&#127807;", img:wmFile("RWS_Tarot_03_Empress.jpg"), upright:"Abundenta, creativitate, fertilitate in sens larg (proiecte, idei, relatii), conexiune cu natura si senzualitatea.", reversed:"Blocaj creativ, dependenta excesiva, neglijarea nevoilor proprii in favoarea altora."},
+  {name:"Imparatul", sym:"&#9819;", img:wmFile("RWS_Tarot_04_Emperor.jpg"), upright:"Structura, autoritate, disciplina, control asupra circumstantelor prin ordine si strategie clara.", reversed:"Rigiditate excesiva, abuz de putere, sau opusul - lipsa totala de structura si disciplina."},
+  {name:"Ieratul", sym:"&#9962;", img:wmFile("RWS_Tarot_05_Hierophant.jpg"), upright:"Traditie, invatatura, structuri institutionale, ghidare spirituala sau educationala conventionala.", reversed:"Rebeliune fata de conventii, dogmatism excesiv, sau eliberare binevenita de reguli invechite."},
+  {name:"Indragostitii", sym:"&#128149;", img:wmFile("RWS_Tarot_06_Lovers.jpg"), upright:"O alegere importanta, armonie in relatii, aliniere de valori intre doua parti. Uniune autentica.", reversed:"Dezechilibru relational, o alegere amanata sau gresita, valori nealiniate intre parteneri."},
+  {name:"Carul", sym:"&#128663;", img:wmFile("RWS_Tarot_07_Chariot.jpg"), upright:"Victorie prin vointa si directie clara, control asupra fortelor opuse, avans determinat catre un obiectiv.", reversed:"Pierdere de directie, lupta interna nerezolvata, agresivitate care saboteaza progresul."},
+  {name:"Puterea", sym:"&#129409;", img:wmFile("RWS_Tarot_08_Strength.jpg"), upright:"Curaj launtric, blandete care domina forta bruta, stapanire de sine prin compasiune, nu prin coercitie.", reversed:"Indoiala de sine, putere folosita gresit, sau slabiciune care lasa fricile sa preia controlul."},
+  {name:"Eremitul", sym:"&#128293;", img:wmFile("RWS_Tarot_09_Hermit.jpg"), upright:"Introspectie, cautare de intelepciune interioara, retragere temporara necesara pentru claritate.", reversed:"Izolare excesiva, singuratate nedorita, refuz de a cere ajutor cand e cu adevarat necesar."},
+  {name:"Roata Norocului", sym:"&#9784;", img:wmFile("RWS_Tarot_10_Wheel_of_Fortune.jpg"), upright:"Ciclu care se schimba, destin in miscare, un punct de cotitura adus de fortele vietii, nu de vointa personala.", reversed:"Ghinion perceput, rezistenta la schimbare inevitabila, un ciclu negativ care se repeta."},
+  {name:"Dreptatea", sym:"&#9878;", img:wmFile("RWS_Tarot_11_Justice.jpg"), upright:"Echilibru, adevar, consecinte corecte ale actiunilor trecute, o decizie legala sau etica clara.", reversed:"Nedreptate, dezechilibru, evitarea responsabilitatii pentru propriile actiuni."},
+  {name:"Spanzuratul", sym:"&#127796;", img:wmFile("RWS_Tarot_12_Hanged_Man.jpg"), upright:"Suspendare voluntara, perspectiva noua prin renuntare, intelepciune castigata prin asteptare, nu prin actiune.", reversed:"Stagnare fortata, martiraj inutil, rezistenta la o perspectiva care ar putea elibera."},
+  {name:"Moartea", sym:"&#127807;", img:wmFile("RWS_Tarot_13_Death.jpg"), upright:"Transformare radicala, sfarsitul unui capitol care deschide calea pentru altul, nu literalmente moarte fizica.", reversed:"Rezistenta la o schimbare necesara, stagnare dureroasa, teama de a lasa in urma ce nu mai serveste."},
+  {name:"Cumpatarea", sym:"&#9879;", img:wmFile("RWS_Tarot_14_Temperance.jpg"), upright:"Echilibru intre extreme, rabdare, integrare armonioasa a unor forte aparent opuse.", reversed:"Exces, dezechilibru, lipsa de rabdare care saboteaza un proces care avea nevoie de timp."},
+  {name:"Diavolul", sym:"&#128520;", img:wmFile("RWS_Tarot_15_Devil.jpg"), upright:"Atasament, dependenta, iluzii care par lanturi dar sunt de fapt alegeri - constientizarea e primul pas spre eliberare.", reversed:"Eliberare dintr-un tipar toxic, constientizare a unei dependente, recuperarea puterii personale."},
+  {name:"Turnul", sym:"&#127960;", img:wmFile("RWS_Tarot_16_Tower.jpg"), upright:"Prabusire brusca a unei structuri false, revelatie soc care, desi dureroasa, elibereaza de o fundatie nesigura.", reversed:"Aceeasi criza, dar evitata sau amanata temporar - colapsul devine inevitabil mai tarziu."},
+  {name:"Steaua", sym:"&#11088;", img:wmFile("RWS_Tarot_17_Star.jpg"), upright:"Speranta reinnoita dupa o criza, inspiratie, vindecare, incredere ca universul sustine directia aleasa.", reversed:"Deznadejde, pierderea increderii, deconectare de la sursa proprie de inspiratie."},
+  {name:"Luna", sym:"&#127769;", img:wmFile("RWS_Tarot_18_Moon.jpg"), upright:"Iluzie, frici subconstiente, incertitudine care cere navigare intuitiva prin zone neclare ale psihicului.", reversed:"Confuzie care se limpezeste, frici infruntate direct, iesirea dintr-o perioada de anxietate."},
+  {name:"Soarele", sym:"&#9728;", img:wmFile("RWS_Tarot_19_Sun.jpg"), upright:"Bucurie autentica, succes vizibil, claritate totala, vitalitate si optimism binemeritat.", reversed:"Optimism temporar blocat, succes intarziat, o bucurie care nu s-a manifestat inca pe deplin."},
+  {name:"Judecata", sym:"&#128302;", img:wmFile("RWS_Tarot_20_Judgement.jpg"), upright:"Chemare la o trezire, evaluare onesta a trecutului, o a doua sansa sau o renastere spirituala.", reversed:"Autocritica excesiva, refuzul unei chemari importante, ramanere blocat in judecati vechi."},
+  {name:"Lumea", sym:"&#127760;", img:wmFile("RWS_Tarot_21_World.jpg"), upright:"Implinire completa, incheierea cu succes a unui ciclu major, integrare totala, sentimentul de a fi ajuns.", reversed:"Ciclu neincheiat, sentiment de incompletitudine, un pas final care intarzie sa vina."}
 ];
 
 // ── TAROT: 56 Arcane Minore, compuse din Rang x Element (traditia reala) ──
@@ -1898,10 +1900,17 @@ function drawTarotCards(n, rndFn) {
   });
 }
 
+function buildTarotCardImg(draw, size) {
+  if (!draw.card.img) return "";
+  var rot = draw.reversed ? "transform:rotate(180deg);" : "";
+  return "<img src=\"" + draw.card.img + "\" alt=\"" + draw.card.name + "\" style=\"width:" + size + "px;float:left;margin:0 14px 8px 0;border:1px solid rgba(201,168,76,0.3);" + rot + "\" onerror=\"this.style.display='none'\">";
+}
+
 function buildTarotCardHtml(label, draw) {
   var meaning = draw.reversed ? draw.card.reversed : draw.card.upright;
   var orient = draw.reversed ? "Inversata" : "Dreapta";
-  return "<div class=\"sab\">" +
+  return "<div class=\"sab\" style=\"overflow:auto\">" +
+    buildTarotCardImg(draw, 70) +
     "<div class=\"sab-d\">" + label + (label?" &mdash; ":"") + draw.card.sym + " " + draw.card.name + " (" + orient + ")</div>" +
     "<div class=\"sab-i\">" + meaning + "</div>" +
   "</div>";
@@ -1928,7 +1937,8 @@ function buildTarotSection(seedStr) {
   html += "<div class=\"tl\">";
   for (var j = 0; j < 10; j++) {
     var d = ten[j];
-    html += "<div class=\"ti\"><span class=\"ts\">" + d.card.sym + "</span><div class=\"ti-inf\"><div class=\"tn\">" + labels10[j] + " &mdash; " + d.card.name + " (" + (d.reversed?"Inversata":"Dreapta") + ")</div><div class=\"td\">" + (d.reversed?d.card.reversed:d.card.upright) + "</div></div></div>";
+    var imgTag = d.card.img ? ("<img src=\"" + d.card.img + "\" alt=\"" + d.card.name + "\" style=\"width:44px;flex-shrink:0;border:1px solid rgba(201,168,76,0.3);" + (d.reversed?"transform:rotate(180deg);":"") + "\" onerror=\"this.style.display='none'\">") : "";
+    html += "<div class=\"ti\">" + imgTag + "<span class=\"ts\">" + d.card.sym + "</span><div class=\"ti-inf\"><div class=\"tn\">" + labels10[j] + " &mdash; " + d.card.name + " (" + (d.reversed?"Inversata":"Dreapta") + ")</div><div class=\"td\">" + (d.reversed?d.card.reversed:d.card.upright) + "</div></div></div>";
   }
   html += "</div>";
   return html;
