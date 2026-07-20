@@ -2771,9 +2771,11 @@ async function loadProfile(userId) {
   }
 }
 
+var GENDER_FORM_MAP = {"F":"feminin","M":"masculin","Other":"neutru"};
+
 function prefillFormFromProfile(profile) {
   if (profile.full_name) document.getElementById("fullName").value = profile.full_name;
-  if (profile.gender) document.getElementById("gender").value = profile.gender;
+  if (profile.gender) document.getElementById("gender").value = GENDER_FORM_MAP[profile.gender] || "";
   if (profile.birth_date) document.getElementById("birthDate").value = profile.birth_date;
   if (profile.birth_time) document.getElementById("birthTime").value = profile.birth_time.substring(0,5);
   if (profile.birth_place) document.getElementById("birthPlace").value = profile.birth_place;
