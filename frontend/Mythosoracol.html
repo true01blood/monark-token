@@ -1787,6 +1787,296 @@ function getSynDesc(e1, e2) {
   return "Elementele in tensiune (" + e1 + " vs " + e2 + ") creeaza dinamica intensa. Aceasta polaritate poate fi forta relației daca este navigata conștient.";
 }
 
+// ═══════════════════════════════════════════════════════════════
+// MODULUL DE DIVINATIE — Tarot, I Ching, Rune
+// ═══════════════════════════════════════════════════════════════
+
+function secureRandom() {
+  if (window.crypto && window.crypto.getRandomValues) {
+    var arr = new Uint32Array(1);
+    window.crypto.getRandomValues(arr);
+    return arr[0] / 4294967296;
+  }
+  return Math.random();
+}
+
+function seededRandomFn(seedStr) {
+  var h = 0;
+  for (var i = 0; i < seedStr.length; i++) { h = (Math.imul(31, h) + seedStr.charCodeAt(i)) | 0; }
+  var seed = h >>> 0;
+  return function() {
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffleWithRandom(arr, rndFn) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(rndFn() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+// ── TAROT: 22 Arcane Majore (interpretari individuale) ──
+var TAROT_MAJOR = [
+  {name:"Nebunul", sym:"&#127752;", upright:"Un nou inceput, spontaneitate, increderea in necunoscut, potential nelimitat. Momentul de a face primul pas fara sa cunoasteti toate raspunsurile.", reversed:"Imprudenta, decizii pripite, teama de a incepe ceva nou, haos nesustinut de o directie clara."},
+  {name:"Magicianul", sym:"&#10024;", upright:"Vointa manifestata in actiune, resurse disponibile, abilitatea de a transforma o idee in realitate concreta. Aveti toate uneltele necesare acum.", reversed:"Potential nefolosit, manipulare, inselatorie de sine, o vointa care nu se traduce in actiune concreta."},
+  {name:"Marea Preoteasa", sym:"&#127765;", upright:"Intuiție profunda, cunoastere ascunsa, mister care cere rabdare. Raspunsul e in interior, nu in analiza logica.", reversed:"Secrete refulate, deconectare de la intuiție, informatii ascunse care ies la iveala fortat."},
+  {name:"Imparateasa", sym:"&#127807;", upright:"Abundenta, creativitate, fertilitate in sens larg (proiecte, idei, relatii), conexiune cu natura si senzualitatea.", reversed:"Blocaj creativ, dependenta excesiva, neglijarea nevoilor proprii in favoarea altora."},
+  {name:"Imparatul", sym:"&#9819;", upright:"Structura, autoritate, disciplina, control asupra circumstantelor prin ordine si strategie clara.", reversed:"Rigiditate excesiva, abuz de putere, sau opusul - lipsa totala de structura si disciplina."},
+  {name:"Ieratul", sym:"&#9962;", upright:"Traditie, invatatura, structuri institutionale, ghidare spirituala sau educationala conventionala.", reversed:"Rebeliune fata de conventii, dogmatism excesiv, sau eliberare binevenita de reguli invechite."},
+  {name:"Indragostitii", sym:"&#128149;", upright:"O alegere importanta, armonie in relatii, aliniere de valori intre doua parti. Uniune autentica.", reversed:"Dezechilibru relational, o alegere amanata sau gresita, valori nealiniate intre parteneri."},
+  {name:"Carul", sym:"&#128663;", upright:"Victorie prin vointa si directie clara, control asupra fortelor opuse, avans determinat catre un obiectiv.", reversed:"Pierdere de directie, lupta interna nerezolvata, agresivitate care saboteaza progresul."},
+  {name:"Puterea", sym:"&#129409;", upright:"Curaj launtric, blandete care domina forta bruta, stapanire de sine prin compasiune, nu prin coercitie.", reversed:"Indoiala de sine, putere folosita gresit, sau slabiciune care lasa fricile sa preia controlul."},
+  {name:"Eremitul", sym:"&#128293;", upright:"Introspectie, cautare de intelepciune interioara, retragere temporara necesara pentru claritate.", reversed:"Izolare excesiva, singuratate nedorita, refuz de a cere ajutor cand e cu adevarat necesar."},
+  {name:"Roata Norocului", sym:"&#9784;", upright:"Ciclu care se schimba, destin in miscare, un punct de cotitura adus de fortele vietii, nu de vointa personala.", reversed:"Ghinion perceput, rezistenta la schimbare inevitabila, un ciclu negativ care se repeta."},
+  {name:"Dreptatea", sym:"&#9878;", upright:"Echilibru, adevar, consecinte corecte ale actiunilor trecute, o decizie legala sau etica clara.", reversed:"Nedreptate, dezechilibru, evitarea responsabilitatii pentru propriile actiuni."},
+  {name:"Spanzuratul", sym:"&#127796;", upright:"Suspendare voluntara, perspectiva noua prin renuntare, intelepciune castigata prin asteptare, nu prin actiune.", reversed:"Stagnare fortata, martiraj inutil, rezistenta la o perspectiva care ar putea elibera."},
+  {name:"Moartea", sym:"&#127807;", upright:"Transformare radicala, sfarsitul unui capitol care deschide calea pentru altul, nu literalmente moarte fizica.", reversed:"Rezistenta la o schimbare necesara, stagnare dureroasa, teama de a lasa in urma ce nu mai serveste."},
+  {name:"Cumpatarea", sym:"&#9879;", upright:"Echilibru intre extreme, rabdare, integrare armonioasa a unor forte aparent opuse.", reversed:"Exces, dezechilibru, lipsa de rabdare care saboteaza un proces care avea nevoie de timp."},
+  {name:"Diavolul", sym:"&#128520;", upright:"Atasament, dependenta, iluzii care par lanturi dar sunt de fapt alegeri - constientizarea e primul pas spre eliberare.", reversed:"Eliberare dintr-un tipar toxic, constientizare a unei dependente, recuperarea puterii personale."},
+  {name:"Turnul", sym:"&#127960;", upright:"Prabusire brusca a unei structuri false, revelatie soc care, desi dureroasa, elibereaza de o fundatie nesigura.", reversed:"Aceeasi criza, dar evitata sau amanata temporar - colapsul devine inevitabil mai tarziu."},
+  {name:"Steaua", sym:"&#11088;", upright:"Speranta reinnoita dupa o criza, inspiratie, vindecare, incredere ca universul sustine directia aleasa.", reversed:"Deznadejde, pierderea increderii, deconectare de la sursa proprie de inspiratie."},
+  {name:"Luna", sym:"&#127769;", upright:"Iluzie, frici subconstiente, incertitudine care cere navigare intuitiva prin zone neclare ale psihicului.", reversed:"Confuzie care se limpezeste, frici infruntate direct, iesirea dintr-o perioada de anxietate."},
+  {name:"Soarele", sym:"&#9728;", upright:"Bucurie autentica, succes vizibil, claritate totala, vitalitate si optimism binemeritat.", reversed:"Optimism temporar blocat, succes intarziat, o bucurie care nu s-a manifestat inca pe deplin."},
+  {name:"Judecata", sym:"&#128302;", upright:"Chemare la o trezire, evaluare onesta a trecutului, o a doua sansa sau o renastere spirituala.", reversed:"Autocritica excesiva, refuzul unei chemari importante, ramanere blocat in judecati vechi."},
+  {name:"Lumea", sym:"&#127760;", upright:"Implinire completa, incheierea cu succes a unui ciclu major, integrare totala, sentimentul de a fi ajuns.", reversed:"Ciclu neincheiat, sentiment de incompletitudine, un pas final care intarzie sa vina."}
+];
+
+// ── TAROT: 56 Arcane Minore, compuse din Rang x Element (traditia reala) ──
+var TAROT_SUITS = [
+  {name:"Bastoane", sym:"&#128293;", theme:"pasiune, actiune, cariera, energie creatoare, ambitie (elementul Foc)"},
+  {name:"Cupe", sym:"&#127864;", theme:"emotii, relatii, intuiție, spiritualitate (elementul Apa)"},
+  {name:"Sabii", sym:"&#9876;", theme:"gandire, conflict, comunicare, adevar, dificultate mentala (elementul Aer)"},
+  {name:"Pentacluri", sym:"&#127775;", theme:"materie, finante, munca, corp fizic, securitate (elementul Pamant)"}
+];
+var TAROT_RANKS = [
+  {name:"As", upright:"un nou inceput, un potential pur, o samanta abia plantata", reversed:"un inceput blocat sau intarziat, o oportunitate ratata"},
+  {name:"Doi", upright:"o alegere, un echilibru necesar, o pereche sau parteneriat", reversed:"indecizie, un dezechilibru intre doua forte"},
+  {name:"Trei", upright:"prima expansiune, colaborare, un rezultat initial vizibil", reversed:"intarziere in expansiune, colaborare fragila"},
+  {name:"Patru", upright:"stabilitate, structura solida, o pauza binemeritata", reversed:"stagnare, structura care a devenit o cusca"},
+  {name:"Cinci", upright:"conflict, provocare, o pierdere temporara ce cere adaptare", reversed:"conflict evitat sau in curs de rezolvare"},
+  {name:"Sase", upright:"armonie regasita, ajutor primit sau oferit, echilibru refacut", reversed:"dezechilibru in schimbul de ajutor, generozitate neechilibrata"},
+  {name:"Sapte", upright:"evaluare, strategie, rabdare inaintea urmatorului pas", reversed:"strategie gresita, nerabdare care saboteaza planul"},
+  {name:"Opt", upright:"miscare rapida, putere concentrata pe un singur obiectiv", reversed:"miscare blocata, energie dispersata fara directie"},
+  {name:"Noua", upright:"aproape de implinire, o testare finala, oboseala acumulata dar aproape de linia de sosire", reversed:"epuizare, teama nejustificata de esec chiar inainte de reusita"},
+  {name:"Zece", upright:"implinire completa a ciclului, dar si greutatea maxima acumulata", reversed:"o povara dusa prea departe, nevoia urgenta de a incheia ciclul"},
+  {name:"Paj", upright:"un mesaj, curiozitate naiva, inceputul invatarii intr-un domeniu nou", reversed:"imaturitate, un mesaj intarziat sau gresit interpretat"},
+  {name:"Cavaler", upright:"actiune decisiva, o cautare activa, energie exprimata la extrem", reversed:"impulsivitate, actiune fara directie clara, extremism nefolositor"},
+  {name:"Regina", upright:"maiestrie interiorizata, maturitate emoțională in acest domeniu al vietii", reversed:"maiestria intoarsa spre interior devine autocritica sau retragere"},
+  {name:"Rege", upright:"maiestrie exterioara, autoritate castigata prin experienta, control matur", reversed:"autoritate abuziva sau, opus, lipsa completa de control in acest domeniu"}
+];
+
+function buildMinorArcana() {
+  var cards = [];
+  for (var s = 0; s < TAROT_SUITS.length; s++) {
+    for (var r = 0; r < TAROT_RANKS.length; r++) {
+      var suit = TAROT_SUITS[s], rank = TAROT_RANKS[r];
+      cards.push({
+        name: rank.name + " de " + suit.name,
+        sym: suit.sym,
+        upright: "In sfera " + suit.theme + ": " + rank.upright + ".",
+        reversed: "In sfera " + suit.theme + ": " + rank.reversed + "."
+      });
+    }
+  }
+  return cards;
+}
+
+var TAROT_DECK = TAROT_MAJOR.concat(buildMinorArcana()); // 78 carti
+
+function drawTarotCards(n, rndFn) {
+  var shuffled = shuffleWithRandom(TAROT_DECK, rndFn || secureRandom);
+  var picks = shuffled.slice(0, n);
+  return picks.map(function(c) {
+    var reversed = rndFn ? (rndFn() < 0.5) : (secureRandom() < 0.5);
+    return { card: c, reversed: reversed };
+  });
+}
+
+function buildTarotCardHtml(label, draw) {
+  var meaning = draw.reversed ? draw.card.reversed : draw.card.upright;
+  var orient = draw.reversed ? "Inversata" : "Dreapta";
+  return "<div class=\"sab\">" +
+    "<div class=\"sab-d\">" + label + (label?" &mdash; ":"") + draw.card.sym + " " + draw.card.name + " (" + orient + ")</div>" +
+    "<div class=\"sab-i\">" + meaning + "</div>" +
+  "</div>";
+}
+
+function buildTarotSection(seedStr) {
+  var html = sh("Cartea Zilei (extragere fixa pentru azi)");
+  var dailyRnd = seededRandomFn(seedStr + "-tarot-daily");
+  var dailyDraw = drawTarotCards(1, dailyRnd)[0];
+  html += buildTarotCardHtml("", dailyDraw);
+
+  html += sh("Extragere Trecut &middot; Prezent &middot; Viitor");
+  var three = drawTarotCards(3);
+  var labels3 = ["Trecut", "Prezent", "Viitor"];
+  for (var i = 0; i < 3; i++) html += buildTarotCardHtml(labels3[i], three[i]);
+
+  html += sh("Crucea Celtica (10 Carti)");
+  var ten = drawTarotCards(10);
+  var labels10 = [
+    "1. Situatia Actuala", "2. Provocarea Imediata", "3. Fundatia (Trecut Indepartat)",
+    "4. Trecut Recent", "5. Posibil Rezultat", "6. Viitor Apropiat",
+    "7. Atitudinea Dvs.", "8. Influente Externe", "9. Sperante si Temeri", "10. Rezultat Final"
+  ];
+  html += "<div class=\"tl\">";
+  for (var j = 0; j < 10; j++) {
+    var d = ten[j];
+    html += "<div class=\"ti\"><span class=\"ts\">" + d.card.sym + "</span><div class=\"ti-inf\"><div class=\"tn\">" + labels10[j] + " &mdash; " + d.card.name + " (" + (d.reversed?"Inversata":"Dreapta") + ")</div><div class=\"td\">" + (d.reversed?d.card.reversed:d.card.upright) + "</div></div></div>";
+  }
+  html += "</div>";
+  return html;
+}
+
+// ── I CHING: metoda traditionala a 3 monede, 6 linii, interpretare din perechea de trigrame ──
+var ICHING_TRIGRAMS = [
+  {pattern:"111", name:"Cerul", sym:"&#9776;", quality:"creativitate pura, forta activa, initiativa, principiul conducator"},
+  {pattern:"000", name:"Pamantul", sym:"&#9783;", quality:"receptivitate, sustinere, rabdare, principiul care primeste si hraneste"},
+  {pattern:"100", name:"Tunetul", sym:"&#9777;", quality:"miscare brusca, trezire, soc initiator, energie care sparge inertia"},
+  {pattern:"010", name:"Apa", sym:"&#9782;", quality:"pericol, profunzime, curgere prin obstacole, intelepciune dobandita prin dificultate"},
+  {pattern:"001", name:"Muntele", sym:"&#9780;", quality:"stagnare voita, liniste, oprire necesara pentru reflectie"},
+  {pattern:"011", name:"Vantul", sym:"&#9778;", quality:"patrundere blanda dar persistenta, influenta graduala, adaptabilitate"},
+  {pattern:"101", name:"Focul", sym:"&#9781;", quality:"claritate, atasament luminos, inteligenta, dependenta de ceva pentru a straluci"},
+  {pattern:"110", name:"Lacul", sym:"&#9784;", quality:"bucurie, deschidere, schimb, satisfactie impartasita"}
+];
+
+function findTrigram(pattern) {
+  for (var i = 0; i < ICHING_TRIGRAMS.length; i++) if (ICHING_TRIGRAMS[i].pattern === pattern) return ICHING_TRIGRAMS[i];
+  return ICHING_TRIGRAMS[0];
+}
+
+function castIChingLine(rndFn) {
+  // Metoda celor 3 monede: cap=3, pajura=2 (traditional). Suma a 3 aruncari -> 6,7,8,9
+  var sum = 0;
+  for (var i = 0; i < 3; i++) sum += (rndFn() < 0.5) ? 2 : 3;
+  // 6=yin batran (schimbator), 7=yang tanar (stabil), 8=yin tanar (stabil), 9=yang batran (schimbator)
+  return sum; // 6,7,8,9
+}
+
+function buildIChingHexagram(rndFn) {
+  var lines = []; // bottom to top, each: {value:6-9, yang:bool, changing:bool}
+  for (var i = 0; i < 6; i++) {
+    var v = castIChingLine(rndFn);
+    lines.push({ value: v, yang: (v === 7 || v === 9), changing: (v === 6 || v === 9) });
+  }
+  return lines;
+}
+
+function renderHexagramLines(lines, useChanged) {
+  var html = "<div style=\"display:flex;flex-direction:column-reverse;gap:6px;align-items:center;margin:14px 0\">";
+  for (var i = 0; i < 6; i++) {
+    var yang = lines[i].yang;
+    var changing = lines[i].changing;
+    if (useChanged && changing) yang = !yang;
+    var bar = yang
+      ? "<div style=\"width:90px;height:8px;background:var(--gold)\"></div>"
+      : "<div style=\"display:flex;gap:16px\"><div style=\"width:37px;height:8px;background:var(--gold)\"></div><div style=\"width:37px;height:8px;background:var(--gold)\"></div></div>";
+    html += "<div style=\"position:relative\">" + bar + (changing && !useChanged ? "<span style=\"position:absolute;left:100px;top:-6px;color:var(--viol-l);font-size:16px\">&#9679;</span>" : "") + "</div>";
+  }
+  html += "</div>";
+  return html;
+}
+
+function buildIChingInterpretation(lines) {
+  var lowerPattern = (lines[0].yang?"1":"0") + (lines[1].yang?"1":"0") + (lines[2].yang?"1":"0");
+  var upperPattern = (lines[3].yang?"1":"0") + (lines[4].yang?"1":"0") + (lines[5].yang?"1":"0");
+  var lower = findTrigram(lowerPattern), upper = findTrigram(upperPattern);
+  return {
+    lower: lower, upper: upper,
+    text: "Trigramul inferior (fundatia situatiei) este " + lower.sym + " <strong>" + lower.name + "</strong> - " + lower.quality + ". " +
+          "Trigramul superior (directia catre care evolueaza) este " + upper.sym + " <strong>" + upper.name + "</strong> - " + upper.quality + ". " +
+          "Combinatia sugereaza ca " + lower.quality.split(",")[0] + " sustine sau este provocata de " + upper.quality.split(",")[0] + ", in functie de cum alegeti sa navigati situatia."
+  };
+}
+
+function buildIChingSection(seedStr) {
+  var dailyRnd = seededRandomFn(seedStr + "-iching-daily");
+  var lines = buildIChingHexagram(dailyRnd);
+  var changingCount = lines.filter(function(l){return l.changing;}).length;
+
+  var html = sh("Hexagrama Zilei (extragere fixa pentru azi, metoda celor 3 monede)");
+  html += renderHexagramLines(lines, false);
+  var interp = buildIChingInterpretation(lines);
+  html += p(interp.text);
+
+  if (changingCount > 0) {
+    html += sh("Linii Schimbatoare (" + changingCount + ") &amp; Hexagrama Rezultata");
+    html += p("Liniile marcate cu &#9679; sunt in transformare - situatia actuala contine deja samanta schimbarii ei insesi. Hexagrama rezultata, dupa transformare:");
+    html += renderHexagramLines(lines, true);
+    var linesChanged = lines.map(function(l){ return { yang: l.changing ? !l.yang : l.yang, changing:false }; });
+    var interp2 = buildIChingInterpretation(linesChanged);
+    html += p(interp2.text);
+  } else {
+    html += p("Nicio linie schimbatoare - hexagrama descrie o situatie stabila, fara o transformare iminenta inscrisa in configuratia de azi.");
+  }
+  return html;
+}
+
+// ── RUNE: Elder Futhark (24 rune, caractere Unicode reale) ──
+var RUNES = [
+  {name:"Fehu", sym:"&#5792;", meaning:"Abundenta, recompensa muncii depuse, resurse care circula. Bogatia adevarata vine din ce oferiti, nu doar din ce acumulati.", reversedMeaning:"Pierdere de resurse, lacomie, sau o abundenta care nu a fost inca meritata prin efort."},
+  {name:"Uruz", sym:"&#5794;", meaning:"Forta vitala bruta, sanatate, vointa neclintita. Puterea boului salbatic - rezistenta fizica si determinare.", reversedMeaning:"Slabiciune temporara, forta irosita, o vitalitate care are nevoie de refacere."},
+  {name:"Thurisaz", sym:"&#5798;", meaning:"Un catalizator dificil dar necesar, un conflict care forteaza claritate, aparare activa impotriva unei amenintari.", reversedMeaning:"Pericol nevazut, o reactie impulsiva care va cere consecinte, vulnerabilitate."},
+  {name:"Ansuz", sym:"&#5800;", meaning:"Comunicare inspirata, un mesaj important, intelepciune primita din exterior sau din intuiție.", reversedMeaning:"Neintelegere, comunicare blocata, un sfat pe care il ignorati pe riscul dvs."},
+  {name:"Raidho", sym:"&#5809;", meaning:"Calatorie (fizica sau simbolica), miscare cu un ritm si o directie clara, progres controlat.", reversedMeaning:"Intarziere in calatorie, o directie pierduta, ritm intrerupt."},
+  {name:"Kenaz", sym:"&#5810;", meaning:"Torta care lumineaza, cunoastere castigata, creativitate activata, claritate mentala.", reversedMeaning:"Confuzie, o lumina care se stinge, creativitate blocata sau folosita distructiv."},
+  {name:"Gebo", sym:"&#5815;", meaning:"Dar, schimb echilibrat, un parteneriat bazat pe reciprocitate autentica. (Simetrica - nu se inverseaza.)", reversedMeaning:null, symmetric:true},
+  {name:"Wunjo", sym:"&#5817;", meaning:"Bucurie, armonie, un sentiment de apartenenta si fericire impartasita.", reversedMeaning:"Instrainare, bucurie amanata, disarmonie in grup sau relatie."},
+  {name:"Hagalaz", sym:"&#5818;", meaning:"O forta disruptiva necontrolabila, o criza care, desi dureroasa, curata terenul pentru ceva nou. (Simetrica.)", reversedMeaning:null, symmetric:true},
+  {name:"Nauthiz", sym:"&#5822;", meaning:"Nevoie, constrangere, o dificultate care va forta sa dezvoltati reziliena si resurse interioare noi.", reversedMeaning:"Lipsa evitabila, o nevoie ignorata care se agraveaza, panica nejustificata."},
+  {name:"Isa", sym:"&#5825;", meaning:"Gheata, stagnare temporara, o pauza necesara inainte de a actiona. Nimic nu se misca acum - si asta e in regula.", reversedMeaning:null, symmetric:true},
+  {name:"Jera", sym:"&#5827;", meaning:"Recolta, ciclul care se implineste, rasplata pentru rabdare si munca sustinuta in timp. (Simetrica.)", reversedMeaning:null, symmetric:true},
+  {name:"Eihwaz", sym:"&#5831;", meaning:"Copacul de tisa, rezistenta prin flexibilitate, transformare lenta dar sigura, stabilitate in fata schimbarii.", reversedMeaning:null, symmetric:true},
+  {name:"Perthro", sym:"&#5832;", meaning:"Mister, destin ascuns, un joc de noroc sau o revelatie care iese la iveala printr-un proces care nu tine de vointa.", reversedMeaning:"Un secret care ramane ascuns, ghinion perceput, o revelatie amanata."},
+  {name:"Algiz", sym:"&#5833;", meaning:"Protectie, o conexiune cu o forta superioara, un sanctuar sau o alianta care va apara.", reversedMeaning:"Vulnerabilitate, protectie pierduta, o legatura cu sacrul intrerupta temporar."},
+  {name:"Sowilo", sym:"&#5834;", meaning:"Soarele, succes, energie vitala la apogeu, o victorie clara si vizibila. (Simetrica.)", reversedMeaning:null, symmetric:true},
+  {name:"Tiwaz", sym:"&#5839;", meaning:"Justitie, onoare, sacrificiu facut constient pentru un bine mai mare, curaj in fata unei lupte drepte.", reversedMeaning:"Nedreptate, lipsa de curaj, un sacrificiu facut in zadar sau evitat cand era necesar."},
+  {name:"Berkano", sym:"&#5842;", meaning:"Mesteacanul, un nou inceput, crestere, fertilitate in sens larg (proiecte, relatii, familie).", reversedMeaning:"Crestere blocata, un inceput care intarzie, o familie sau un proiect in dificultate."},
+  {name:"Ehwaz", sym:"&#5846;", meaning:"Calul, parteneriat bazat pe incredere reciproca, progres treptat printr-o colaborare armonioasa.", reversedMeaning:"Neincredere in parteneriat, o colaborare care se clatina, progres blocat."},
+  {name:"Mannaz", sym:"&#5847;", meaning:"Sinele, umanitatea, cooperare constienta cu ceilalti, intelepciune castigata prin auto-reflectie.", reversedMeaning:"Izolare, egocentrism, dificultate in a coopera sau a cere ajutor."},
+  {name:"Laguz", sym:"&#5850;", meaning:"Apa, curgere, intuiție, conexiune cu inconstientul si cu emotiile profunde.", reversedMeaning:"Emotii blocate sau copleșitoare, intuiție ignorata, confuzie launtrica."},
+  {name:"Ingwaz", sym:"&#5853;", meaning:"Fertilitate interioara, o gestatie, potential care se acumuleaza inainte de a se manifesta vizibil. (Simetrica.)", reversedMeaning:null, symmetric:true},
+  {name:"Dagaz", sym:"&#5854;", meaning:"Zorii, o descoperire, o transformare completa si pozitiva, claritate totala dupa o perioada de intuneric. (Simetrica.)", reversedMeaning:null, symmetric:true},
+  {name:"Othala", sym:"&#5855;", meaning:"Mostenire, casa, proprietate ancestrala, valori transmise prin familie sau traditie.", reversedMeaning:"Instrainare de radacini, o mostenire pierduta sau refuzata, dificultati legate de casa/familie."}
+];
+
+function drawRunes(n, rndFn) {
+  var shuffled = shuffleWithRandom(RUNES, rndFn || secureRandom);
+  var picks = shuffled.slice(0, n);
+  return picks.map(function(r) {
+    var reversed = !r.symmetric && (rndFn ? (rndFn() < 0.5) : (secureRandom() < 0.5));
+    return { rune: r, reversed: reversed };
+  });
+}
+
+function buildRuneHtml(label, draw) {
+  var meaning = draw.reversed ? draw.rune.reversedMeaning : draw.rune.meaning;
+  var orient = draw.rune.symmetric ? "" : (draw.reversed ? " (Inversata)" : " (Dreapta)");
+  return "<div class=\"sab\">" +
+    "<div class=\"sab-d\">" + label + (label?" &mdash; ":"") + draw.rune.sym + " " + draw.rune.name + orient + "</div>" +
+    "<div class=\"sab-i\">" + meaning + "</div>" +
+  "</div>";
+}
+
+function buildRuneSection(seedStr) {
+  var html = sh("Runa Zilei (extragere fixa pentru azi)");
+  var dailyRnd = seededRandomFn(seedStr + "-rune-daily");
+  var dailyDraw = drawRunes(1, dailyRnd)[0];
+  html += buildRuneHtml("", dailyDraw);
+
+  html += sh("Extragere de 3 Rune (Situatie &middot; Provocare &middot; Rezultat)");
+  var three = drawRunes(3);
+  var labels3 = ["Situatie", "Provocare", "Rezultat"];
+  for (var i = 0; i < 3; i++) html += buildRuneHtml(labels3[i], three[i]);
+  return html;
+}
+
 // ═══ DRAW BIORHYTHM ═══
 function drawBio(bio, birthDate, now) {
   var canvas = document.getElementById("bioCanvas");
@@ -2675,6 +2965,11 @@ async function buildResult() {
   akaraHtml += sh("Interpretarea Sistemului AKARA");
   akaraHtml += p("Numerologia AKARA, derivata din traditia Kundalini Yoga, utilizeaza aceleasi date de naștere printr-un sistem de interpretare diferit fata de cel pitagoreic. Darul (" + akaraGift + ") - calitatea adusa la naștere. Karma (" + akaraKarma + ") - lectia de lucrat in aceasta viața. Sufletul (" + akaraSoul + ") - motivatia profunda si aspiratia. Destinul (" + akaraDest + ") - misiunea generala.");
   html += buildSection("&#9738;", "XIII &middot; NUMEROLOGIE AKARA", akaraHtml);
+
+  var dailySeed = now.toISOString().slice(0,10);
+  html += safeSection("&#127183;", "XXIII &middot; TAROT (78 CARTI)", buildTarotSection(dailySeed));
+  html += safeSection("&#9775;", "XXIV &middot; I CHING - CARTEA SCHIMBARILOR", buildIChingSection(dailySeed));
+  html += safeSection("&#5792;", "XXV &middot; RUNE (ELDER FUTHARK)", buildRuneSection(dailySeed));
 
   html += "<button class=\"rb\" onclick=\"resetOracle()\">&#8635; Consultatie Noua</button>";
 
