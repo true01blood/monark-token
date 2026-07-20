@@ -2994,21 +2994,47 @@ async function openAdminModal() {
   statsHtml += buildAdminStat(tierCounts.premium, "Nivel Premium");
   document.getElementById("adminStats").innerHTML = statsHtml;
 
-  var tableHtml = "<tr><th>Nume</th><th>Email</th><th>Data Nasterii</th><th>Nivel</th><th>Admin</th><th>Inregistrat</th></tr>";
+  var tableHtml = "<tr><th>Nume</th><th>Email</th><th>Data Nasterii</th><th>Nivel</th><th>Admin</th><th>Inregistrat</th><th>Actiuni</th></tr>";
   for (var i = 0; i < profiles.length; i++) {
     var p = profiles[i];
     var tier = (subsByUser[p.user_id] && subsByUser[p.user_id].tier) || "free";
     var regDate = p.created_at ? new Date(p.created_at).toLocaleDateString("ro-RO") : "-";
+    var selId = "tierSel_" + p.user_id;
     tableHtml += "<tr>";
     tableHtml += "<td>" + (p.full_name || "-") + "</td>";
     tableHtml += "<td>" + (p.email || "-") + "</td>";
     tableHtml += "<td>" + (p.birth_date || "-") + "</td>";
-    tableHtml += "<td><span class=\"adm-badge " + tier + "\">" + tier.toUpperCase() + "</span></td>";
+    tableHtml += "<td><select id=\"" + selId + "\" class=\"ip\" style=\"padding:5px 8px;font-size:12px\">" +
+      "<option value=\"free\"" + (tier==="free"?" selected":"") + ">FREE</option>" +
+      "<option value=\"pro\"" + (tier==="pro"?" selected":"") + ">PRO</option>" +
+      "<option value=\"premium\"" + (tier==="premium"?" selected":"") + ">PREMIUM</option>" +
+      "</select></td>";
     tableHtml += "<td>" + (p.is_admin ? "&#9733;" : "") + "</td>";
     tableHtml += "<td>" + regDate + "</td>";
+    tableHtml += "<td style=\"white-space:nowrap\">";
+    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px;margin-right:4px\" onclick=\"adminSetTier('" + p.user_id + "','" + selId + "')\">Salveaza Nivel</button>";
+    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px\" onclick=\"adminToggleAdmin('" + p.user_id + "'," + (!p.is_admin) + ")\">" + (p.is_admin ? "Revoca Admin" : "Fa Admin") + "</button>";
+    tableHtml += "</td>";
     tableHtml += "</tr>";
   }
   document.getElementById("adminUsersTable").innerHTML = tableHtml;
+}
+
+async function adminSetTier(userId, selId) {
+  var tier = document.getElementById(selId).value;
+  var res = await sb.from("subscriptions").upsert({
+    user_id: userId,
+    tier: tier,
+    status: "active"
+  }, { onConflict: "user_id" });
+  if (res.error) { console.error("admin set tier error:", res.error); alert("Eroare la salvare: " + res.error.message); return; }
+  openAdminModal();
+}
+
+async function adminToggleAdmin(userId, makeAdmin) {
+  var res = await sb.from("profiles").update({ is_admin: makeAdmin }).eq("user_id", userId);
+  if (res.error) { console.error("admin toggle error:", res.error); alert("Eroare la salvare: " + res.error.message); return; }
+  openAdminModal();
 }
 
 sb.auth.onAuthStateChange(function(event, session) {
