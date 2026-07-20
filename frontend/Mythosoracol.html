@@ -1576,15 +1576,42 @@ function buildSynastrySec(synData, bioData, zodiac, element, lp) {
   return html;
 }
 
+function getPersonalYearMoneyOutlook(py) {
+  var m = {
+    1:"un an de inceput - semintele plantate acum conteaza mai mult decat rezultatul imediat; venituri noi sunt posibile dar cer inițiativă directa din partea dvs.",
+    2:"un an de cooperare - castigurile vin mai degraba prin parteneriate si colaborari decat prin efort solo",
+    3:"un an favorabil expresiei si vizibilitatii - oportunitatile financiare vin adesea prin comunicare, retea sau creativitate",
+    4:"un an de munca sustinuta - progresul financiar e lent dar solid; nu exista scurtaturi, dar ce se construieste acum rezista",
+    5:"un an de schimbare - venituri posibil instabile sau neregulate, dar si oportunitati neasteptate care merita urmarite",
+    6:"un an de responsabilitate - cheltuielile legate de familie sau casa pot domina bugetul, mai mult decat castigurile noi",
+    7:"un an de introspectie - nu e momentul optim pentru riscuri financiare mari sau decizii de business impulsive",
+    8:"un an de manifestare materiala - printre cele mai favorabile din ciclul de 9 ani pentru bani, carieră si autoritate",
+    9:"un an de incheiere - se rezolva restante financiare din ciclul anterior, dar nu e momentul de expansiune noua"
+  };
+  return m[py] || m[1];
+}
+
 function buildQuestionSection(question, zodiac, lp, element, py, profile, transits) {
   var q = question.toLowerCase();
   var html = sh("Intrebarea Formulata");
   html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&bdquo;" + question + "&rdquo;</div></div>";
   html += sh("Raspuns Integrat");
+  var isTiming = q.indexOf("cand")>=0||q.indexOf("când")>=0||q.indexOf("curand")>=0||q.indexOf("curând")>=0||q.indexOf("perioada")>=0||q.indexOf("viitor")>=0||q.indexOf("voi ")>=0||q.indexOf("o sa")>=0||q.indexOf("o să")>=0;
+  var jupiterHarm = transits.some(function(t){return t.tp==="jupiter" && t.aspect.nature!=="tense";});
+  var saturnTense = transits.some(function(t){return t.tp==="saturn" && t.aspect.nature==="tense";});
+
   if(q.indexOf("dragoste")>=0||q.indexOf("relație")>=0||q.indexOf("iubire")>=0||q.indexOf("partener")>=0){
     html += p(profile.love + " Din perspectiva numerologica, Drumul Vieții " + lp + " adauga: " + getLPLoveHint(lp) + ". Anul Personal " + py + ": " + (py<=3?"favorabil conexiunilor noi":py<=6?"al angajamentelor relationale":py===7?"al reflectiei si retraits":"al completarii - relațiile care nu servesc evoluției tind sa se incheie natural") + ".");
-  } else if(q.indexOf("carieră")>=0||q.indexOf("job")>=0||q.indexOf("bani")>=0||q.indexOf("succes")>=0){
-    html += p(profile.career + " Elementul " + element.name + " va ofera avantajul: " + getElementCareer(element.name) + ". Numarul Drumului Vieții " + lp + ": " + (LP_MEANINGS[lp]||"") + " " + (transits.some(function(t){return t.tp==="jupiter";})?"Jupiter activ in harta dvs. indica oportunitati profesionale prezente in aceasta perioada.":""));
+  } else if(q.indexOf("carieră")>=0||q.indexOf("job")>=0||q.indexOf("bani")>=0||q.indexOf("succes")>=0||q.indexOf("castig")>=0||q.indexOf("câștig")>=0){
+    if (isTiming) {
+      html += p("<strong>Raspuns direct la timing:</strong> Anul Personal curent (" + py + ") este " + getPersonalYearMoneyOutlook(py) + ".");
+      if (jupiterHarm) html += p("Jupiter activ si armonios in tranzitele actuale sustine oportunitati concrete de venit in perioada imediat urmatoare - e un semnal favorabil pentru initiative noi.");
+      else if (saturnTense) html += p("Saturn activ, cu tensiune, in tranzitele actuale sugereaza ca orice castig vine acum prin disciplina si efort sustinut, nu prin ocazii rapide - e o perioada de prudenta, nu de riscuri financiare mari.");
+      else html += p("Nu exista in acest moment un tranzit planetar major care sa indice o schimbare financiara bruscă - situatia tinde sa continue in ritmul actual, fara evenimente exceptionale in orizontul apropiat.");
+      html += p("Context de fond (domenii compatibile cu profilul dvs., nu raspuns de timing): " + profile.career);
+    } else {
+      html += p(profile.career + " Elementul " + element.name + " va ofera avantajul: " + getElementCareer(element.name) + ". Numarul Drumului Vieții " + lp + ": " + (LP_MEANINGS[lp]||""));
+    }
   } else if(q.indexOf("sănătate")>=0||q.indexOf("corp")>=0){
     html += p(profile.health + " " + getBioInterp(getBio(window._bd, new Date())));
   } else {
