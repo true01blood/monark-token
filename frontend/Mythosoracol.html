@@ -258,6 +258,11 @@ canvas{width:100%;height:180px;display:block}
 .adm-badge.premium{border-color:var(--gold);color:var(--gold)}
 .adm-badge.free{border-color:var(--text-dd);color:var(--text-d)}
 .adm-tablewrap{overflow-x:auto}
+.plan-card{position:relative;transition:box-shadow .25s,border-color .25s}
+.plan-card.plan-current{border-color:var(--gold)!important;box-shadow:0 0 22px rgba(212,175,55,.28)}
+.plan-current-badge{display:none;font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:3px 8px;margin-bottom:10px}
+.plan-card.plan-current .plan-current-badge{display:inline-block}
+
 </style>
 </head>
 <body>
@@ -507,6 +512,7 @@ canvas{width:100%;height:180px;display:block}
 <div class="disc">MYTHOS ORACLE v3 este un sistem de profil esoteric integrat cu scop de introspec&#355;ie &#351;i autocunoa&#351;tere. Interpretările sunt generate pe baza unui corpus tradi&#355;ional consolidat. Nu constituie consultan&#355;&#259; medical&#259;, juridic&#259; sau financiar&#259;.</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tz-lookup@6.1.25/tz.js"></script>
 <script>
 // ═══ MYTHOS ORACLE v2 — Clean JS Engine ═══
 // All strings use double quotes. No Romanian unquoted keys.
@@ -582,7 +588,7 @@ function lonToSign(lon) {
   var S=["Berbec","Taur","Gemeni","Rac","Leu","Fecioara","Balanta","Scorpion","Sagetator","Capricorn","Varsator","Pesti"];
   var SY=["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
   var i=Math.floor(lon/30)%12;
-  return {name:S[i], sym:SY[i], deg:Math.floor(lon%30)};
+  return {name:S[i], sym:SY[i], deg:Math.floor(lon%30), idx:i};
 }
 function getAspect(l1, l2) {
   var diff = Math.abs(l1-l2); if(diff>180) diff=360-diff;
@@ -953,7 +959,87 @@ function getAscendent(hour, month) {
   var S=["Berbec","Taur","Gemeni","Rac","Leu","Fecioara","Balanta","Scorpion","Sagetator","Capricorn","Varsator","Pesti"];
   var SY=["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
   var i=((Math.floor(hour/2))+(month-1))%12;
-  return {name:S[i],sym:SY[i]};
+  return {name:S[i],sym:SY[i],idx:i};
+}
+
+// ═══ GEOGRAPHIC PRECISION ═══
+// Real Ascendant/MC from actual birth coordinates + historical timezone, instead
+// of the hour+month approximation above (kept as the fallback when geocoding or
+// timezone resolution fails for any reason).
+async function geocodePlace(placeName) {
+  try {
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function() { controller.abort(); }, 6000);
+    var url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(placeName);
+    var res = await fetch(url, { signal: controller.signal, headers: { "Accept-Language": "ro" } });
+    clearTimeout(timeoutId);
+    if (!res.ok) return null;
+    var data = await res.json();
+    if (!data || !data.length) return null;
+    var lat = parseFloat(data[0].lat), lon = parseFloat(data[0].lon);
+    if (!isFinite(lat) || !isFinite(lon)) return null;
+    var tz = (typeof tzlookup === "function") ? tzlookup(lat, lon) : null;
+    if (!tz) return null;
+    return { lat: lat, lon: lon, tz: tz };
+  } catch (e) {
+    return null;
+  }
+}
+
+// tz - UTC offset in minutes at a given instant, using the browser's built-in
+// historical tz-database (handles DST and past rule changes correctly).
+function getUTCOffsetMinutes(date, timeZone) {
+  var dtf = new Intl.DateTimeFormat("en-US", {
+    timeZone: timeZone, hourCycle: "h23",
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
+  });
+  var parts = dtf.formatToParts(date);
+  var map = {};
+  parts.forEach(function(p) { if (p.type !== "literal") map[p.type] = p.value; });
+  var asUTC = Date.UTC(
+    parseInt(map.year), parseInt(map.month) - 1, parseInt(map.day),
+    parseInt(map.hour), parseInt(map.minute), parseInt(map.second)
+  );
+  return Math.round((asUTC - date.getTime()) / 60000);
+}
+
+// Converts a local civil wall-clock birth time in a given IANA timezone into
+// the precise UTC instant, refining once across a possible DST boundary.
+function localCivilTimeToUTC(year, month, day, hour, minute, timeZone) {
+  var guess = new Date(Date.UTC(year, month - 1, day, hour, minute, 0));
+  var offset = getUTCOffsetMinutes(guess, timeZone);
+  var utc = new Date(guess.getTime() - offset * 60000);
+  var offset2 = getUTCOffsetMinutes(utc, timeZone);
+  if (offset2 !== offset) utc = new Date(guess.getTime() - offset2 * 60000);
+  return utc;
+}
+
+// Ascendant + Midheaven from RAMC (Right Ascension of Midheaven), the obliquity
+// of the ecliptic, and geographic latitude - standard spherical astronomy
+// formulas (see e.g. "Ascendant (astrology)" derivation on Wikipedia).
+function computeRealAscMC(utcDate, latDeg, lonDeg) {
+  var toRad = Math.PI / 180, toDeg = 180 / Math.PI;
+  var JD = julianDay(utcDate);
+  var T = (JD - 2451545.0) / 36525;
+
+  var gmst = 280.46061837 + 360.98564736629 * (JD - 2451545.0) + 0.000387933 * T * T - (T * T * T) / 38710000;
+  gmst = ((gmst % 360) + 360) % 360;
+  var ramc = ((gmst + lonDeg) % 360 + 360) % 360;
+
+  var eps = 23.439291 - 0.0130042 * T - 0.00000016 * T * T + 0.000000504 * T * T * T;
+
+  var ramcR = ramc * toRad, epsR = eps * toRad, latR = latDeg * toRad;
+
+  var mc = Math.atan2(Math.sin(ramcR), Math.cos(ramcR) * Math.cos(epsR)) * toDeg;
+  mc = ((mc % 360) + 360) % 360;
+
+  var ascNum = -Math.cos(ramcR);
+  var ascDen = Math.sin(epsR) * Math.tan(latR) + Math.cos(epsR) * Math.sin(ramcR);
+  var asc = Math.atan2(ascNum, ascDen) * toDeg;
+  asc = ((asc % 360) + 360) % 360;
+
+  return { ascLon: asc, mcLon: mc };
 }
 
 // ═══ NUMEROLOGY ═══
@@ -2654,8 +2740,8 @@ function buildHousesSection(bp, asc, zodiac, hour) {
   }
 
   var ascIdx = ALL_SIGNS.indexOf(asc.name);
-  var html = sh("Cuspidalele Caselor (Sistem Placidus Simplificat)");
-  html += p("Casele astrologice sunt cele 12 sectoare ale hartii natale, calculate din Ascendent. Ele arata DOMENIILE de viața (nu planetele sau zodiile). Planeta care se afla intr-o casa coloreaza modul in care se manifesta energia acelei case in viața concreta.");
+  var html = sh("Cuspidalele Caselor (Sistem Case Egale)" + (asc.precise ? "" : " - aproximare"));
+  html += p("Casele astrologice sunt cele 12 sectoare ale hartii natale, calculate din Ascendent. Ele arata DOMENIILE de viața (nu planetele sau zodiile). Planeta care se afla intr-o casa coloreaza modul in care se manifesta energia acelei case in viața concreta." + (asc.precise ? "" : " Ascendentul afisat este o aproximare bazata doar pe ora si luna nasterii - pentru precizie completa, introduceti si locul nasterii intr-un format recunoscut (Oras, Tara)."));
 
   html += "<div class='pg'>";
   for (var i = 0; i < 12; i++) {
@@ -2667,7 +2753,7 @@ function buildHousesSection(bp, asc, zodiac, hour) {
 
   html += sh("Planetele in Case - Interpretare");
   var pkeys2 = ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn"];
-  var ascLon = (ascIdx * 30 + 15) % 360;
+  var ascLon = asc.precise ? asc.lon : ((ascIdx * 30 + 15) % 360);
   var houses = getHousesFromAsc(ascLon);
 
   for (var k = 0; k < pkeys2.length; k++) {
@@ -2682,7 +2768,7 @@ function buildHousesSection(bp, asc, zodiac, hour) {
     }
   }
 
-  var mcSign = ALL_SIGNS[(ascIdx + 9) % 12];
+  var mcSign = (asc.precise && asc.mcLon !== undefined) ? lonToSign(asc.mcLon).name : ALL_SIGNS[(ascIdx + 9) % 12];
   html += sh("MC (Mediu Coeli) - Carieră si Vocatia Publica");
   html += p("MC-ul dvs. se afla in <strong>" + mcSign + "</strong>. " + getMCInterp(mcSign));
 
@@ -2888,16 +2974,34 @@ async function buildResult() {
   var modality = getModality(zodiac.s);
   var ruler = getRuler(zodiac.s);
   var chinese = getChineseZodiac(year);
-  var asc = hour!==null ? getAscendent(hour, month) : null;
   var profile = ZP[zodiac.s] || ZP["Berbec"];
 
-  // Combine birth date + time (when known) for the ephemeris — planetary
-  // positions (especially the Moon, ~13°/day) depend on time-of-day, which
-  // the previous synthetic model ignored entirely. Falls back to noon when
-  // no birth time is given (minimizes worst-case error vs. assuming midnight).
-  var bdTime = (hour !== null)
-    ? new Date(year, month-1, day, hour, parseInt(bt.split(":")[1]||"0"))
-    : new Date(year, month-1, day, 12, 0);
+  // Geographic precision: when both birth place AND birth time are known, geocode
+  // the place (Nominatim) and resolve its real IANA timezone (tz-lookup) so the
+  // civil birth time converts to the exact historical UTC instant (via the
+  // browser's built-in tz-database, Intl.DateTimeFormat) instead of assuming the
+  // current browser's timezone. Any failure (network, unrecognized place) falls
+  // back silently to the previous approximation - nothing regresses.
+  var geo = (bplace && hour !== null) ? await geocodePlace(bplace) : null;
+
+  var bdTime = geo
+    ? localCivilTimeToUTC(year, month, day, hour, parseInt(bt.split(":")[1]||"0"), geo.tz)
+    : (hour !== null)
+      ? new Date(year, month-1, day, hour, parseInt(bt.split(":")[1]||"0"))
+      : new Date(year, month-1, day, 12, 0);
+
+  // Ascendant/MC: real formula (RAMC + obliquity + geographic latitude) when
+  // geocoding succeeded; otherwise the original hour+month approximation.
+  var asc;
+  if (geo) {
+    var ascmc = computeRealAscMC(bdTime, geo.lat, geo.lon);
+    asc = lonToSign(ascmc.ascLon);
+    asc.lon = ascmc.ascLon;
+    asc.mcLon = ascmc.mcLon;
+    asc.precise = true;
+  } else {
+    asc = hour !== null ? getAscendent(hour, month) : null;
+  }
 
   var bp = {};
   var pkeys = ["sun","moon","mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto","node"];
@@ -2906,7 +3010,7 @@ async function buildResult() {
     bp[pkeys[i]] = {lon:lon, sign:lonToSign(lon)};
   }
 
-  var partFortune = ((asc?(hour/24*360):0) + bp.moon.lon - bp.sun.lon + 360) % 360;
+  var partFortune = ((asc?(asc.precise?asc.lon:(hour/24*360)):0) + bp.moon.lon - bp.sun.lon + 360) % 360;
   var northNode = bp.node.lon;
   var southNode = (northNode+180)%360;
 
@@ -3173,7 +3277,8 @@ function hidePalmModal() {
     <span class="au-close" onclick="closePlansModal()">&#10005;</span>
     <h3>&#9733; PLANURI &amp; PRETURI</h3>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px">
-      <div style="background:rgba(4,3,10,.7);border:1px solid var(--border);padding:20px 16px;text-align:center">
+      <div id="planCardFree" class="plan-card" style="background:rgba(4,3,10,.7);border:1px solid var(--border);padding:20px 16px;text-align:center">
+        <div class="plan-current-badge">Planul tau actual</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--text-d);letter-spacing:2px;margin-bottom:8px">FREE</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">0 lei</div>
         <div style="font-size:12px;color:var(--silver);text-align:left;line-height:2">
@@ -3186,7 +3291,8 @@ function hidePalmModal() {
           &#10007; Human Design
         </div>
       </div>
-      <div style="background:var(--gold-f);border:1px solid var(--gold);padding:20px 16px;text-align:center">
+      <div id="planCardPro" class="plan-card" style="background:var(--gold-f);border:1px solid var(--gold);padding:20px 16px;text-align:center">
+        <div class="plan-current-badge">Planul tau actual</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">PRO</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">15 lei/luna</div>
         <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
@@ -3199,7 +3305,8 @@ function hidePalmModal() {
           &#10007; Human Design
         </div>
       </div>
-      <div style="background:rgba(4,3,10,.7);border:1px solid var(--border-b);padding:20px 16px;text-align:center">
+      <div id="planCardPremium" class="plan-card" style="background:rgba(4,3,10,.7);border:1px solid var(--border-b);padding:20px 16px;text-align:center">
+        <div class="plan-current-badge">Planul tau actual</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold-l);letter-spacing:2px;margin-bottom:8px">PREMIUM</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">9 &euro;/luna</div>
         <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
@@ -3211,7 +3318,7 @@ function hidePalmModal() {
       </div>
     </div>
     <div class="sh3">Cum faci upgrade (momentan manual)</div>
-    <p style="font-size:13px;color:var(--silver);line-height:1.8">Trimite suma corespunzatoare planului dorit + contul tau (emailul cu care esti inregistrat) la <strong id="plansContact">bogdan.ilie@usa.com</strong>. Upgrade-ul se face manual in maxim 24h de la confirmarea platii.</p>
+    <p style="font-size:13px;color:var(--silver);line-height:1.8">Trimite suma corespunzatoare planului dorit prin Revolut la <strong id="plansContact">@trueblood</strong>, mentionand in descrierea platii contul tau (emailul cu care esti inregistrat). Upgrade-ul se face manual in maxim 24h de la confirmarea platii.</p>
   </div>
 </div>
 
@@ -3486,6 +3593,13 @@ async function toggleFavorite(readingId) {
 
 // ═══ PLANS & PRICING ═══
 function openPlansModal() {
+  var cards = { free: "planCardFree", pro: "planCardPro", premium: "planCardPremium" };
+  var activeTier = currentUser ? currentTier : null;
+  Object.keys(cards).forEach(function(t) {
+    var el = document.getElementById(cards[t]);
+    if (!el) return;
+    el.classList.toggle("plan-current", t === activeTier);
+  });
   document.getElementById("plansModal").classList.add("show");
 }
 function closePlansModal() {
