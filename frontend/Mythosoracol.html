@@ -2230,6 +2230,244 @@ function buildRuneSection(seedStr) {
   return html;
 }
 
+// ═══ HUMAN DESIGN (calcul propriu, fara API platit) ═══
+// Bazat pe pozitiile planetare reale (deja calculate prin astronomy-engine) la
+// nastere ("Personalitate"/constient) si la momentul cand Soarele se afla cu
+// exact 88 de grade de arc inainte de nastere ("Design"/inconstient) - metoda
+// traditionala Human Design. Roata celor 64 de porti este o reconstructie pe
+// baza cea mai buna a mandalei traditionale (inclusiv verificarea ca Poarta 41
+// cade la inceputul Varsatorului, punct de referinta cunoscut - "Poarta 41,
+// prima poarta a anului Rave, activata de Soare in jur de 22 ianuarie").
+// Micile inexactitati la limita exacta dintre doua porti raman posibile.
+var HD_GATE_WHEEL = [
+  25,17,21,51,42,3,27,24,2,23,8,20,16,35,45,12,15,52,39,53,
+  62,56,31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,28,44,
+  1,43,14,34,9,5,26,11,10,58,38,54,61,60,41,19,13,49,30,55,
+  37,63,22,36
+];
+var HD_CENTERS = {
+  "Cap":     [64,61,63],
+  "Ajna":    [47,24,4,17,43,11],
+  "Gat":     [62,23,56,35,12,45,33,8,31,20,16],
+  "G":       [1,13,25,46,2,15,10,7],
+  "Inima":   [21,40,26,51],
+  "Splina":  [48,57,44,50,32,28,18],
+  "Sacral":  [34,5,14,29,59,9,3,42,27],
+  "PlexSolar": [36,22,37,6,49,55,30],
+  "Radacina": [58,38,54,53,60,52,19,39,41]
+};
+var HD_CENTER_NAMES = {"Cap":"Capul","Ajna":"Ajna","Gat":"Gatul","G":"Centrul G (Identitate)","Inima":"Inima (Ego/Vointa)","Splina":"Splina","Sacral":"Sacral","PlexSolar":"Plexul Solar (Emotional)","Radacina":"Radacina"};
+var HD_GATE_TO_CENTER = {};
+Object.keys(HD_CENTERS).forEach(function(c){ HD_CENTERS[c].forEach(function(g){ HD_GATE_TO_CENTER[g]=c; }); });
+var HD_CHANNELS = [
+  [1,8,"Inspiratia"],[2,14,"Pulsatia"],[3,60,"Mutatia"],[4,63,"Logica"],[5,15,"Ritmul"],
+  [6,59,"Imperecherea"],[7,31,"Alfa (Leadership)"],[9,52,"Concentrarea"],[10,20,"Trezirea"],[10,34,"Explorarea"],
+  [10,57,"Forma Perfecta"],[11,56,"Curiozitatea"],[12,22,"Deschiderea"],[13,33,"Fiul Risipitor"],[16,48,"Lungimea de Unda"],
+  [17,62,"Acceptarea"],[18,58,"Judecata"],[19,49,"Sinteza"],[20,34,"Carisma"],[20,57,"Unda Cerebrala"],
+  [21,45,"Linia Banilor"],[23,43,"Structurarea"],[24,61,"Constiinta"],[25,51,"Initierea"],[26,44,"Predarea"],
+  [27,50,"Conservarea"],[28,38,"Lupta"],[29,46,"Descoperirea"],[30,41,"Recunoasterea"],[32,54,"Transformarea"],
+  [34,57,"Puterea"],[35,36,"Tranzitoriul"],[37,40,"Comunitatea"],[39,55,"Emotia"],[42,53,"Maturizarea"],[47,64,"Abstractizarea"]
+];
+var HD_MOTOR_CENTERS = ["Sacral","Inima","PlexSolar","Radacina"];
+var HD_LINE_NAMES = {1:"Investigatorul",2:"Ermitul",3:"Martirul (incercare-eroare)",4:"Oportunistul",5:"Ereticul",6:"Model de Rol"};
+var HD_TYPE_DESC = {
+  "Manifestor":"Manifestorii sunt facuti sa initieze si sa actioneze independent, cu impact direct asupra celor din jur. Strategia lor: informeaza inainte de a actiona, pentru a reduce rezistenta celorlalti.",
+  "Generator":"Generatorii au acces la o energie vitala sustinuta prin Sacral. Strategia lor: raspunde la ce apare in viata (nu initiaza), urmand ce le aprinde entuziasmul autentic.",
+  "Manifesting Generator":"Manifesting Generatorii combina energia sustinuta a Sacralului cu impulsul de a initia al Manifestorilor. Strategia: raspunde, apoi informeaza inainte de a sari direct la pasul urmator.",
+  "Projector":"Projectorii sunt facuti sa ghideze si sa optimizeze sistemele si energiile celorlalti, nu sa produca ei insisi in mod sustinut. Strategia lor: asteapta invitatia inainte de a se implica major.",
+  "Reflector":"Reflectorii nu au niciun centru definit in mod constant - reflecta si amplifica energia mediului si a oamenilor din jur, ca o oglinda. Strategia lor: asteapta un ciclu lunar complet (~28 zile) inainte de decizii majore."
+};
+var HD_AUTH_DESC = {
+  "Emotional (Plex Solar)":"Autoritatea Emotionala inseamna ca nu exista claritate 'in momentul de fata' - claritatea vine dupa parcurgerea unui val emotional complet, in timp. Deciziile importante nu se iau niciodata pe loc.",
+  "Sacral":"Autoritatea Sacrala se exprima ca un raspuns instinctiv, imediat, resimtit in corp ('da' energizant sau 'nu' care se stinge) - deciziile bune vin din raspunsul spontan, nu din analiza mentala.",
+  "Splenic":"Autoritatea Splenica este cea mai subtila si mai rapida - o intuitie instantanee, in prezent, care nu se repeta si nu se explica. A fi atent la primul impuls este cheia.",
+  "Ego":"Autoritatea Ego se bazeaza pe vointa si pe ceea ce doriti cu adevarat pentru voi insiva - intrebarea centrala e 'ce imi doresc eu, nu ce ar trebui sa fac'.",
+  "Self-Projected (G)":"Autoritatea Self-Projected se clarifica prin a vorbi cu voce tare, ascultandu-va propriul discurs - claritatea apare in procesul de a vorbi despre o decizie unei alte persoane, nu inainte.",
+  "Mental/Environmental":"Fara o autoritate interna definita in centrele emotionale/instinctive, decizia se clarifica extern - prin a discuta deschis cu altii, in mediul potrivit, lasand mintea sa cantareasca optiunile impreuna cu ceilalti (nu izolat).",
+  "Lunar":"Autoritatea Lunara (specifica Reflectorilor) cere parcurgerea unui ciclu lunar complet de aproximativ 28 de zile inainte de decizii majore, permitand tuturor perspectivelor sa fie resimtite."
+};
+
+function hdLonToGateLine(lon) {
+  var gateWidth = 5.625;
+  var idx = Math.floor(((lon % 360) + 360) % 360 / gateWidth) % 64;
+  var gate = HD_GATE_WHEEL[idx];
+  var intoGate = (((lon % 360) + 360) % 360) % gateWidth;
+  var line = Math.floor(intoGate / (gateWidth / 6)) + 1;
+  return { gate: gate, line: line };
+}
+
+function hdComputeDesignDate(birthDate) {
+  var birthSun = getPLon("sun", birthDate);
+  var targetLon = ((birthSun - 88) % 360 + 360) % 360;
+  var d = new Date(birthDate.getTime() - 89 * 86400000);
+  for (var iter = 0; iter < 8; iter++) {
+    var curLon = getPLon("sun", d);
+    var diff = ((targetLon - curLon + 540) % 360) - 180;
+    d = new Date(d.getTime() + (diff / 0.9856) * 86400000);
+  }
+  return d;
+}
+
+function hdBodyLons(d) {
+  var sun = getPLon("sun", d);
+  var nnode = getPLon("node", d);
+  return {
+    sun: sun, earth: (sun + 180) % 360, moon: getPLon("moon", d),
+    nnode: nnode, snode: (nnode + 180) % 360,
+    mercury: getPLon("mercury", d), venus: getPLon("venus", d), mars: getPLon("mars", d),
+    jupiter: getPLon("jupiter", d), saturn: getPLon("saturn", d),
+    uranus: getPLon("uranus", d), neptune: getPLon("neptune", d), pluto: getPLon("pluto", d)
+  };
+}
+var HD_BODY_NAMES = {sun:"Soare",earth:"Pamant",moon:"Luna",nnode:"Nod Nord",snode:"Nod Sud",mercury:"Mercur",venus:"Venus",mars:"Marte",jupiter:"Jupiter",saturn:"Saturn",uranus:"Uranus",neptune:"Neptun",pluto:"Pluton"};
+
+function hdBuildActivations(d) {
+  var lons = hdBodyLons(d);
+  var out = {};
+  Object.keys(lons).forEach(function(k){ out[k] = hdLonToGateLine(lons[k]); });
+  return out;
+}
+
+function hdBfsReachable(start, edges) {
+  var adj = {};
+  edges.forEach(function(e){
+    adj[e[0]] = adj[e[0]] || []; adj[e[0]].push(e[1]);
+    adj[e[1]] = adj[e[1]] || []; adj[e[1]].push(e[0]);
+  });
+  var seen = {}; var queue = [start]; seen[start] = true;
+  while (queue.length) {
+    var cur = queue.shift();
+    (adj[cur] || []).forEach(function(n){ if (!seen[n]) { seen[n] = true; queue.push(n); } });
+  }
+  return seen;
+}
+
+function hdConnectedComponents(definedCenters, edges) {
+  var nodes = Object.keys(definedCenters);
+  var seenAll = {}; var count = 0;
+  nodes.forEach(function(n){
+    if (seenAll[n]) return;
+    count++;
+    var reach = hdBfsReachable(n, edges);
+    Object.keys(reach).forEach(function(r){ if (definedCenters[r]) seenAll[r] = true; });
+  });
+  return count;
+}
+
+function computeHumanDesign(bdTime) {
+  var designDate = hdComputeDesignDate(bdTime);
+  var pAct = hdBuildActivations(bdTime);
+  var dAct = hdBuildActivations(designDate);
+
+  var activatedGates = new Set();
+  Object.keys(pAct).forEach(function(k){ activatedGates.add(pAct[k].gate); });
+  Object.keys(dAct).forEach(function(k){ activatedGates.add(dAct[k].gate); });
+
+  var definedCenters = {};
+  var activeChannels = [];
+  HD_CHANNELS.forEach(function(ch){
+    if (activatedGates.has(ch[0]) && activatedGates.has(ch[1])) {
+      definedCenters[HD_GATE_TO_CENTER[ch[0]]] = true;
+      definedCenters[HD_GATE_TO_CENTER[ch[1]]] = true;
+      activeChannels.push(ch);
+    }
+  });
+  var edges = activeChannels.map(function(ch){ return [HD_GATE_TO_CENTER[ch[0]], HD_GATE_TO_CENTER[ch[1]], ch]; });
+
+  var sacralDefined = !!definedCenters["Sacral"];
+  var nDefined = Object.keys(definedCenters).length;
+  var type;
+  if (nDefined === 0) {
+    type = "Reflector";
+  } else {
+    var reach = hdBfsReachable("Gat", edges);
+    if (!sacralDefined) {
+      var toMotor = HD_MOTOR_CENTERS.some(function(m){ return m !== "Sacral" && reach[m]; });
+      type = toMotor ? "Manifestor" : "Projector";
+    } else {
+      type = reach["Sacral"] ? "Manifesting Generator" : "Generator";
+    }
+  }
+
+  var authority;
+  if (definedCenters["PlexSolar"]) authority = "Emotional (Plex Solar)";
+  else if (definedCenters["Sacral"]) authority = "Sacral";
+  else if (definedCenters["Splina"]) authority = "Splenic";
+  else if (definedCenters["Inima"]) authority = "Ego";
+  else if (definedCenters["G"]) authority = "Self-Projected (G)";
+  else if (nDefined > 0) authority = "Mental/Environmental";
+  else authority = "Lunar";
+
+  var defCount = hdConnectedComponents(definedCenters, edges);
+  var definitionName = nDefined === 0 ? "Nu se aplica (Reflector)" :
+    (defCount === 1 ? "Definitie Simpla" : defCount === 2 ? "Definitie Divizata" : defCount === 3 ? "Definitie Triplu Divizata" : "Definitie Cvadruplu Divizata");
+
+  var profile = pAct.sun.line + "/" + dAct.sun.line;
+
+  return {
+    designDate: designDate, pAct: pAct, dAct: dAct,
+    definedCenters: definedCenters, activeChannels: activeChannels,
+    type: type, authority: authority, defCount: defCount, definitionName: definitionName, profile: profile
+  };
+}
+
+function buildHumanDesignSection(bdTime, hasExactTime) {
+  if (currentTier !== "premium") return buildUpsellHtml("Human Design (harta completa)", "premium");
+  if (!bdTime) return p("Human Design necesita data (si, ideal, ora) nasterii complete pentru calculul portilor si centrelor.");
+
+  var hd = computeHumanDesign(bdTime);
+  var html = "";
+  if (!hasExactTime) {
+    html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin-bottom:14px\">&#9888; Nu ati introdus ora exacta a nasterii - harta de mai jos foloseste ora 12:00 ca aproximare. Portile Lunii si ale altor corpuri cu miscare rapida pot fi imprecise fara ora reala; introduceti-o in Tab I pentru precizie completa.</p>";
+  }
+  html += sh("Rezumatul Tipului Energetic");
+  html += "<div class=\"pg\">";
+  html += buildPCard("&#9737;", "Tip", hd.type);
+  html += buildPCard("&#9670;", "Autoritate Interioara", hd.authority);
+  html += buildPCard("&#10022;", "Profil", hd.profile);
+  html += buildPCard("&#9711;", "Definitie", hd.definitionName);
+  html += "</div>";
+  html += p(HD_TYPE_DESC[hd.type] || "");
+  html += p((HD_AUTH_DESC[hd.authority] || ""));
+
+  var sunLine = hd.pAct.sun.line, designSunLine = hd.dAct.sun.line;
+  html += sh("Profilul " + hd.profile);
+  html += p("Linia " + sunLine + " (constienta/Personalitate) - <strong>" + HD_LINE_NAMES[sunLine] + "</strong>, combinata cu Linia " + designSunLine + " (inconstienta/Design) - <strong>" + HD_LINE_NAMES[designSunLine] + "</strong>. Profilul descrie rolul si stilul de interactiune cu lumea: partea constienta (" + HD_LINE_NAMES[sunLine] + ") este ceea ce recunoasteti si exprimati deschis, iar partea inconstienta (" + HD_LINE_NAMES[designSunLine] + ") actioneaza in fundal, adesea vizibila mai intai celorlalti decat voua insiva.");
+
+  html += sh("Centrele Energetice (9)");
+  html += "<div class=\"pg\">";
+  Object.keys(HD_CENTERS).forEach(function(c){
+    var isDef = !!hd.definedCenters[c];
+    html += "<div class='pc' style='" + (isDef ? "border-color:var(--jade-l)" : "opacity:.6") + "'><span class='ps' style='color:" + (isDef ? "var(--jade-l)" : "var(--text-dd)") + "'>" + (isDef ? "&#9679;" : "&#9675;") + "</span><span class='pn'>" + HD_CENTER_NAMES[c] + "</span><span class='pv' style='color:" + (isDef ? "var(--jade-l)" : "var(--text-d)") + "'>" + (isDef ? "Definit" : "Nedefinit") + "</span></div>";
+  });
+  html += "</div>";
+  html += p("Centrele <strong style='color:var(--jade-l)'>definite</strong> reprezinta energie consistenta, fiabila, parte din natura voastra fixa. Centrele <strong style='color:var(--text-d)'>nedefinite</strong> sunt zone de intelepciune potentiala - unde absorbiti si amplificati energia celor din jur, uneori confundand-o cu a voastra.");
+
+  if (hd.activeChannels.length > 0) {
+    html += sh("Canalele Active (" + hd.activeChannels.length + ")");
+    html += "<div class=\"pg\">";
+    hd.activeChannels.forEach(function(ch){
+      html += buildPCard("&#8596;", ch[0] + "-" + ch[1], ch[2]);
+    });
+    html += "</div>";
+  }
+
+  html += sh("Activari - Personalitate (constient) &middot; Design (inconstient)");
+  html += "<div class=\"pg\">";
+  Object.keys(hd.pAct).forEach(function(k){
+    html += buildPCard("&#9679;", HD_BODY_NAMES[k], "Poarta " + hd.pAct[k].gate + "." + hd.pAct[k].line);
+  });
+  html += "</div>";
+  html += "<div class=\"pg\" style='margin-top:8px'>";
+  Object.keys(hd.dAct).forEach(function(k){
+    html += buildPCard("&#9675;", HD_BODY_NAMES[k], "Poarta " + hd.dAct[k].gate + "." + hd.dAct[k].line);
+  });
+  html += "</div>";
+  html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Roata portilor foloseste o reconstructie proprie a mandalei traditionale Human Design; cuspidele exacte dintre doua porti pot diferi cu putin fata de un calculator HD dedicat, mai ales pentru activari foarte aproape de limita dintre doua porti.</p>";
+
+  return html;
+}
+
 // ═══ DRAW BIORHYTHM ═══
 function drawBio(bio, birthDate, now) {
   var canvas = document.getElementById("bioCanvas");
@@ -3145,6 +3383,10 @@ async function buildResult() {
   htmlDiv += safeSection("&#9775;", "V &middot; I CHING - CARTEA SCHIMBARILOR", buildIChingSection(dailySeed));
   htmlDiv += safeSection("&#5792;", "VI &middot; RUNE (ELDER FUTHARK)", buildRuneSection(dailySeed));
 
+  // ── HUMAN DESIGN ──
+  var htmlHD = "";
+  htmlHD += safeSection("&#9784;", "I &middot; HARTA HUMAN DESIGN COMPLETA", buildHumanDesignSection(bdTime, hour !== null));
+
   // ── SINTEZA ZILNICA ──
   var htmlSyn = "";
   htmlSyn += buildSection("&#9651;", "I &middot; PROGNOZA ANUALA &amp; CALENDAR", buildAnnualSection(monthForecasts,now,progSun,bd,question));
@@ -3158,12 +3400,14 @@ async function buildResult() {
   html += "<button class=\"rtb\" onclick=\"showResultTab('rt-num',this)\">&#10022; Numerologie</button>";
   html += "<button class=\"rtb\" onclick=\"showResultTab('rt-bio',this)\">&#9675; Bioritm</button>";
   html += "<button class=\"rtb\" onclick=\"showResultTab('rt-div',this)\">&#9775; Divinatie</button>";
+  html += "<button class=\"rtb\" onclick=\"showResultTab('rt-hd',this)\">&#9784; Human Design</button>";
   html += "<button class=\"rtb\" onclick=\"showResultTab('rt-syn',this)\">&#9670; Sinteza Zilnica</button>";
   html += "</div>";
   html += "<div id=\"rt-astro\" class=\"rtp act\">" + htmlAstro + "</div>";
   html += "<div id=\"rt-num\" class=\"rtp\">" + htmlNum + "</div>";
   html += "<div id=\"rt-bio\" class=\"rtp\">" + htmlBio + "</div>";
   html += "<div id=\"rt-div\" class=\"rtp\">" + htmlDiv + "</div>";
+  html += "<div id=\"rt-hd\" class=\"rtp\">" + htmlHD + "</div>";
   html += "<div id=\"rt-syn\" class=\"rtp\">" + htmlSyn + "</div>";
 
   html += "<button class=\"rb\" onclick=\"resetOracle()\">&#8635; Consultatie Noua</button>";
