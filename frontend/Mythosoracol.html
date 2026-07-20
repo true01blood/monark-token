@@ -1600,7 +1600,7 @@ function buildAnnualSection(monthForecasts, now, progSun, birthDate, question) {
   return html;
 }
 
-function buildDailyOracleSection(bio, pd, pm, py, zodiac, transits, element, now) {
+async function buildDailyOracleSection(bio, pd, pm, py, zodiac, transits, element, now, aiContext) {
   var score = Math.round((bio.physical+bio.emoțional+bio.intellectual)/3);
   var energyLabel = score>40?"Ridicata &#8593;":score>0?"Moderata &#8594;":score>-40?"Joasa &#8595;":"Critica &#9888;";
   var html = "<div class=\"do\">";
@@ -1612,7 +1612,17 @@ function buildDailyOracleSection(bio, pd, pm, py, zodiac, transits, element, now
   html += "<div class=\"di\"><div class=\"dv2\">" + Math.round(bio.emoțional) + "</div><div class=\"dl\">Emoțional</div></div>";
   html += "<div class=\"di\"><div class=\"dv2\">" + Math.round(bio.intellectual) + "</div><div class=\"dl\">Intelectual</div></div>";
   html += "</div>";
-  html += "<div class=\"do-b\">" + getDailyOracle(bio, pd, pm, py, zodiac, transits, element) + "</div>";
+
+  // Oracol Zilnic runs automatically on every generation (no explicit user
+  // action), so - unlike Dream/Question - it never spends the Free tier's
+  // shared 1/day AI quota; Free simply gets the template version, silently.
+  var aiText = (currentTier !== "free") ? await fetchAISynthesis("daily", { context: aiContext }) : null;
+  if (aiText) {
+    html += "<div class=\"do-b\">" + aiText.split(/\n{2,}/).map(function(par){ return "<p>" + par + "</p>"; }).join("") + "</div>";
+  } else {
+    html += "<div class=\"do-b\">" + getDailyOracle(bio, pd, pm, py, zodiac, transits, element) + "</div>";
+    if (currentTier !== "free") html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:8px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
+  }
   html += "</div>";
   return html;
 }
@@ -1738,7 +1748,7 @@ function buildCompatSection(zodiac) {
   return html;
 }
 
-function buildSynastrySec(synData, bioData, zodiac, element, lp) {
+async function buildSynastrySec(synData, bioData, zodiac, element, lp) {
   if(!synData) return p("Nu a fost furnizata data nașterii unui partener. Completati Tab III pentru a activa modulul de sinastrie.");
   if(currentTier === "free") return buildUpsellHtml("Sinastria", "pro");
   var bioSync = Math.round((100-Math.abs(bioData.physical-synData.bio.physical)/2-Math.abs(bioData.emoțional-synData.bio.emoțional)/2)/1.5);
@@ -1748,7 +1758,22 @@ function buildSynastrySec(synData, bioData, zodiac, element, lp) {
   html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold)\">Partener</div><div style=\"font-size:22px;margin:7px 0\">" + (synData.zodiac.sy||"&#10022;") + "</div><div style=\"font-style:italic;color:var(--silver)\">" + synData.zodiac.s + " &middot; LP " + synData.lp + "</div></div>";
   html += "</div>";
   html += sh("Analiza Sinastrie");
-  html += p("Configuratia astrologica combina energiile " + element.name + " (" + zodiac + ") cu energiile " + synData.element.name + " (" + synData.zodiac.s + "). " + getSynDesc(element.name, synData.element.name));
+
+  // No quota check needed here: this whole section already returns above
+  // unless currentTier !== "free", and non-free tiers get unlimited AI.
+  var synCtx = {
+    yourZodiac: zodiac, yourElement: element.name, yourLifePath: lp,
+    partnerZodiac: synData.zodiac.s, partnerElement: synData.element.name, partnerLifePath: synData.lp,
+    coupleBiorhythmSync: bioSync
+  };
+  var aiText = await fetchAISynthesis("synastry", { context: synCtx });
+  if (aiText) {
+    html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
+  } else {
+    html += p("Configuratia astrologica combina energiile " + element.name + " (" + zodiac + ") cu energiile " + synData.element.name + " (" + synData.zodiac.s + "). " + getSynDesc(element.name, synData.element.name));
+    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:6px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
+  }
+
   html += sh("Bioritm de Cuplu - Astazi");
   html += buildCompatBar("", "Fizic dvs.", Math.round((bioData.physical+100)/2));
   html += buildCompatBar("", "Fizic partener", Math.round((synData.bio.physical+100)/2));
@@ -2865,7 +2890,7 @@ function calcGoodDays(day, month, year, zodiac, now) {
 }
 
 // ── 10. PSYCHOLOGICAL PROFILE (Liz Greene inspired) ──
-function buildPsychProfile(zodiac, asc, moonSign, lp, challenges) {
+async function buildPsychProfile(zodiac, asc, moonSign, lp, challenges) {
   var profiles = {
     "Berbec":    {animus:"Marte - Razboinicul",shadow:"Impulsivitate, agresivitate reactiva",complex:"Complexul eroului care trebuie sa dovedeasca in permanenta"},
     "Taur":      {animus:"Venus - Iubitorul",shadow:"Posesivitate, rezistență la schimbare",complex:"Complexul abundentei - teama de privare"},
@@ -2882,6 +2907,17 @@ function buildPsychProfile(zodiac, asc, moonSign, lp, challenges) {
   };
 
   var prof = profiles[zodiac] || profiles["Berbec"];
+
+  var psychCtx = {
+    zodiac: zodiac, dominantArchetype: prof.animus, shadowTendencies: prof.shadow,
+    centralComplex: prof.complex, ascendant: asc ? asc.name : null, moonSign: moonSign,
+    numerologyChallenge: challenges[2] || 0, lifePath: lp
+  };
+  var aiText = (currentTier !== "free") ? await fetchAISynthesis("psych", { context: psychCtx }) : null;
+  if (aiText) {
+    return sh("Profil Psihologic Personalizat (AI)") + aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
+  }
+
   var html = sh("Arhetipul Dominant - " + prof.animus);
   html += p("Planeta conducatoare a zodiei dvs. activeaza arhetipul de " + prof.animus + " in psihicul dvs. Aceasta energie este forta motrice cea mai vizibila in personalitate si in modul de a actiona in lume.");
 
@@ -2899,6 +2935,7 @@ function buildPsychProfile(zodiac, asc, moonSign, lp, challenges) {
   html += sh("Anima/Animus si Proiectia Romantica");
   html += p("Luna din harta natala (semnul in care se afla) descrie calitatea anima/animus - ceea ce cautati inconștient in partener. Proiectati aceste calitati, adesea idealizate, in persoanele de care va indragostiti, inainte de a le integra in propria personalitate.");
 
+  if (currentTier !== "free") html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:8px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
   return html;
 }
 
@@ -3352,7 +3389,7 @@ async function buildResult() {
   htmlAstro += buildSection("&#9737;", "I &middot; PROFIL ASTROLOGIC NATAL COMPLET", buildAstroSection(zodiac,element,modality,ruler,chinese,asc,profile,bp,partFortune,northNode,southNode,bplace));
   htmlAstro += buildSection("&#10023;", "II &middot; SIMBOLISTICA SABIANA", buildSabianSection(bp,asc,northNode));
   htmlAstro += buildSection("&#8635;", "III &middot; TRANZITE PLANETARE ACTIVE", buildTransitSection(transits,progSun,progMoon,daysToSR,northNode,southNode));
-  htmlAstro += buildSection("&#9825;", "IV &middot; SINASTRIE &amp; BIORITM DE CUPLU", buildSynastrySec(synData,bio,zodiac.s,element,lp));
+  htmlAstro += buildSection("&#9825;", "IV &middot; SINASTRIE &amp; BIORITM DE CUPLU", await buildSynastrySec(synData,bio,zodiac.s,element,lp));
   htmlAstro += buildSection("&#9790;", "V &middot; COMPATIBILITATE ZODIACALA", buildCompatSection(zodiac.s));
   htmlAstro += safeSection("&#9737;&#9742;", "VI &middot; PLANETE MINORE: CHIRON, LILITH, ASTEROIZI", buildAsteroidsSection(bp, asc, now));
   htmlAstro += safeSection("&#9632;", "VII &middot; ASPECTELE NATALE SI STELLIUM", buildNatalAspectsSection(bp));
@@ -3390,10 +3427,10 @@ async function buildResult() {
   // ── SINTEZA ZILNICA ──
   var htmlSyn = "";
   htmlSyn += buildSection("&#9651;", "I &middot; PROGNOZA ANUALA &amp; CALENDAR", buildAnnualSection(monthForecasts,now,progSun,bd,question));
-  htmlSyn += buildSection("&#9711;", "II &middot; ORACOL ZILNIC INTEGRAT", buildDailyOracleSection(bio,pd,pm,py,zodiac.s,transits,element.name,now));
+  htmlSyn += buildSection("&#9711;", "II &middot; ORACOL ZILNIC INTEGRAT", await buildDailyOracleSection(bio,pd,pm,py,zodiac.s,transits,element.name,now,aiContext));
   if(question) htmlSyn += buildSection("&#10023;", "III &middot; RASPUNS LA INTREBAREA SPECIFICA", await buildQuestionSection(question,zodiac.s,lp,element,py,profile,transits,aiContext));
   htmlSyn += safeSection("&#9660;&#9650;", "IV &middot; CALENDARUL ZILELOR FAVORABILE &amp; MERCUR RETROGRAD", buildGoodDaysSection(day, month, year, zodiac.s, now));
-  htmlSyn += safeSection("&#9670;", "V &middot; PROFILUL PSIHOLOGIC (ARHETIPURI JUNGIENE)", buildPsychProfile(zodiac.s, asc, bp.moon.sign.name, lp, challenges));
+  htmlSyn += safeSection("&#9670;", "V &middot; PROFILUL PSIHOLOGIC (ARHETIPURI JUNGIENE)", await buildPsychProfile(zodiac.s, asc, bp.moon.sign.name, lp, challenges));
 
   html += "<div class=\"rtab-nav\">";
   html += "<button class=\"rtb act\" onclick=\"showResultTab('rt-astro',this)\">&#9737; Astrologie</button>";
