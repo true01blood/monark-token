@@ -1531,16 +1531,42 @@ function buildChiroSection() {
   return html;
 }
 
-function buildDreamSection(dreamText) {
-  if(!dreamText) return p("Nu a fost furnizat un vis pentru interpretare.");
+var RAILWAY_API_URL = "https://mythos-oracle-production.up.railway.app";
+
+async function fetchAISynthesis(type, payload) {
+  try {
+    var body = Object.assign({ type: type }, payload);
+    var ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 20000) : null;
+    var res = await fetch(RAILWAY_API_URL + "/api/synthesize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: ctrl ? ctrl.signal : undefined
+    });
+    if (timer) clearTimeout(timer);
+    if (!res.ok) return null;
+    var data = await res.json();
+    return data.text || null;
+  } catch (e) {
+    console.error("AI synthesis fetch failed:", e);
+    return null;
+  }
+}
+
+function findDreamKeywords(dreamText) {
   var lc = dreamText.toLowerCase();
   var found = [];
   var kkeys = Object.keys(DREAM_KW);
   for(var i=0;i<kkeys.length;i++){
-    if(lc.indexOf(kkeys[i])>=0) found.push({k:kkeys[i],m:DREAM_KW[kkeys[i]]});
+    var re = new RegExp("\\b" + kkeys[i].replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "i");
+    if(re.test(lc)) found.push({k:kkeys[i],m:DREAM_KW[kkeys[i]]});
   }
-  var html = sh("Visul Furnizat");
-  html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&ldquo;" + dreamText.substring(0,300) + (dreamText.length>300?"...":"") + "&rdquo;</div></div>";
+  return found;
+}
+
+function buildDreamFallback(dreamText, found) {
+  var html = "";
   if(found.length === 0) {
     html += sh("Interpretare");
     html += p("Visul descris nu contine simboluri din dictioanrul standard, ceea ce il face cu atat mai personal. Inconștientul dvs. utilizeaza un limbaj metaforic idiosincretic. Construiti un jurnal oniric pentru a identifica temele recurente ale propriului simbolism interior.");
@@ -1552,6 +1578,23 @@ function buildDreamSection(dreamText) {
     html += sh("Sinteza Interpretativa");
     var themes = found.slice(0,3).map(function(f){return f.k;}).join(", ");
     html += p("Ansamblul simbolic sugereaza ca psihicul profund proceseaza actualmente teme legate de " + themes + ". Structura narativa si incarcatura emoțională indica o perioada de integrare sau tranzitie in curs.");
+  }
+  return html;
+}
+
+async function buildDreamSection(dreamText, aiContext) {
+  if(!dreamText) return p("Nu a fost furnizat un vis pentru interpretare.");
+  var html = sh("Visul Furnizat");
+  html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&ldquo;" + dreamText.substring(0,300) + (dreamText.length>300?"...":"") + "&rdquo;</div></div>";
+
+  var aiText = await fetchAISynthesis("dream", { dreamText: dreamText, context: aiContext });
+  if (aiText) {
+    html += sh("Interpretare Personalizata (AI)");
+    html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
+  } else {
+    var found = findDreamKeywords(dreamText);
+    html += buildDreamFallback(dreamText, found);
+    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Interpretarea AI nu a fost disponibila momentan - se afiseaza interpretarea de baza pe cuvinte-cheie.</p>";
   }
   return html;
 }
@@ -1608,11 +1651,9 @@ function getPersonalYearMoneyOutlook(py) {
   return m[py] || m[1];
 }
 
-function buildQuestionSection(question, zodiac, lp, element, py, profile, transits) {
+function buildQuestionFallback(question, zodiac, lp, element, py, profile, transits) {
   var q = question.toLowerCase();
-  var html = sh("Intrebarea Formulata");
-  html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&bdquo;" + question + "&rdquo;</div></div>";
-  html += sh("Raspuns Integrat");
+  var html = "";
   var isTiming = q.indexOf("cand")>=0||q.indexOf("când")>=0||q.indexOf("curand")>=0||q.indexOf("curând")>=0||q.indexOf("perioada")>=0||q.indexOf("viitor")>=0||q.indexOf("voi ")>=0||q.indexOf("o sa")>=0||q.indexOf("o să")>=0;
   var jupiterHarm = transits.some(function(t){return t.tp==="jupiter" && t.aspect.nature!=="tense";});
   var saturnTense = transits.some(function(t){return t.tp==="saturn" && t.aspect.nature==="tense";});
@@ -1633,6 +1674,22 @@ function buildQuestionSection(question, zodiac, lp, element, py, profile, transi
     html += p(profile.health + " " + getBioInterp(getBio(window._bd, new Date())));
   } else {
     html += p("Configuratia zodiacala (" + zodiac + ", element " + element.name + ") sugereaza abordarea optima: " + getElementApproach(element.name) + ". Drumul Vieții " + lp + ": " + (LP_MEANINGS[lp]||"") + " Climatul Anului Personal " + py + ": " + (PY_THEMES[py]||PY_THEMES[1]));
+  }
+  return html;
+}
+
+async function buildQuestionSection(question, zodiac, lp, element, py, profile, transits, aiContext) {
+  var html = sh("Intrebarea Formulata");
+  html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&bdquo;" + question + "&rdquo;</div></div>";
+
+  var aiText = await fetchAISynthesis("question", { question: question, context: aiContext });
+  if (aiText) {
+    html += sh("Raspuns Personalizat (AI)");
+    html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
+  } else {
+    html += sh("Raspuns Integrat");
+    html += buildQuestionFallback(question, zodiac, lp, element, py, profile, transits);
+    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Interpretarea AI nu a fost disponibila momentan - se afiseaza raspunsul de baza.</p>";
   }
   return html;
 }
@@ -1789,10 +1846,10 @@ function launchOracle() {
     si++;
     if(si>steps.length) clearInterval(iv);
   },300);
-  setTimeout(function(){
+  setTimeout(async function(){
     clearInterval(iv);
+    await buildResult();
     ldr.classList.remove("sh");
-    buildResult();
   },5000);
 }
 
@@ -2462,7 +2519,7 @@ function getModalityBalance(c, f, m) {
 }
 
 
-function buildResult() {
+async function buildResult() {
   var now = new Date();
   var name = document.getElementById("fullName").value.trim();
   var gender = document.getElementById("gender").value;
@@ -2585,10 +2642,18 @@ function buildResult() {
   html += buildSection("&#9651;", "VI &middot; PROGNOZA ANUALA &amp; CALENDAR", buildAnnualSection(monthForecasts,now,progSun,bd,question));
   html += buildSection("&#9711;", "VII &middot; ORACOL ZILNIC INTEGRAT", buildDailyOracleSection(bio,pd,pm,py,zodiac.s,transits,element.name,now));
   html += buildSection("&#9759;", "VIII &middot; CHIROMANTIE", buildChiroSection());
-  html += buildSection("&#9789;", "IX &middot; INTERPRETAREA VISULUI", buildDreamSection(dreamText));
+  var aiContext = {
+    zodiac: zodiac.s, element: element.name, ascendant: asc ? asc.name : null,
+    lifePath: lp, personalYear: py, personalMonth: pm, personalDay: pd,
+    age: age, biorhythm: { physical: Math.round(bio.physical), emotional: Math.round(bio.emoțional), intellectual: Math.round(bio.intellectual) },
+    activeTransits: transits.slice(0,5).map(function(t){ return ENAMES[t.tp] + " " + t.aspect.name + " " + ENAMES[t.np] + " (" + t.severity + ")"; }),
+    today: now.toISOString().slice(0,10)
+  };
+
+  html += buildSection("&#9789;", "IX &middot; INTERPRETAREA VISULUI", await buildDreamSection(dreamText, aiContext));
   html += buildSection("&#9825;", "X &middot; SINASTRIE &amp; BIORITM DE CUPLU", buildSynastrySec(synData,bio,zodiac.s,element,lp));
   html += buildSection("&#9790;", "XI &middot; COMPATIBILITATE ZODIACALA", buildCompatSection(zodiac.s));
-  if(question) html += buildSection("&#10023;", "XII &middot; RASPUNS LA INTREBAREA SPECIFICA", buildQuestionSection(question,zodiac.s,lp,element,py,profile,transits));
+  if(question) html += buildSection("&#10023;", "XII &middot; RASPUNS LA INTREBAREA SPECIFICA", await buildQuestionSection(question,zodiac.s,lp,element,py,profile,transits,aiContext));
 
   var safeSection = function(icon, title, fn) {
     try { return buildSection(icon, title, fn); }
