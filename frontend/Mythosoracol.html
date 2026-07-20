@@ -70,6 +70,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .hn{font-size:12px;color:var(--text-d);font-style:italic}
 /* HAND OPTS */
 .hg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+@media(max-width:420px){.hg{grid-template-columns:1fr}}
 .ho{background:rgba(4,3,10,.7);border:1px solid var(--border);padding:9px 11px;cursor:pointer;font-size:13px;color:var(--silver);font-family:"Cormorant Garamond",serif;text-align:center;transition:all .22s}
 .ho:hover,.ho.sl{border-color:var(--gold);color:var(--gold);background:var(--gold-f)}
 /* BUTTON */
@@ -101,6 +102,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 @keyframes rv{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 /* ID BANNER */
 .idb{background:linear-gradient(135deg,rgba(18,11,40,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:40px 30px;text-align:center;position:relative;overflow:hidden}
+@media(max-width:480px){.idb{padding:26px 18px}}
 .idb::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(201,168,76,.05) 0%,transparent 70%)}
 .idb-name{font-family:"Cinzel Decorative",serif;font-size:clamp(18px,4vw,38px);color:var(--gold-l);letter-spacing:3px;margin-bottom:8px}
 .idb-sub{font-style:italic;color:var(--silver);font-size:14px;line-height:1.8;margin-bottom:16px}
@@ -175,6 +177,7 @@ canvas{width:100%;height:180px;display:block}
 .mt{font-size:12px;color:var(--silver);margin-top:3px;font-style:italic}
 /* DAILY ORACLE */
 .do{background:linear-gradient(135deg,rgba(26,15,55,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:28px 26px;margin:14px 0;text-align:center;position:relative;overflow:hidden}
+@media(max-width:480px){.do{padding:18px 16px}}
 .do::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,168,76,.05) 0%,transparent 70%)}
 .do-d{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d);margin-bottom:10px}
 .do-e{font-family:"Cinzel Decorative",serif;font-size:28px;color:var(--gold);margin-bottom:5px}
@@ -192,6 +195,7 @@ canvas{width:100%;height:180px;display:block}
 .sab-i{font-size:14px;color:var(--silver);line-height:1.7}
 /* SYN GRID */
 .syg{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:14px 0}
+@media(max-width:480px){.syg{grid-template-columns:1fr}}
 .syp{text-align:center;padding:14px;background:rgba(4,3,10,.6);border:1px solid var(--border)}
 .sv{font-family:"Cinzel Decorative",serif;font-size:18px;color:var(--gold-d)}
 /* RESET */
@@ -220,6 +224,7 @@ canvas{width:100%;height:180px;display:block}
 .czp-missing{opacity:.5;border-style:dashed}
 /* AUTH BAR */
 .authbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:10px 0;flex-wrap:wrap}
+@media(max-width:480px){.authbar{justify-content:center;gap:6px}.authbar .au-btn{padding:6px 10px;font-size:9px}}
 .authbar .au-status{font-family:"Raleway",sans-serif;font-size:11px;color:var(--text-d);letter-spacing:1px}
 .authbar .au-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;background:var(--gold-f);border:1px solid var(--border);color:var(--gold);cursor:pointer;transition:all .2s}
 .authbar .au-btn:hover{border-color:var(--gold)}
@@ -261,6 +266,7 @@ canvas{width:100%;height:180px;display:block}
 .hist-empty{text-align:center;color:var(--text-d);font-style:italic;padding:30px 0}
 /* ADMIN MODAL */
 .adm-box{background:linear-gradient(135deg,rgba(18,11,40,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:900px;width:94%;max-height:86vh;overflow-y:auto;position:relative}
+@media(max-width:480px){.au-box,.hist-box,.adm-box{padding:20px 16px}}
 .adm-box h3{font-family:"Cinzel Decorative",serif;font-size:14px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
 .adm-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-bottom:22px}
 .adm-stat{background:rgba(4,3,10,.7);border:1px solid var(--border);padding:14px 10px;text-align:center}
@@ -384,7 +390,7 @@ canvas{width:100%;height:180px;display:block}
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;justify-content:center">
           <div style="flex-shrink:0">
-            <img src="Palm.jpg" alt="Hartă palmă" class="palm-img" onclick="showPalmModal()" style="width:200px;border:1px solid rgba(201,168,76,0.25);display:block;opacity:0.88" />
+            <img src="Palm.jpg" alt="Hartă palmă" class="palm-img" onclick="showPalmModal()" style="width:200px;max-width:100%;border:1px solid rgba(201,168,76,0.25);display:block;opacity:0.88" />
           </div>
           <div style="flex:1;min-width:180px;max-width:340px">
             <div style="font-size:12px;color:var(--silver);line-height:1.75">
@@ -488,7 +494,7 @@ canvas{width:100%;height:180px;display:block}
 <div id="palmRefImg" style="display:none">
   <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-bottom:22px">
     <div style="flex-shrink:0">
-      <img src="Palm.jpg" alt="Harta palmei - referinta chiromantie" class="palm-img" onclick="showPalmModal()" style="width:220px;border:1px solid rgba(201,168,76,0.3);display:block;opacity:0.88" />
+      <img src="Palm.jpg" alt="Harta palmei - referinta chiromantie" class="palm-img" onclick="showPalmModal()" style="width:220px;max-width:100%;border:1px solid rgba(201,168,76,0.3);display:block;opacity:0.88" />
       <div style="font-family:Raleway,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);text-align:center;margin-top:6px">Hart&#259; de referinț&#259; a palmei</div>
     </div>
     <div style="flex:1;min-width:200px">
@@ -2042,7 +2048,7 @@ function buildCompatSection(zodiac) {
   return html;
 }
 
-async function buildSynastrySec(synData, bioData, zodiac, element, lp) {
+async function buildSynastrySec(synData, bioData, zodiac, element, lp, bp) {
   if(!synData) return p("Nu a fost furnizata data nașterii unui partener. Completati Tab III pentru a activa modulul de sinastrie.");
   if(currentTier === "free") return buildUpsellHtml("Sinastria", "pro");
   var bioSync = Math.round((100-Math.abs(bioData.physical-synData.bio.physical)/2-Math.abs(bioData.emoțional-synData.bio.emoțional)/2)/1.5);
@@ -2066,6 +2072,32 @@ async function buildSynastrySec(synData, bioData, zodiac, element, lp) {
   } else {
     html += p("Configuratia astrologica combina energiile " + element.name + " (" + zodiac + ") cu energiile " + synData.element.name + " (" + synData.zodiac.s + "). " + getSynDesc(element.name, synData.element.name));
     html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:6px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
+  }
+
+  if (bp && synData.bp) {
+    var synAspects = getSynastryAspects(bp, synData.bp);
+    html += sh("Aspectele Reale intre cele Doua Harti Natale");
+    html += p("Spre deosebire de compatibilitatea generala pe element si zodie de mai sus, aceasta sectiune calculeaza unghiurile reale dintre planetele din harta dvs. natala si planetele din harta partenerului (data nașterii partenerului, ora 12:00 implicit - fara ora exacta a partenerului, precizia e limitata la nivel de zi).");
+    if (synAspects.length === 0) {
+      html += "<p style=\"color:var(--text-d);font-style:italic\">Nu s-au detectat aspecte semnificative intre planetele principale ale celor doua harti.</p>";
+    } else {
+      html += "<div class=\"tl\">";
+      var natureColor = { intense: "var(--gold)", tense: "#c4395e", harmonious: "var(--jade-l)", adjust: "var(--viol-l)" };
+      var natureLabel = { intense: "INTENS", tense: "TENSIONAT", harmonious: "ARMONIOS", adjust: "AJUSTARE" };
+      for (var sai = 0; sai < Math.min(synAspects.length, 10); sai++) {
+        var sa = synAspects[sai];
+        var interp = getSynastryInterp(sa.yourP, sa.theirP, sa.aspect.name);
+        html += "<div class=\"ti\">";
+        html += "<span class=\"ts\">" + (ESYMS[sa.yourP]||"&#10022;") + sa.aspect.sym + (ESYMS[sa.theirP]||"&#10022;") + "</span>";
+        html += "<div class=\"ti-inf\">";
+        html += "<div class=\"tn\">" + ENAMES[sa.yourP] + " dvs. " + sa.aspect.sym + " " + ENAMES[sa.theirP] + " partener - " + sa.aspect.name + "</div>";
+        html += "<div class=\"td\">" + interp + "</div>";
+        html += "</div>";
+        html += "<span class=\"tbg\" style=\"border-color:" + natureColor[sa.aspect.nature] + ";color:" + natureColor[sa.aspect.nature] + "\">" + natureLabel[sa.aspect.nature] + "</span>";
+        html += "</div>";
+      }
+      html += "</div>";
+    }
   }
 
   html += sh("Bioritm de Cuplu - Astazi");
@@ -2298,11 +2330,14 @@ var TAROT_MAJOR = [
 ];
 
 // ── TAROT: 56 Arcane Minore, compuse din Rang x Element (traditia reala) ──
+// fileCode: prefixul folosit in denumirea fisierelor RWS pe Wikimedia Commons
+// (ex. "Wands02.jpg") - la fel ca la Arcanele Majore, imaginea se ascunde
+// automat (onerror) daca fisierul nu exista sub acest nume exact.
 var TAROT_SUITS = [
-  {name:"Bastoane", sym:"&#128293;", theme:"pasiune, actiune, cariera, energie creatoare, ambitie (elementul Foc)"},
-  {name:"Cupe", sym:"&#127864;", theme:"emotii, relatii, intuiție, spiritualitate (elementul Apa)"},
-  {name:"Sabii", sym:"&#9876;", theme:"gandire, conflict, comunicare, adevar, dificultate mentala (elementul Aer)"},
-  {name:"Pentacluri", sym:"&#127775;", theme:"materie, finante, munca, corp fizic, securitate (elementul Pamant)"}
+  {name:"Bastoane", sym:"&#128293;", fileCode:"Wands", theme:"pasiune, actiune, cariera, energie creatoare, ambitie (elementul Foc)"},
+  {name:"Cupe", sym:"&#127864;", fileCode:"Cups", theme:"emotii, relatii, intuiție, spiritualitate (elementul Apa)"},
+  {name:"Sabii", sym:"&#9876;", fileCode:"Swords", theme:"gandire, conflict, comunicare, adevar, dificultate mentala (elementul Aer)"},
+  {name:"Pentacluri", sym:"&#127775;", fileCode:"Pents", theme:"materie, finante, munca, corp fizic, securitate (elementul Pamant)"}
 ];
 var TAROT_RANKS = [
   {name:"As", upright:"un nou inceput, un potential pur, o samanta abia plantata", reversed:"un inceput blocat sau intarziat, o oportunitate ratata"},
@@ -2326,9 +2361,11 @@ function buildMinorArcana() {
   for (var s = 0; s < TAROT_SUITS.length; s++) {
     for (var r = 0; r < TAROT_RANKS.length; r++) {
       var suit = TAROT_SUITS[s], rank = TAROT_RANKS[r];
+      var rankNum = (r + 1 < 10 ? "0" : "") + (r + 1);
       cards.push({
         name: rank.name + " de " + suit.name,
         sym: suit.sym,
+        img: wmFile(suit.fileCode + rankNum + ".jpg"),
         upright: "In sfera " + suit.theme + ": " + rank.upright + ".",
         reversed: "In sfera " + suit.theme + ": " + rank.reversed + "."
       });
@@ -2351,7 +2388,7 @@ function drawTarotCards(n, rndFn) {
 function buildTarotCardImg(draw, size) {
   if (!draw.card.img) return "";
   var rot = draw.reversed ? "transform:rotate(180deg);" : "";
-  return "<img src=\"" + draw.card.img + "\" alt=\"" + draw.card.name + "\" style=\"width:" + size + "px;float:left;margin:0 14px 8px 0;border:1px solid rgba(201,168,76,0.3);" + rot + "\" onerror=\"this.style.display='none'\">";
+  return "<img src=\"" + draw.card.img + "\" alt=\"" + draw.card.name + "\" style=\"width:" + size + "px;max-width:40%;float:left;margin:0 14px 8px 0;border:1px solid rgba(201,168,76,0.3);" + rot + "\" onerror=\"this.style.display='none'\">";
 }
 
 function buildTarotCardHtml(label, draw) {
@@ -3053,6 +3090,75 @@ function getNatalAspectInterp(p1, p2, aspectName) {
   return NATAL_ASPECT_INTERPS["default_" + nature] || "";
 }
 
+// ── SINASTRIE: aspecte reale intre cele doua harti natale ──
+// Directionale (nu doar element+bioritm) - "Venus dvs. catre Marte partenerului"
+// e o combinatie diferita de "Marte dvs. catre Venus partenerului", chiar daca
+// unghiul e identic, pentru ca implica planete diferite din fiecare harta.
+var SYNASTRY_PAIRS = [
+  ["sun","sun"], ["moon","moon"], ["venus","venus"], ["mars","mars"],
+  ["sun","moon"], ["moon","sun"],
+  ["venus","mars"], ["mars","venus"],
+  ["sun","venus"], ["venus","sun"],
+  ["moon","venus"], ["venus","moon"],
+  ["sun","mars"], ["mars","sun"],
+  ["moon","mars"], ["mars","moon"],
+  ["sun","saturn"], ["saturn","sun"],
+  ["moon","saturn"], ["saturn","moon"],
+  ["venus","saturn"], ["saturn","venus"]
+];
+
+var SYNASTRY_INTERPS = {
+  "sun_sun_conjunctie": "Soarele dvs. conjunct cu Soarele partenerului: identitati foarte asemanatoare, aceleasi valori fundamentale si un puternic sentiment de a fi 'pe aceeasi lungime de unda'. Risc: prea putina polaritate a diferentei.",
+  "moon_moon_conjunctie": "Luna dvs. conjunct cu Luna partenerului: confort emotional profund si instinctiv, senzatia de a fi 'acasa' unul cu celalalt. Nevoile emotionale se aliniaza natural.",
+  "venus_venus_conjunctie": "Venus dvs. conjunct cu Venus partenerului: gusturi si valori estetice/afective foarte asemanatoare - apreciati aceleasi lucruri in dragoste si frumusete.",
+  "mars_mars_conjunctie": "Marte dvs. conjunct cu Marte partenerului: energie si dorinte de actiune sincronizate - fie o echipa puternica, fie competitie directa pentru acelasi tip de initiativa.",
+  "sun_moon_conjunctie": "Soarele dvs. conjunct cu Luna partenerului: partenerul se simte instinctiv atras si confortabil cu identitatea dvs.; dvs. ii oferiti un sentiment de siguranta emotionala.",
+  "moon_sun_conjunctie": "Luna dvs. conjunct cu Soarele partenerului: va simtiti instinctiv in siguranta emotionala langa identitatea partenerului; el/ea va ofera un sentiment de directie si vitalitate.",
+  "venus_mars_conjunctie": "Venus dvs. conjunct cu Marte partenerului: atractie fizica si romantica puternica, chimie directa - unul dintre cele mai clasice semne de atractie in sinastrie.",
+  "mars_venus_conjunctie": "Marte dvs. conjunct cu Venus partenerului: initiati dvs. atractia si urmarirea romantica; partenerul raspunde cu farmec si deschidere afectiva.",
+  "sun_venus_conjunctie": "Soarele dvs. conjunct cu Venus partenerului: partenerul va admira si aprecia profund cine sunteti; afectiune si curtare naturala.",
+  "venus_sun_conjunctie": "Venus dvs. conjunct cu Soarele partenerului: va simtiti atrasi si va exprimati afectiunea catre identitatea centrala a partenerului.",
+  "moon_venus_conjunctie": "Luna dvs. conjunct cu Venus partenerului: armonie emotionala si afectiva - partenerul va face sa va simtiti pretuiti si linistiti.",
+  "venus_moon_conjunctie": "Venus dvs. conjunct cu Luna partenerului: exprimati afectiune intr-un mod care raspunde direct nevoilor emotionale ale partenerului.",
+  "sun_mars_conjunctie": "Soarele dvs. conjunct cu Marte partenerului: partenerul va energizeaza si va provoaca la actiune; dinamica poate fi stimulanta sau competitiva.",
+  "mars_sun_conjunctie": "Marte dvs. conjunct cu Soarele partenerului: actionati direct asupra identitatii partenerului - il/o puteti motiva puternic sau, in exces, il/o puteti coplesi.",
+  "moon_mars_conjunctie": "Luna dvs. conjunct cu Marte partenerului: reactivitate emotionala intensa - pasiune, dar si potential de conflict daca nu e gestionata constient.",
+  "mars_moon_conjunctie": "Marte dvs. conjunct cu Luna partenerului: actiunile dvs. ating direct sensibilitatea emotionala a partenerului - impact puternic, in bine sau in rau.",
+  "sun_saturn_conjunctie": "Soarele dvs. conjunct cu Saturn partenerului: partenerul aduce structura, seriozitate si angajament in relatia cu identitatea dvs. - poate simti si ca o presiune/responsabilitate.",
+  "saturn_sun_conjunctie": "Saturn dvs. conjunct cu Soarele partenerului: aduceti stabilitate si un sentiment de angajament pe termen lung identitatii partenerului.",
+  "moon_saturn_conjunctie": "Luna dvs. conjunct cu Saturn partenerului: partenerul ofera securitate emotionala solida, dar relatia cere rabdare - afectiunea se construieste lent si durabil.",
+  "saturn_moon_conjunctie": "Saturn dvs. conjunct cu Luna partenerului: oferiti stabilitate emotionala si un cadru de incredere pe termen lung partenerului.",
+  "venus_saturn_conjunctie": "Venus dvs. conjunct cu Saturn partenerului: partenerul ia in serios afectiunea dvs. - iubire matura si angajata, posibil cu o incarcare initiala de precautie.",
+  "saturn_venus_conjunctie": "Saturn dvs. conjunct cu Venus partenerului: oferiti angajament serios si durabil afectiunii partenerului.",
+  "default_harmonious": "Aspect armonios intre aceste doua planete din cele doua harti - energie care curge natural intre voi, fara efort, in domeniile reprezentate.",
+  "default_tense": "Aspect tensionat intre aceste doua planete din cele doua harti - o zona de frictiune reala, dar si de crestere, daca este gestionata constient si cu comunicare.",
+  "default_intense": "Conjunctie intre aceste doua planete din cele doua harti - o fuziune intensa de energii, resimtita puternic de amandoi.",
+  "default_adjust": "Quincunx intre aceste doua planete din cele doua harti - necesita ajustare continua si constienta reciproca."
+};
+
+function getSynastryInterp(yourP, theirP, aspectName) {
+  var key = yourP + "_" + theirP + "_" + aspectName.toLowerCase();
+  if (SYNASTRY_INTERPS[key]) return SYNASTRY_INTERPS[key];
+  var nature = "harmonious";
+  for (var k = 0; k < ASPECT_TYPES.length; k++) {
+    if (ASPECT_TYPES[k].name === aspectName) { nature = ASPECT_TYPES[k].nature; break; }
+  }
+  return SYNASTRY_INTERPS["default_" + nature] || "";
+}
+
+function getSynastryAspects(bp, synBp) {
+  var aspects = [];
+  for (var i = 0; i < SYNASTRY_PAIRS.length; i++) {
+    var yourP = SYNASTRY_PAIRS[i][0], theirP = SYNASTRY_PAIRS[i][1];
+    if (!bp[yourP] || !synBp[theirP]) continue;
+    var asp = getAspect(bp[yourP].lon, synBp[theirP].lon);
+    if (asp) aspects.push({ yourP: yourP, theirP: theirP, aspect: asp });
+  }
+  var order = { intense: 0, tense: 1, harmonious: 2, adjust: 3 };
+  aspects.sort(function(a, b) { return order[a.aspect.nature] - order[b.aspect.nature]; });
+  return aspects;
+}
+
 // ── 4. DOMINANT PLANET CALCULATOR ──
 function calcDominant(bp, zodiac, asc) {
   var scores = {
@@ -3635,11 +3741,21 @@ async function buildResult() {
   if(partnerDate){
     var pd2 = new Date(partnerDate);
     var pz = getZodSign(pd2.getDate(), pd2.getMonth()+1);
+    // Real cross-chart synastry needs the partner's own natal planets, not just
+    // their sun sign - only date is collected (no time/place), so noon is used
+    // as the same reasonable default already used elsewhere for missing times.
+    var synBdTime = new Date(pd2.getFullYear(), pd2.getMonth(), pd2.getDate(), 12, 0);
+    var synBp = {};
+    for(var szi=0; szi<pkeys.length; szi++){
+      var szlon = getPLon(pkeys[szi], synBdTime);
+      synBp[pkeys[szi]] = {lon:szlon, sign:lonToSign(szlon)};
+    }
     synData = {
       zodiac:pz,
       lp:calcLP(pd2.getDate(),pd2.getMonth()+1,pd2.getFullYear()),
       bio:getBio(pd2,now),
-      element:getElement(pz.s)
+      element:getElement(pz.s),
+      bp:synBp
     };
   }
 
@@ -3683,7 +3799,7 @@ async function buildResult() {
   htmlAstro += buildSection("&#9737;", "I &middot; PROFIL ASTROLOGIC NATAL COMPLET", buildAstroSection(zodiac,element,modality,ruler,chinese,asc,profile,bp,partFortune,northNode,southNode,bplace));
   htmlAstro += buildSection("&#10023;", "II &middot; SIMBOLISTICA SABIANA", buildSabianSection(bp,asc,northNode));
   htmlAstro += buildSection("&#8635;", "III &middot; TRANZITE PLANETARE ACTIVE", buildTransitSection(transits,progSun,progMoon,daysToSR,northNode,southNode));
-  htmlAstro += buildSection("&#9825;", "IV &middot; SINASTRIE &amp; BIORITM DE CUPLU", await buildSynastrySec(synData,bio,zodiac.s,element,lp));
+  htmlAstro += buildSection("&#9825;", "IV &middot; SINASTRIE &amp; BIORITM DE CUPLU", await buildSynastrySec(synData,bio,zodiac.s,element,lp,bp));
   htmlAstro += buildSection("&#9790;", "V &middot; COMPATIBILITATE ZODIACALA", buildCompatSection(zodiac.s));
   htmlAstro += safeSection("&#9737;&#9742;", "VI &middot; PLANETE MINORE: CHIRON, LILITH, ASTEROIZI", buildAsteroidsSection(bp, asc, now));
   htmlAstro += safeSection("&#9632;", "VII &middot; ASPECTELE NATALE SI STELLIUM", buildNatalAspectsSection(bp));
