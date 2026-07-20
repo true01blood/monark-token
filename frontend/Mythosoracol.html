@@ -2705,6 +2705,8 @@ function prefillFormFromProfile(profile) {
   if (profile.birth_place) document.getElementById("birthPlace").value = profile.birth_place;
 }
 
+var GENDER_DB_MAP = {"feminin":"F","masculin":"M","neutru":"Other"};
+
 async function saveProfileAndReading(readingData) {
   if (!currentUser) return;
   var name = document.getElementById("fullName").value.trim();
@@ -2713,21 +2715,23 @@ async function saveProfileAndReading(readingData) {
   var birthTime = document.getElementById("birthTime").value;
   var birthPlace = document.getElementById("birthPlace").value.trim();
 
-  await sb.from("profiles").upsert({
+  var profRes = await sb.from("profiles").upsert({
     user_id: currentUser.id,
     display_name: name,
     full_name: name,
-    gender: gender || null,
+    gender: GENDER_DB_MAP[gender] || null,
     birth_date: birthDate,
     birth_time: birthTime || null,
     birth_place: birthPlace || null
   }, { onConflict: "user_id" });
+  if (profRes.error) console.error("profile save error:", profRes.error);
 
-  await sb.from("readings").insert({
+  var readRes = await sb.from("readings").insert({
     user_id: currentUser.id,
     reading_type: "synthesis",
     reading_data: readingData
   });
+  if (readRes.error) console.error("reading save error:", readRes.error);
 }
 
 function updateAuthUI() {
