@@ -238,9 +238,11 @@ canvas{width:100%;height:180px;display:block}
 .hist-item{background:rgba(4,3,10,.6);border:1px solid var(--border);padding:14px 16px;margin-bottom:9px;display:flex;align-items:center;gap:12px}
 .hist-item .hi-star{font-size:20px;cursor:pointer;flex-shrink:0;color:var(--text-dd);transition:color .2s}
 .hist-item .hi-star.fav{color:var(--gold)}
-.hist-item .hi-body{flex:1}
+.hist-item .hi-body{flex:1;cursor:pointer}
+.hist-item .hi-body:hover .hi-title{color:var(--gold)}
 .hist-item .hi-title{font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:1px;color:var(--gold-l);margin-bottom:3px}
 .hist-item .hi-meta{font-size:12px;color:var(--text-d);font-style:italic}
+.hist-item .hi-load{font-size:10px;color:var(--text-dd);letter-spacing:1px;text-transform:uppercase;flex-shrink:0}
 .hist-empty{text-align:center;color:var(--text-d);font-style:italic;padding:30px 0}
 /* ADMIN MODAL */
 .adm-box{background:linear-gradient(135deg,rgba(18,11,40,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:900px;width:94%;max-height:86vh;overflow-y:auto;position:relative}
@@ -284,7 +286,7 @@ canvas{width:100%;height:180px;display:block}
   <div class="mod-row">
     <span class="mod-t">&#9737; Astrologie Natal&#259;</span>
     <span class="mod-t">&#8635; Tranzite</span>
-    <span class="mod-t">&#9788; Revolu&#355;ie Solar&#259;</span>
+    <span class="mod-t">&#9788; Revoluție Solar&#259;</span>
     <span class="mod-t">&#10022; Numerologie</span>
     <span class="mod-t">&#9675; Bioritm</span>
     <span class="mod-t">&#9651; Pinnacle-uri</span>
@@ -317,19 +319,19 @@ canvas{width:100%;height:180px;display:block}
     <div class="tp act" id="t1"><div class="fi">
       <div class="ft">Date Natale Fundamentale</div>
       <div class="fg">
-        <div class="fgr"><label class="lb">&#10022; Prenume &#351;i Nume</label><input type="text" id="fullName" class="ip" placeholder="Prenumele &#351;i numele complet"></div>
+        <div class="fgr"><label class="lb">&#10022; Prenume și Nume</label><input type="text" id="fullName" class="ip" placeholder="Prenumele și numele complet"></div>
         <div class="fgr"><label class="lb">Gen</label>
           <select id="gender" class="ip">
-            <option value="">&#8212; Selecta&#355;i &#8212;</option>
+            <option value="">&#8212; Selectați &#8212;</option>
             <option value="feminin">Feminin</option>
             <option value="masculin">Masculin</option>
             <option value="neutru">Prefer s&#259; nu specific</option>
           </select>
         </div>
-        <div class="fgr"><label class="lb">&#9737; Data Na&#351;terii</label><input type="date" id="birthDate" class="ip" min="1920-01-01" max="2010-12-31"></div>
-        <div class="fgr"><label class="lb">&#9789; Ora Na&#351;terii</label><input type="time" id="birthTime" class="ip"><span class="hn">Necesar&#259; pentru ascendent</span></div>
-        <div class="fgr s"><label class="lb">&#9793; Locul Na&#351;terii</label><input type="text" id="birthPlace" class="ip" placeholder="Ora&#351;, &#538;ar&#259; (ex: Cluj, Rom&#226;nia)"></div>
-        <div class="fgr s"><label class="lb">&#9790; Numele Oficial la Na&#351;tere (numerologie)</label><input type="text" id="birthName" class="ip" placeholder="Prenume &#351;i Nume exact din certificatul de na&#351;tere"></div>
+        <div class="fgr"><label class="lb">&#9737; Data Nașterii</label><input type="date" id="birthDate" class="ip" min="1920-01-01" max="2010-12-31"></div>
+        <div class="fgr"><label class="lb">&#9789; Ora Nașterii</label><input type="time" id="birthTime" class="ip"><span class="hn">Necesar&#259; pentru ascendent</span></div>
+        <div class="fgr s"><label class="lb">&#9793; Locul Nașterii</label><input type="text" id="birthPlace" class="ip" placeholder="Oraș, &#538;ar&#259; (ex: Cluj, Rom&#226;nia)"></div>
+        <div class="fgr s"><label class="lb">&#9790; Numele Oficial la Naștere (numerologie)</label><input type="text" id="birthName" class="ip" placeholder="Prenume și Nume exact din certificatul de naștere"></div>
         <div class="fgr"><label class="lb">Grup&#259; Sanguin&#259;</label>
           <select id="bloodType" class="ip">
             <option value="">&#8212; Necunoscut&#259; &#8212;</option>
@@ -380,17 +382,17 @@ canvas{width:100%;height:180px;display:block}
         <label class="lb">M&#226;na Dominant&#259;</label>
         <select id="dominantHand" class="ip"><option value="dreapta">Dreapta</option><option value="stanga">St&#226;nga</option><option value="ambidextru">Ambidextru</option></select>
       </div>
-      <label class="lb" style="display:block;margin-bottom:10px">Liniile M&#226;inii Dominante (selecta&#355;i)</label>
+      <label class="lb" style="display:block;margin-bottom:10px">Liniile M&#226;inii Dominante (selectați)</label>
       <div class="hg" id="handOpts">
-        <div class="ho" data-v="vl_lunga">Linia Vie&#355;ii &#8212; Lung&#259; &#351;i ad&#226;nc&#259;</div>
-        <div class="ho" data-v="vl_scurta">Linia Vie&#355;ii &#8212; Scurt&#259; / fragmentat&#259;</div>
-        <div class="ho" data-v="vl_dubla">Linia Vie&#355;ii &#8212; Dubl&#259;</div>
+        <div class="ho" data-v="vl_lunga">Linia Vieții &#8212; Lung&#259; și ad&#226;nc&#259;</div>
+        <div class="ho" data-v="vl_scurta">Linia Vieții &#8212; Scurt&#259; / fragmentat&#259;</div>
+        <div class="ho" data-v="vl_dubla">Linia Vieții &#8212; Dubl&#259;</div>
         <div class="ho" data-v="il_curbata">Linia Inimii &#8212; Curbat&#259; spre degete</div>
         <div class="ho" data-v="il_dreapta">Linia Inimii &#8212; Dreapt&#259; / orizontal&#259;</div>
         <div class="ho" data-v="il_lunga">Linia Inimii &#8212; Lung&#259;</div>
-        <div class="ho" data-v="ml_lunga">Linia Min&#355;ii &#8212; Lung&#259; &#351;i ad&#226;nc&#259;</div>
-        <div class="ho" data-v="ml_scurta">Linia Min&#355;ii &#8212; Scurt&#259;</div>
-        <div class="ho" data-v="ml_bifurcata">Linia Min&#355;ii &#8212; Bifurcat&#259;</div>
+        <div class="ho" data-v="ml_lunga">Linia Minții &#8212; Lung&#259; și ad&#226;nc&#259;</div>
+        <div class="ho" data-v="ml_scurta">Linia Minții &#8212; Scurt&#259;</div>
+        <div class="ho" data-v="ml_bifurcata">Linia Minții &#8212; Bifurcat&#259;</div>
         <div class="ho" data-v="dl_prezenta">Linia Destinului &#8212; Clar&#259;</div>
         <div class="ho" data-v="dl_absenta">Linia Destinului &#8212; Absent&#259;</div>
         <div class="ho" data-v="sl_prezenta">Linia Soarelui &#8212; Prezent&#259;</div>
@@ -404,9 +406,9 @@ canvas{width:100%;height:180px;display:block}
     <div class="tp" id="t3"><div class="fi">
       <div class="ft">Sinastrie &amp; Interpretarea Viselor</div>
       <div class="fg fw">
-        <div class="fgr"><label class="lb">Data Na&#351;terii Partenerului (Sinastrie)</label><input type="date" id="partnerDate" class="ip" min="1920-01-01" max="2010-12-31"><span class="hn">Op&#355;ional &#8212; activeaz&#259; modulul de sinastrie</span></div>
-        <div class="fgr"><label class="lb">Vis Recent Semnificativ</label><textarea id="dreamText" class="ip" rows="5" placeholder="Descrie&#351;i cel mai recent vis semnificativ..."></textarea></div>
-        <div class="fgr"><label class="lb">Faza Lunii la Na&#351;tere</label>
+        <div class="fgr"><label class="lb">Data Nașterii Partenerului (Sinastrie)</label><input type="date" id="partnerDate" class="ip" min="1920-01-01" max="2010-12-31"><span class="hn">Opțional &#8212; activeaz&#259; modulul de sinastrie</span></div>
+        <div class="fgr"><label class="lb">Vis Recent Semnificativ</label><textarea id="dreamText" class="ip" rows="5" placeholder="Descrieși cel mai recent vis semnificativ..."></textarea></div>
+        <div class="fgr"><label class="lb">Faza Lunii la Naștere</label>
           <select id="birthLunarPhase" class="ip">
             <option value="necunoscut">&#8212; Necunoscut&#259; (se va estima) &#8212;</option>
             <option value="noua">Lun&#259; Nou&#259;</option>
@@ -423,29 +425,29 @@ canvas{width:100%;height:180px;display:block}
     </div></div>
     <!-- TAB 4 -->
     <div class="tp" id="t4"><div class="fi">
-      <div class="ft">Context de Via&#355;&#259; &amp; Calibrare</div>
+      <div class="ft">Context de Viaț&#259; &amp; Calibrare</div>
       <div class="fg">
         <div class="fgr"><label class="lb">Domeniu Profesional</label>
           <select id="profession" class="ip">
-            <option value="">&#8212; Selecta&#355;i &#8212;</option>
+            <option value="">&#8212; Selectați &#8212;</option>
             <option value="antreprenor">Antreprenor</option>
             <option value="corporativ">Angajat corporativ</option>
             <option value="creativ">Art&#259; / Media</option>
             <option value="medical">Medicin&#259;</option>
             <option value="juridic">Drept</option>
             <option value="tehnic">Tehnic / IT</option>
-            <option value="educatie">Educa&#355;ie</option>
-            <option value="financiar">Finan&#355;e</option>
-            <option value="spiritual">Voca&#355;ie spiritual&#259;</option>
+            <option value="educatie">Educație</option>
+            <option value="financiar">Finanțe</option>
+            <option value="spiritual">Vocație spiritual&#259;</option>
           </select>
         </div>
         <div class="fgr"><label class="lb">Stare Civil&#259;</label>
           <select id="marital" class="ip">
-            <option value="">&#8212; Selecta&#355;i &#8212;</option>
+            <option value="">&#8212; Selectați &#8212;</option>
             <option value="singur">Nec&#259;s&#259;torit/&#259;</option>
-            <option value="relație">&#206;n rela&#355;ie</option>
+            <option value="relație">&#206;n relație</option>
             <option value="casatorit">C&#259;s&#259;torit/&#259;</option>
-            <option value="divortat">Divor&#355;at/&#259;</option>
+            <option value="divortat">Divorțat/&#259;</option>
           </select>
         </div>
         <div class="fgr s"><label class="lb">Obiective pentru Perioada Urm&#259;toare</label><input type="text" id="objectives" class="ip" placeholder="Lansare proiect, schimbare job, investitie..."></div>
@@ -453,7 +455,7 @@ canvas{width:100%;height:180px;display:block}
     </div></div>
     <!-- ALWAYS VISIBLE BUTTON -->
     <div class="btn-wrap">
-      <div class="er" id="errMsg">&#10022; Completa&#355;i cel pu&#355;in: numele, genul &#351;i data na&#351;terii &#238;n Tab-ul I.</div>
+      <div class="er" id="errMsg">&#10022; Completați cel puțin: numele, genul și data nașterii &#238;n Tab-ul I.</div>
       <button class="ob" id="oracleBtn" onclick="launchOracle()">&#10022; ACTIVEAZ&#258; MYTHOS ORACLE &#10022;</button>
     </div>
   </div>
@@ -464,19 +466,19 @@ canvas{width:100%;height:180px;display:block}
   <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-bottom:22px">
     <div style="flex-shrink:0">
       <img src="Palm.jpg" alt="Harta palmei - referinta chiromantie" class="palm-img" onclick="showPalmModal()" style="width:220px;border:1px solid rgba(201,168,76,0.3);display:block;opacity:0.88" />
-      <div style="font-family:Raleway,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);text-align:center;margin-top:6px">Hart&#259; de referin&#355;&#259; a palmei</div>
+      <div style="font-family:Raleway,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);text-align:center;margin-top:6px">Hart&#259; de referinț&#259; a palmei</div>
     </div>
     <div style="flex:1;min-width:200px">
       <div style="font-family:'Cinzel Decorative',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">LINIILE PRINCIPALE</div>
       <div style="font-size:13px;color:var(--silver);line-height:1.8">
-        <strong>1</strong> Linia Vie&#355;ii &bull; <strong>2</strong> Linia Capului &bull; <strong>3</strong> Linia Inimii<br>
+        <strong>1</strong> Linia Vieții &bull; <strong>2</strong> Linia Capului &bull; <strong>3</strong> Linia Inimii<br>
         <strong>4</strong> Linia Sortii &bull; <strong>5</strong> Linia Soarelui &bull; <strong>6</strong> Linia Mercurului<br>
         <strong>7</strong> Br&#226;ul lui Venus &bull; <strong>8</strong> Inelul lui Solomon<br>
         <strong>9</strong> Inelul lui Saturn &bull; <strong>10</strong> Stigmata medical&#259;<br>
         <strong>11</strong> Liniile Copiilor &bull; <strong>12</strong> Liniile C&#259;s&#259;toriei<br>
-        <strong>13</strong> Arcul Intui&#355;iei &bull; <strong>14</strong> Via Lascivia<br>
+        <strong>13</strong> Arcul Intuiției &bull; <strong>14</strong> Via Lascivia<br>
         <strong>15</strong> Linia lui Marte &bull; <strong>16</strong> Liniile Simpatiei<br>
-        <strong>17</strong> Inelul Familiei &bull; <strong>18</strong> Br&#259;&#355;ar&#259;
+        <strong>17</strong> Inelul Familiei &bull; <strong>18</strong> Br&#259;țar&#259;
       </div>
     </div>
   </div>
@@ -487,14 +489,14 @@ canvas{width:100%;height:180px;display:block}
   <div class="lr"><span class="lc">&#10022;</span></div>
   <p class="lm" id="loaderMsg">Calculul temei natale...</p>
   <div class="ls">
-    <div class="si" id="s1">&#9737; Pozi&#355;ionare planetar&#259; la na&#351;tere</div>
+    <div class="si" id="s1">&#9737; Poziționare planetar&#259; la naștere</div>
     <div class="si" id="s2">&#8635; Calculul tranzitelor actuale</div>
-    <div class="si" id="s3">&#9788; Revolu&#355;ia solar&#259; anual&#259;</div>
+    <div class="si" id="s3">&#9788; Revoluția solar&#259; anual&#259;</div>
     <div class="si" id="s4">&#8593; Progresii secundare</div>
     <div class="si" id="s5">&#10022; Cicluri numerologice</div>
     <div class="si" id="s6">&#9675; Bioritm tridimensional</div>
-    <div class="si" id="s7">&#9651; Pinnacle-uri &#351;i Provoc&#259;ri</div>
-    <div class="si" id="s8">&#9789; Faza lunar&#259; &#351;i noduri karmice</div>
+    <div class="si" id="s7">&#9651; Pinnacle-uri și Provoc&#259;ri</div>
+    <div class="si" id="s8">&#9789; Faza lunar&#259; și noduri karmice</div>
     <div class="si" id="s9">&#10023; Simbolistica sabian&#259;</div>
     <div class="si" id="s10">&#9711; Sinteza oracol zilnic integrat</div>
     <div class="si" id="s11">&#9775; Cei Patru Stalpi Ba Zi</div>
@@ -509,7 +511,7 @@ canvas{width:100%;height:180px;display:block}
 <div style="text-align:center;padding:18px 0 8px;font-family:Raleway,sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d)">
   <span id="visitCounter">&#10022; &#238;ncarcare counter...</span>
 </div>
-<div class="disc">MYTHOS ORACLE v3 este un sistem de profil esoteric integrat cu scop de introspec&#355;ie &#351;i autocunoa&#351;tere. Interpretările sunt generate pe baza unui corpus tradi&#355;ional consolidat. Nu constituie consultan&#355;&#259; medical&#259;, juridic&#259; sau financiar&#259;.</div>
+<div class="disc">MYTHOS ORACLE v3 este un sistem de profil esoteric integrat cu scop de introspecție și autocunoaștere. Interpretările sunt generate pe baza unui corpus tradițional consolidat. Nu constituie consultanț&#259; medical&#259;, juridic&#259; sau financiar&#259;.</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tz-lookup@6.1.25/tz.js"></script>
@@ -1193,7 +1195,7 @@ var ZP = (function() {
     health: "Zone vulnerabile: organele reproductive si eliminatorii, vezica, intestinul gros."
   };
   d["Sagetator"] = {
-    core: "Sagetatorull este semnul cautarii sensului, al adevărului si al orizonturilor mereu mai indepartate. Guvernat de Jupiter, planeta expansiunii, nativul Sagetator crede ca viața este o aventura.",
+    core: "Sagetatorul este semnul cautarii sensului, al adevărului si al orizonturilor mereu mai indepartate. Guvernat de Jupiter, planeta expansiunii, nativul Sagetator crede ca viața este o aventura.",
     pos: "Optimism contagios, generozitate spontana, dragoste autentica pentru libertate, viziune filozofica larga, onestitate directa.",
     neg: "Imaturitate emoțională, exces de onestitate fara tact, nestatornicie, dificultatea de a onora angajamentele pe termen lung.",
     love: "Partener iubitor dar dificil de capturat. Cauta libertate chiar si in relație. Fidelitatea devine posibila cand nu simte ca si-a pierdut independenta.",
@@ -1405,6 +1407,20 @@ function getTransitInterp(planet, sign, natalPlanet, aspectName) {
 }
 
 // ═══ HTML BUILDERS (modular - no giant template literals) ═══
+// Escapes free-text user input before it is concatenated into HTML strings
+// that get assigned via innerHTML - without this, a name/question/dream/etc.
+// containing "<script>" or an onerror= handler would execute as real HTML/JS,
+// including inside an authenticated admin's session when viewing user data.
+function escapeHtml(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function el(tag, cls, content) {
   return "<" + tag + (cls ? " class=\"" + cls + "\"" : "") + ">" + content + "</" + tag + ">";
 }
@@ -1471,7 +1487,7 @@ function buildAstroSection(zodiac, element, modality, ruler, chinese, asc, profi
   html += p("<strong>Carieră:</strong> " + profile.career);
   html += p("<strong>Sănătate:</strong> " + profile.health);
   if(bplace) {
-    html += sh("Context Geografic - " + bplace);
+    html += sh("Context Geografic - " + escapeHtml(bplace));
     html += p("Locul nașterii este relevant in Astrocartografie, care examineaza cum meridianele planetare influenteaza diferit domeniile vieții in funcție de coordonatele geografice. Energia karmica a locului de origine defineste adesea tema centrala a primei jumatati de viața.");
   }
   return html;
@@ -1596,7 +1612,7 @@ function buildAnnualSection(monthForecasts, now, progSun, birthDate, question) {
   html += sh("Soarele Progresatat si Temele Anului");
   html += p("Soarele progresatat se afla in <strong>" + progSun.name + "</strong>, activand energia si temele specifice acestui semn ca directie dominanta de crestere personala in etapa actuala de viața.");
   html += sh("Perioadele Favorabile si de Prudenta");
-  html += p("Perioadele de maxima eficienta coincid cu fazele crescatoare ale Lunii si cu zilele de Luna Noua. Perioadele de prudenta sunt zilele critice bioritimice si tranzitele Saturn active. " + (question ? "In raport cu obiectivul \"" + question + "\", momentele optime sunt cele in care Ziua Personala este 1, 3 sau 8 si bioritma fizica si intelectuala sunt simultan in faza pozitiva." : ""));
+  html += p("Perioadele de maxima eficienta coincid cu fazele crescatoare ale Lunii si cu zilele de Luna Noua. Perioadele de prudenta sunt zilele critice bioritimice si tranzitele Saturn active. " + (question ? "In raport cu obiectivul \"" + escapeHtml(question) + "\", momentele optime sunt cele in care Ziua Personala este 1, 3 sau 8 si bioritma fizica si intelectuala sunt simultan in faza pozitiva." : ""));
   return html;
 }
 
@@ -1709,7 +1725,7 @@ async function markAIQuotaUsed() {
 async function buildDreamSection(dreamText, aiContext) {
   if(!dreamText) return p("Nu a fost furnizat un vis pentru interpretare.");
   var html = sh("Visul Furnizat");
-  html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&ldquo;" + dreamText.substring(0,300) + (dreamText.length>300?"...":"") + "&rdquo;</div></div>";
+  html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&ldquo;" + escapeHtml(dreamText.substring(0,300)) + (dreamText.length>300?"...":"") + "&rdquo;</div></div>";
 
   var quotaOk = await canUseAIQuota();
   var aiText = quotaOk ? await fetchAISynthesis("dream", { dreamText: dreamText, context: aiContext }) : null;
@@ -1827,7 +1843,7 @@ function buildQuestionFallback(question, zodiac, lp, element, py, profile, trans
 
 async function buildQuestionSection(question, zodiac, lp, element, py, profile, transits, aiContext) {
   var html = sh("Intrebarea Formulata");
-  html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&bdquo;" + question + "&rdquo;</div></div>";
+  html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&bdquo;" + escapeHtml(question) + "&rdquo;</div></div>";
 
   var quotaOk = await canUseAIQuota();
   var aiText = quotaOk ? await fetchAISynthesis("question", { question: question, context: aiContext }) : null;
@@ -2281,7 +2297,7 @@ var HD_CENTERS = {
   "PlexSolar": [36,22,37,6,49,55,30],
   "Radacina": [58,38,54,53,60,52,19,39,41]
 };
-var HD_CENTER_NAMES = {"Cap":"Capul","Ajna":"Ajna","Gat":"Gatul","G":"Centrul G (Identitate)","Inima":"Inima (Ego/Vointa)","Splina":"Splina","Sacral":"Sacral","PlexSolar":"Plexul Solar (Emotional)","Radacina":"Radacina"};
+var HD_CENTER_NAMES = {"Cap":"Capul","Ajna":"Ajna","Gat":"Gatul","G":"Centrul G (Identitate)","Inima":"Inima (Ego/Vointa)","Splina":"Splina","Sacral":"Sacral","PlexSolar":"Plexul Solar (Emoțional)","Radacina":"Radacina"};
 var HD_GATE_TO_CENTER = {};
 Object.keys(HD_CENTERS).forEach(function(c){ HD_CENTERS[c].forEach(function(g){ HD_GATE_TO_CENTER[g]=c; }); });
 var HD_CHANNELS = [
@@ -2297,18 +2313,18 @@ var HD_MOTOR_CENTERS = ["Sacral","Inima","PlexSolar","Radacina"];
 var HD_LINE_NAMES = {1:"Investigatorul",2:"Ermitul",3:"Martirul (incercare-eroare)",4:"Oportunistul",5:"Ereticul",6:"Model de Rol"};
 var HD_TYPE_DESC = {
   "Manifestor":"Manifestorii sunt facuti sa initieze si sa actioneze independent, cu impact direct asupra celor din jur. Strategia lor: informeaza inainte de a actiona, pentru a reduce rezistenta celorlalti.",
-  "Generator":"Generatorii au acces la o energie vitala sustinuta prin Sacral. Strategia lor: raspunde la ce apare in viata (nu initiaza), urmand ce le aprinde entuziasmul autentic.",
+  "Generator":"Generatorii au acces la o energie vitala sustinuta prin Sacral. Strategia lor: raspunde la ce apare in viața (nu initiaza), urmand ce le aprinde entuziasmul autentic.",
   "Manifesting Generator":"Manifesting Generatorii combina energia sustinuta a Sacralului cu impulsul de a initia al Manifestorilor. Strategia: raspunde, apoi informeaza inainte de a sari direct la pasul urmator.",
   "Projector":"Projectorii sunt facuti sa ghideze si sa optimizeze sistemele si energiile celorlalti, nu sa produca ei insisi in mod sustinut. Strategia lor: asteapta invitatia inainte de a se implica major.",
   "Reflector":"Reflectorii nu au niciun centru definit in mod constant - reflecta si amplifica energia mediului si a oamenilor din jur, ca o oglinda. Strategia lor: asteapta un ciclu lunar complet (~28 zile) inainte de decizii majore."
 };
 var HD_AUTH_DESC = {
-  "Emotional (Plex Solar)":"Autoritatea Emotionala inseamna ca nu exista claritate 'in momentul de fata' - claritatea vine dupa parcurgerea unui val emotional complet, in timp. Deciziile importante nu se iau niciodata pe loc.",
+  "Emoțional (Plex Solar)":"Autoritatea Emoțională inseamna ca nu exista claritate 'in momentul de fata' - claritatea vine dupa parcurgerea unui val emoțional complet, in timp. Deciziile importante nu se iau niciodata pe loc.",
   "Sacral":"Autoritatea Sacrala se exprima ca un raspuns instinctiv, imediat, resimtit in corp ('da' energizant sau 'nu' care se stinge) - deciziile bune vin din raspunsul spontan, nu din analiza mentala.",
   "Splenic":"Autoritatea Splenica este cea mai subtila si mai rapida - o intuitie instantanee, in prezent, care nu se repeta si nu se explica. A fi atent la primul impuls este cheia.",
   "Ego":"Autoritatea Ego se bazeaza pe vointa si pe ceea ce doriti cu adevarat pentru voi insiva - intrebarea centrala e 'ce imi doresc eu, nu ce ar trebui sa fac'.",
   "Self-Projected (G)":"Autoritatea Self-Projected se clarifica prin a vorbi cu voce tare, ascultandu-va propriul discurs - claritatea apare in procesul de a vorbi despre o decizie unei alte persoane, nu inainte.",
-  "Mental/Environmental":"Fara o autoritate interna definita in centrele emotionale/instinctive, decizia se clarifica extern - prin a discuta deschis cu altii, in mediul potrivit, lasand mintea sa cantareasca optiunile impreuna cu ceilalti (nu izolat).",
+  "Mental/Environmental":"Fara o autoritate interna definita in centrele emoționale/instinctive, decizia se clarifica extern - prin a discuta deschis cu altii, in mediul potrivit, lasand mintea sa cantareasca optiunile impreuna cu ceilalti (nu izolat).",
   "Lunar":"Autoritatea Lunara (specifica Reflectorilor) cere parcurgerea unui ciclu lunar complet de aproximativ 28 de zile inainte de decizii majore, permitand tuturor perspectivelor sa fie resimtite."
 };
 
@@ -2415,7 +2431,7 @@ function computeHumanDesign(bdTime) {
   }
 
   var authority;
-  if (definedCenters["PlexSolar"]) authority = "Emotional (Plex Solar)";
+  if (definedCenters["PlexSolar"]) authority = "Emoțional (Plex Solar)";
   else if (definedCenters["Sacral"]) authority = "Sacral";
   else if (definedCenters["Splina"]) authority = "Splenic";
   else if (definedCenters["Inima"]) authority = "Ego";
@@ -2438,12 +2454,12 @@ function computeHumanDesign(bdTime) {
 
 function buildHumanDesignSection(bdTime, hasExactTime) {
   if (currentTier !== "premium") return buildUpsellHtml("Human Design (harta completa)", "premium");
-  if (!bdTime) return p("Human Design necesita data (si, ideal, ora) nasterii complete pentru calculul portilor si centrelor.");
+  if (!bdTime) return p("Human Design necesita data (si, ideal, ora) nașterii complete pentru calculul portilor si centrelor.");
 
   var hd = computeHumanDesign(bdTime);
   var html = "";
   if (!hasExactTime) {
-    html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin-bottom:14px\">&#9888; Nu ati introdus ora exacta a nasterii - harta de mai jos foloseste ora 12:00 ca aproximare. Portile Lunii si ale altor corpuri cu miscare rapida pot fi imprecise fara ora reala; introduceti-o in Tab I pentru precizie completa.</p>";
+    html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin-bottom:14px\">&#9888; Nu ati introdus ora exacta a nașterii - harta de mai jos foloseste ora 12:00 ca aproximare. Portile Lunii si ale altor corpuri cu miscare rapida pot fi imprecise fara ora reala; introduceti-o in Tab I pentru precizie completa.</p>";
   }
   html += sh("Rezumatul Tipului Energetic");
   html += "<div class=\"pg\">";
@@ -2609,7 +2625,7 @@ var AST_INTERPS = {
     "default": "Ceres indica stilul dvs. de ingrijire si de hranire - atat cum va ingrijiti pe voi insiva, cat si cum va ingrijiti pe ceilalti. Reveleaza relația cu mama, cu hrana si cu ciclurile naturale."
   },
   "juno": {
-    "default": "Juno indica ce cautati intr-un parteneriat de lunga durata - calittatile pe care trebuie sa le aiba partenerul de viața. Reveleaza asteptarile din casatorie si din angajamentele contractuale."
+    "default": "Juno indica ce cautati intr-un parteneriat de lunga durata - calitatile pe care trebuie sa le aiba partenerul de viața. Reveleaza asteptarile din casatorie si din angajamentele contractuale."
   },
   "vesta": {
     "default": "Vesta indica unde va dedicati cu cea mai mare intensitate si puritate. Arata unde puteti fi ca un ascet devotat - total concentrat pe o misiune sau o practica."
@@ -2791,7 +2807,7 @@ function calcDominant(bp, zodiac, asc) {
 
 var DOMINANT_INTERPS = {
   "sun":     "Planeta dominanta este Soarele. Identitate puternica, nevoia de expresie autentica si de recunoastere. Creativitate, leadership si charisma sunt marcatorii existenței dvs.",
-  "moon":    "Planeta dominanta este Luna. Sensibilitate emoțională profunda, intuiție superioara si cicluri de viața influențăte de dispozitii si stari interioare. Memoria si familia sunt centrale.",
+  "moon":    "Planeta dominanta este Luna. Sensibilitate emoțională profunda, intuiție superioara si cicluri de viața influențate de dispozitii si stari interioare. Memoria si familia sunt centrale.",
   "mercury": "Planeta dominanta este Mercur. Inteligenta agila, comunicare versatila si o minte care nu sta niciodata pe loc. Informatia, conexiunile si schimbul de idei sunt combustibilul existenței.",
   "venus":   "Planeta dominanta este Venus. Farmec natural, simt estetic rafinat si dorinta de armonie in toate domeniile. Relațiile, arta si placerile rafinate sunt prioritati existentiale.",
   "mars":    "Planeta dominanta este Marte. Energie actional intensa, curaj direct si o vointa care nu cunoaste obstacolul insurmontabil. Competitia, actiunea si dorinta sunt motoarele vieții.",
@@ -3013,7 +3029,7 @@ function buildNatalAspectsSection(bp) {
   }
   if (stellium.length > 0) {
     html += sh("Stellium Detectat");
-    html += p("Harta natala contine un stellium in: <strong>" + stellium.join(", ") + "</strong>. Un stellium (3+ planete in acelasi semn) indica o concentrare extraordinara de energie in acel semn. Temele si calittatile acelui semn sunt amplificate major in personalitate.");
+    html += p("Harta natala contine un stellium in: <strong>" + stellium.join(", ") + "</strong>. Un stellium (3+ planete in acelasi semn) indica o concentrare extraordinara de energie in acel semn. Temele si calitatile acelui semn sunt amplificate major in personalitate.");
   }
 
   return html;
@@ -3026,7 +3042,7 @@ function buildHousesSection(bp, asc, zodiac, hour) {
 
   var ascIdx = ALL_SIGNS.indexOf(asc.name);
   var html = sh("Cuspidalele Caselor (Sistem Case Egale)" + (asc.precise ? "" : " - aproximare"));
-  html += p("Casele astrologice sunt cele 12 sectoare ale hartii natale, calculate din Ascendent. Ele arata DOMENIILE de viața (nu planetele sau zodiile). Planeta care se afla intr-o casa coloreaza modul in care se manifesta energia acelei case in viața concreta." + (asc.precise ? "" : " Ascendentul afisat este o aproximare bazata doar pe ora si luna nasterii - pentru precizie completa, introduceti si locul nasterii intr-un format recunoscut (Oras, Tara)."));
+  html += p("Casele astrologice sunt cele 12 sectoare ale hartii natale, calculate din Ascendent. Ele arata DOMENIILE de viața (nu planetele sau zodiile). Planeta care se afla intr-o casa coloreaza modul in care se manifesta energia acelei case in viața concreta." + (asc.precise ? "" : " Ascendentul afisat este o aproximare bazata doar pe ora si luna nașterii - pentru precizie completa, introduceti si locul nașterii intr-un format recunoscut (Oras, Tara)."));
 
   html += "<div class='pg'>";
   for (var i = 0; i < 12; i++) {
@@ -3359,7 +3375,7 @@ async function buildResult() {
   try {
 
   html += "<div class=\"idb\">";
-  html += "<div class=\"idb-name\">" + name + "</div>";
+  html += "<div class=\"idb-name\">" + escapeHtml(name) + "</div>";
   html += "<div class=\"idb-sub\">" + zodiac.sy + " " + zodiac.s + " &middot; " + element.sym + " " + element.name + " &middot; Drumul Vieții " + lp + " &middot; " + age + " ani" + (asc?" &middot; Ascendent "+asc.sym+" "+asc.name:"") + "</div>";
   html += "<div class=\"idb-bgs\">";
   html += "<span class=\"idb-bg\">&#9737; " + zodiac.s + " " + zodiac.sy + "</span>";
@@ -3459,12 +3475,29 @@ async function buildResult() {
           chineseYear: (chinese && chinese.name) ? chinese.name : chinese,
           personalYear: py, personalMonth: pm, personalDay: pd,
           biorhythm: bio, age: age, ascendant: asc ? asc.name : null,
-          question: question || null, generatedAt: now.toISOString()
+          question: question || null, generatedAt: now.toISOString(),
+          // Full form snapshot so a past reading (history/favorites) can be
+          // reloaded later with every field restored, not just this summary -
+          // profiles.* only ever holds the CURRENT values (upsert overwrites),
+          // so past readings need their own copy to stay reconstructable.
+          formSnapshot: {
+            fullName: name, gender: gender,
+            birthDate: document.getElementById("birthDate").value,
+            birthTime: bt || null, birthPlace: bplace || null, birthName: bname,
+            bloodType: document.getElementById("bloodType").value || null,
+            sensType: document.getElementById("sensType").value || null,
+            dominantHand: document.getElementById("dominantHand").value || null,
+            profession: document.getElementById("profession").value || null,
+            marital: document.getElementById("marital").value || null,
+            question: question || null, dreamText: dreamText || null,
+            partnerDate: partnerDate || null,
+            handSel: Object.keys(handSel)
+          }
         });
       }
     } catch(saveErr) { console.error("save reading error:", saveErr); }
   } catch(e) {
-    RS.innerHTML = "<div class=\"idb\"><div class=\"idb-name\" style=\"color:#c4395e\">Eroare la generarea profilului</div><p style=\"padding:20px;color:var(--silver)\">Eroare: " + (e.message||String(e)) + ". V&#259; rug&#259;m reîncerca&#355;i.</p></div>";
+    RS.innerHTML = "<div class=\"idb\"><div class=\"idb-name\" style=\"color:#c4395e\">Eroare la generarea profilului</div><p style=\"padding:20px;color:var(--silver)\">Eroare: " + (e.message||String(e)) + ". V&#259; rug&#259;m reîncercați.</p></div>";
     RS.classList.add("sh");
   }
 
@@ -3725,6 +3758,44 @@ async function countFavoritesTotal(userId) {
 
 var GENDER_FORM_MAP = {"F":"feminin","M":"masculin","Other":"neutru"};
 
+function restoreFormFromSnapshot(snap) {
+  if (!snap) return;
+  if (snap.fullName) document.getElementById("fullName").value = snap.fullName;
+  if (snap.gender) document.getElementById("gender").value = snap.gender;
+  if (snap.birthDate) document.getElementById("birthDate").value = snap.birthDate;
+  document.getElementById("birthTime").value = snap.birthTime || "";
+  document.getElementById("birthPlace").value = snap.birthPlace || "";
+  document.getElementById("birthName").value = snap.birthName || "";
+  document.getElementById("bloodType").value = snap.bloodType || "";
+  document.getElementById("sensType").value = snap.sensType || "";
+  document.getElementById("dominantHand").value = snap.dominantHand || "";
+  document.getElementById("profession").value = snap.profession || "";
+  document.getElementById("marital").value = snap.marital || "";
+  document.getElementById("question").value = snap.question || "";
+  document.getElementById("dreamText").value = snap.dreamText || "";
+  document.getElementById("partnerDate").value = snap.partnerDate || "";
+
+  document.querySelectorAll("#handOpts .ho.sl").forEach(function(h){ h.classList.remove("sl"); });
+  handSel = {};
+  (snap.handSel || []).forEach(function(v){
+    handSel[v] = true;
+    var elH = document.querySelector("#handOpts .ho[data-v=\"" + v + "\"]");
+    if (elH) elH.classList.add("sl");
+  });
+}
+
+function loadHistoryReading(readingId) {
+  var r = historyReadings.find(function(x){ return String(x.id) === String(readingId); });
+  var snap = r && r.reading_data && r.reading_data.formSnapshot;
+  if (!snap) {
+    alert("Aceasta citire a fost salvata inainte de aceasta functionalitate si nu are toate datele necesare pentru reincarcare completa.");
+    return;
+  }
+  restoreFormFromSnapshot(snap);
+  closeHistoryModal();
+  launchOracle();
+}
+
 function prefillFormFromProfile(profile) {
   if (profile.full_name) document.getElementById("fullName").value = profile.full_name;
   if (profile.gender) document.getElementById("gender").value = GENDER_FORM_MAP[profile.gender] || "";
@@ -3856,9 +3927,11 @@ function renderHistoryList() {
     var r = list[i];
     var isFav = !!historyFavIds[r.id];
     var dt = new Date(r.created_at);
+    var hasSnapshot = !!(r.reading_data && r.reading_data.formSnapshot);
     html += "<div class=\"hist-item\">";
     html += "<span class=\"hi-star" + (isFav ? " fav" : "") + "\" onclick=\"toggleFavorite('" + r.id + "')\">" + (isFav ? "&#9733;" : "&#9734;") + "</span>";
-    html += "<div class=\"hi-body\"><div class=\"hi-title\">" + readingSummary(r) + "</div><div class=\"hi-meta\">" + dt.toLocaleDateString("ro-RO") + " " + dt.toLocaleTimeString("ro-RO", {hour:"2-digit",minute:"2-digit"}) + "</div></div>";
+    html += "<div class=\"hi-body\" onclick=\"loadHistoryReading('" + r.id + "')\"><div class=\"hi-title\">" + readingSummary(r) + "</div><div class=\"hi-meta\">" + dt.toLocaleDateString("ro-RO") + " " + dt.toLocaleTimeString("ro-RO", {hour:"2-digit",minute:"2-digit"}) + "</div></div>";
+    if (hasSnapshot) html += "<span class=\"hi-load\">&#8635; Incarca</span>";
     html += "</div>";
   }
   if (currentTier === "free" && historyTab === "all") html += buildUpsellHtml("Istoric nelimitat (peste ultimele 5)", "pro");
@@ -3945,9 +4018,9 @@ async function openAdminModal() {
     var regDate = p.created_at ? new Date(p.created_at).toLocaleDateString("ro-RO") : "-";
     var selId = "tierSel_" + p.user_id;
     tableHtml += "<tr>";
-    tableHtml += "<td>" + (p.full_name || "-") + "</td>";
-    tableHtml += "<td>" + (p.email || "-") + "</td>";
-    tableHtml += "<td>" + (p.birth_date || "-") + "</td>";
+    tableHtml += "<td>" + escapeHtml(p.full_name || "-") + "</td>";
+    tableHtml += "<td>" + escapeHtml(p.email || "-") + "</td>";
+    tableHtml += "<td>" + escapeHtml(p.birth_date || "-") + "</td>";
     tableHtml += "<td><select id=\"" + selId + "\" class=\"ip\" style=\"padding:5px 8px;font-size:12px\">" +
       "<option value=\"free\"" + (tier==="free"?" selected":"") + ">FREE</option>" +
       "<option value=\"pro\"" + (tier==="pro"?" selected":"") + ">PRO</option>" +
