@@ -236,6 +236,22 @@ canvas{width:100%;height:180px;display:block}
 .hist-item .hi-title{font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:1px;color:var(--gold-l);margin-bottom:3px}
 .hist-item .hi-meta{font-size:12px;color:var(--text-d);font-style:italic}
 .hist-empty{text-align:center;color:var(--text-d);font-style:italic;padding:30px 0}
+/* ADMIN MODAL */
+.adm-box{background:linear-gradient(135deg,rgba(18,11,40,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:900px;width:94%;max-height:86vh;overflow-y:auto;position:relative}
+.adm-box h3{font-family:"Cinzel Decorative",serif;font-size:14px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
+.adm-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-bottom:22px}
+.adm-stat{background:rgba(4,3,10,.7);border:1px solid var(--border);padding:14px 10px;text-align:center}
+.adm-stat .as-n{font-family:"Cinzel Decorative",serif;font-size:26px;color:var(--gold)}
+.adm-stat .as-l{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:3px}
+.adm-table{width:100%;border-collapse:collapse;font-size:13px}
+.adm-table th{text-align:left;font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);padding:8px 10px;border-bottom:1px solid var(--border)}
+.adm-table td{padding:8px 10px;border-bottom:1px solid var(--border-s);color:var(--silver)}
+.adm-table tr:hover td{background:rgba(201,168,76,.04)}
+.adm-badge{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border)}
+.adm-badge.pro{border-color:var(--jade-l);color:var(--jade-l)}
+.adm-badge.premium{border-color:var(--gold);color:var(--gold)}
+.adm-badge.free{border-color:var(--text-dd);color:var(--text-d)}
+.adm-tablewrap{overflow-x:auto}
 </style>
 </head>
 <body>
@@ -243,6 +259,7 @@ canvas{width:100%;height:180px;display:block}
 <div class="authbar" id="authBar">
   <span class="au-status" id="authStatus">&#10022; Neautentificat</span>
   <button class="au-btn" id="historyBtn" onclick="openHistoryModal()" style="display:none">&#9733; Istoricul Meu</button>
+  <button class="au-btn" id="adminBtn" onclick="openAdminModal()" style="display:none">&#9881; Admin</button>
   <button class="au-btn" id="authBtn" onclick="openAuthModal()">Autentificare</button>
   <button class="au-btn" id="logoutBtn" onclick="doLogout()" style="display:none">Deconectare</button>
 </div>
@@ -2709,6 +2726,17 @@ function hidePalmModal() {
   </div>
 </div>
 
+<!-- ADMIN MODAL -->
+<div id="adminModal" class="au-modal">
+  <div class="adm-box">
+    <span class="au-close" onclick="closeAdminModal()">&#10005;</span>
+    <h3>&#9881; PANOU DE ADMINISTRARE</h3>
+    <div class="adm-stats" id="adminStats"><div class="hist-empty">Se încarcă...</div></div>
+    <div class="sh3">Utilizatori Înregistrați</div>
+    <div class="adm-tablewrap"><table class="adm-table" id="adminUsersTable"></table></div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // ═══ SUPABASE INTEGRATION ═══
@@ -2769,6 +2797,7 @@ async function loadProfile(userId) {
     currentProfile = res.data;
     prefillFormFromProfile(res.data);
   }
+  document.getElementById("adminBtn").style.display = (currentProfile && currentProfile.is_admin) ? "inline-block" : "none";
 }
 
 var GENDER_FORM_MAP = {"F":"feminin","M":"masculin","Other":"neutru"};
@@ -2803,6 +2832,7 @@ async function saveProfileAndReading(readingData) {
 
   var profRes = await sb.from("profiles").upsert({
     user_id: currentUser.id,
+    email: currentUser.email,
     display_name: name,
     full_name: name,
     gender: GENDER_DB_MAP[gender] || null,
@@ -2840,6 +2870,8 @@ function updateAuthUI() {
     loginBtn.style.display = "inline-block";
     logoutBtn.style.display = "none";
     historyBtn.style.display = "none";
+    document.getElementById("adminBtn").style.display = "none";
+    currentProfile = null;
   }
 }
 
@@ -2919,6 +2951,64 @@ async function toggleFavorite(readingId) {
     historyFavIds[readingId] = true;
   }
   renderHistoryList();
+}
+
+// ═══ ADMIN DASHBOARD (view-only: reports + user list) ═══
+function closeAdminModal() {
+  document.getElementById("adminModal").classList.remove("show");
+}
+
+function buildAdminStat(num, label) {
+  return "<div class=\"adm-stat\"><div class=\"as-n\">" + num + "</div><div class=\"as-l\">" + label + "</div></div>";
+}
+
+async function openAdminModal() {
+  if (!currentProfile || !currentProfile.is_admin) return;
+  document.getElementById("adminModal").classList.add("show");
+  document.getElementById("adminStats").innerHTML = "<div class=\"hist-empty\">Se încarcă...</div>";
+  document.getElementById("adminUsersTable").innerHTML = "";
+
+  var profilesRes = await sb.from("profiles").select("*").order("created_at", { ascending: false });
+  var readingsCountRes = await sb.from("readings").select("id", { count: "exact", head: true });
+  var favoritesCountRes = await sb.from("favorites").select("id", { count: "exact", head: true });
+  var subsRes = await sb.from("subscriptions").select("user_id, tier, status");
+
+  if (profilesRes.error) { console.error("admin profiles fetch error:", profilesRes.error); document.getElementById("adminStats").innerHTML = "<div class=\"hist-empty\">Eroare la încărcare.</div>"; return; }
+
+  var profiles = profilesRes.data || [];
+  var subsByUser = {};
+  (subsRes.data || []).forEach(function(s) { subsByUser[s.user_id] = s; });
+
+  var tierCounts = { free: 0, pro: 0, premium: 0 };
+  profiles.forEach(function(p) {
+    var tier = (subsByUser[p.user_id] && subsByUser[p.user_id].tier) || "free";
+    tierCounts[tier] = (tierCounts[tier] || 0) + 1;
+  });
+
+  var statsHtml = "";
+  statsHtml += buildAdminStat(profiles.length, "Utilizatori Totali");
+  statsHtml += buildAdminStat(readingsCountRes.count || 0, "Citiri Generate");
+  statsHtml += buildAdminStat(favoritesCountRes.count || 0, "Favorite Salvate");
+  statsHtml += buildAdminStat(tierCounts.free, "Nivel Free");
+  statsHtml += buildAdminStat(tierCounts.pro, "Nivel Pro");
+  statsHtml += buildAdminStat(tierCounts.premium, "Nivel Premium");
+  document.getElementById("adminStats").innerHTML = statsHtml;
+
+  var tableHtml = "<tr><th>Nume</th><th>Email</th><th>Data Nasterii</th><th>Nivel</th><th>Admin</th><th>Inregistrat</th></tr>";
+  for (var i = 0; i < profiles.length; i++) {
+    var p = profiles[i];
+    var tier = (subsByUser[p.user_id] && subsByUser[p.user_id].tier) || "free";
+    var regDate = p.created_at ? new Date(p.created_at).toLocaleDateString("ro-RO") : "-";
+    tableHtml += "<tr>";
+    tableHtml += "<td>" + (p.full_name || "-") + "</td>";
+    tableHtml += "<td>" + (p.email || "-") + "</td>";
+    tableHtml += "<td>" + (p.birth_date || "-") + "</td>";
+    tableHtml += "<td><span class=\"adm-badge " + tier + "\">" + tier.toUpperCase() + "</span></td>";
+    tableHtml += "<td>" + (p.is_admin ? "&#9733;" : "") + "</td>";
+    tableHtml += "<td>" + regDate + "</td>";
+    tableHtml += "</tr>";
+  }
+  document.getElementById("adminUsersTable").innerHTML = tableHtml;
 }
 
 sb.auth.onAuthStateChange(function(event, session) {
