@@ -218,6 +218,16 @@ canvas{width:100%;height:180px;display:block}
 .authbar .au-status{font-family:"Raleway",sans-serif;font-size:11px;color:var(--text-d);letter-spacing:1px}
 .authbar .au-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;background:var(--gold-f);border:1px solid var(--border);color:var(--gold);cursor:pointer;transition:all .2s}
 .authbar .au-btn:hover{border-color:var(--gold)}
+.lang-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;padding:7px 12px;background:transparent;border:1px solid var(--border-b);color:var(--gold-l);cursor:pointer;transition:all .2s}
+.lang-btn:hover{background:var(--gold-f)}
+.site-footer{text-align:center;padding:26px 10px 18px;border-top:1px solid var(--border-s);margin-top:20px}
+.site-footer .footer-links{font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:1px;color:var(--text-d)}
+.site-footer .footer-links span{cursor:pointer;transition:color .2s}
+.site-footer .footer-links span:hover{color:var(--gold)}
+.site-footer .footer-copy{font-size:11px;color:var(--text-dd);margin-top:8px}
+.legal-body{max-height:60vh;overflow-y:auto;padding-right:6px}
+.legal-body h4{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+.legal-body p{font-size:13px;color:var(--silver);line-height:1.7;margin-bottom:10px}
 .au-modal{display:none;position:fixed;z-index:9998;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center}
 .au-modal.show{display:flex}
 .au-box{background:linear-gradient(135deg,rgba(18,11,40,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:340px;width:90%}
@@ -270,13 +280,14 @@ canvas{width:100%;height:180px;display:block}
 <body>
 <div class="w">
 <div class="authbar" id="authBar">
-  <span class="au-status" id="authStatus">&#10022; Neautentificat</span>
+  <button class="lang-btn" id="langToggleBtn" onclick="toggleLang()">EN</button>
+  <span class="au-status" id="authStatus" data-i18n="auth.loggedOut">&#10022; Neautentificat</span>
   <span class="adm-badge free" id="tierBadge" style="display:none">FREE</span>
-  <button class="au-btn" id="plansBtn" onclick="openPlansModal()">&#9733; Planuri &amp; Preturi</button>
-  <button class="au-btn" id="historyBtn" onclick="openHistoryModal()" style="display:none">&#9733; Istoricul Meu</button>
-  <button class="au-btn" id="adminBtn" onclick="openAdminModal()" style="display:none">&#9881; Admin</button>
-  <button class="au-btn" id="authBtn" onclick="openAuthModal()">Autentificare</button>
-  <button class="au-btn" id="logoutBtn" onclick="doLogout()" style="display:none">Deconectare</button>
+  <button class="au-btn" id="plansBtn" onclick="openPlansModal()" data-i18n="auth.plans">&#9733; Planuri &amp; Preturi</button>
+  <button class="au-btn" id="historyBtn" onclick="openHistoryModal()" style="display:none" data-i18n="auth.history">&#9733; Istoricul Meu</button>
+  <button class="au-btn" id="adminBtn" onclick="openAdminModal()" style="display:none" data-i18n="auth.admin">&#9881; Admin</button>
+  <button class="au-btn" id="authBtn" onclick="openAuthModal()" data-i18n="auth.login">Autentificare</button>
+  <button class="au-btn" id="logoutBtn" onclick="doLogout()" style="display:none" data-i18n="auth.logout">Deconectare</button>
 </div>
 <div class="hdr">
   <span class="hdr-sig">&#9789; &#10022; &#9788;</span>
@@ -512,12 +523,232 @@ canvas{width:100%;height:180px;display:block}
   <span id="visitCounter">&#10022; &#238;ncarcare counter...</span>
 </div>
 <div class="disc">MYTHOS ORACLE v3 este un sistem de profil esoteric integrat cu scop de introspecție și autocunoaștere. Interpretările sunt generate pe baza unui corpus tradițional consolidat. Nu constituie consultanț&#259; medical&#259;, juridic&#259; sau financiar&#259;.</div>
+<div class="site-footer">
+  <div class="footer-links">
+    <span onclick="openLegalModal('privacy')" data-i18n="footer.privacy">Politica de Confidențialitate</span>
+    &nbsp;&middot;&nbsp;
+    <span onclick="openLegalModal('terms')" data-i18n="footer.terms">Termeni și Condiții</span>
+    &nbsp;&middot;&nbsp;
+    <span onclick="openLegalModal('cookies')" data-i18n="footer.cookies">Politica de Cookie-uri</span>
+  </div>
+  <div class="footer-copy">&#169; <span id="footerYear"></span> Mythos Oracle &middot; <span data-i18n="footer.rights">Toate drepturile rezervate.</span></div>
+</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tz-lookup@6.1.25/tz.js"></script>
 <script>
 // ═══ MYTHOS ORACLE v2 — Clean JS Engine ═══
 // All strings use double quotes. No Romanian unquoted keys.
+
+// ═══ I18N (RO/EN) ═══
+// Foundation meant to eventually cover the whole app; for now it drives the
+// header chrome, footer and legal pages (Privacy/Terms/Cookies), which are
+// fully bilingual. The deep report-generation content (zodiac/tarot/dream
+// interpretations etc.) remains Romanian-only for now - migrating thousands
+// of lines of esoteric copy is a separate, much larger follow-up effort.
+var currentLang = localStorage.getItem("mythos_lang") || "ro";
+
+var I18N = {
+  "auth.loggedOut": {ro:"&#10022; Neautentificat", en:"&#10022; Not signed in"},
+  "auth.plans": {ro:"&#9733; Planuri &amp; Preturi", en:"&#9733; Plans &amp; Pricing"},
+  "auth.history": {ro:"&#9733; Istoricul Meu", en:"&#9733; My History"},
+  "auth.admin": {ro:"&#9881; Admin", en:"&#9881; Admin"},
+  "auth.login": {ro:"Autentificare", en:"Sign In"},
+  "auth.logout": {ro:"Deconectare", en:"Sign Out"},
+  "footer.privacy": {ro:"Politica de Confidențialitate", en:"Privacy Policy"},
+  "footer.terms": {ro:"Termeni și Condiții", en:"Terms &amp; Conditions"},
+  "footer.cookies": {ro:"Politica de Cookie-uri", en:"Cookie Policy"},
+  "footer.rights": {ro:"Toate drepturile rezervate.", en:"All rights reserved."},
+  "legal.tab.privacy": {ro:"Confidențialitate", en:"Privacy"},
+  "legal.tab.terms": {ro:"Termeni", en:"Terms"},
+  "legal.tab.cookies": {ro:"Cookie-uri", en:"Cookies"}
+};
+
+function t(key) {
+  var entry = I18N[key];
+  if (!entry) return key;
+  return entry[currentLang] || entry.ro || key;
+}
+
+function applyLang() {
+  document.querySelectorAll("[data-i18n]").forEach(function(elx) {
+    elx.innerHTML = t(elx.getAttribute("data-i18n"));
+  });
+  var btn = document.getElementById("langToggleBtn");
+  if (btn) btn.textContent = currentLang === "ro" ? "EN" : "RO";
+  document.documentElement.lang = currentLang;
+  if (document.getElementById("legalModal") && document.getElementById("legalModal").classList.contains("show")) {
+    switchLegalTab(legalTab);
+  }
+}
+
+function toggleLang() {
+  currentLang = currentLang === "ro" ? "en" : "ro";
+  localStorage.setItem("mythos_lang", currentLang);
+  applyLang();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  applyLang();
+  var fy = document.getElementById("footerYear");
+  if (fy) fy.textContent = new Date().getFullYear();
+});
+
+// ═══ LEGAL PAGES ═══
+var legalTab = "privacy";
+function openLegalModal(tab) {
+  legalTab = tab || "privacy";
+  switchLegalTab(legalTab);
+  document.getElementById("legalModal").classList.add("show");
+}
+function closeLegalModal() {
+  document.getElementById("legalModal").classList.remove("show");
+}
+function switchLegalTab(tab) {
+  legalTab = tab;
+  ["Privacy", "Terms", "Cookies"].forEach(function(name) {
+    document.getElementById("legalTab" + name).classList.toggle("act", name.toLowerCase() === tab);
+  });
+  var entry = LEGAL_CONTENT[tab] || LEGAL_CONTENT.privacy;
+  document.getElementById("legalContent").innerHTML = entry[currentLang] || entry.ro;
+}
+
+function lh4(text) { return "<h4>" + text + "</h4>"; }
+function lp(text) { return "<p>" + text + "</p>"; }
+
+var LEGAL_PRIVACY_RO =
+  lh4("1. Operator si date de contact") +
+  lp("Operatorul acestui serviciu (Mythos Oracle) este Bogdan Ilie, persoana fizica, contact: <strong>bogdan.ilie@usa.com</strong>. Pentru orice intrebare legata de datele dvs. personale, ne puteti scrie la aceasta adresa.") +
+  lh4("2. Ce date colectam") +
+  lp("Cont: adresa de email si parola (gestionate de Supabase Auth). Profil: nume complet, gen, data/ora/locul nasterii, grupa sanguina, mana dominanta, profesie, stare civila - toate optionale in afara de nume, gen si data nasterii, necesare pentru calculele astrologice/numerologice. Continut generat de dvs.: intrebari si descrieri de vise pe care alegeti sa le introduceti pentru interpretare.") +
+  lh4("3. Scopul prelucrarii") +
+  lp("Datele sunt folosite exclusiv pentru a genera profilul dvs. esoteric (astrologie, numerologie, bioritm, divinatie, Human Design) si, daca alegeti sa folositi aceasta functie, pentru a genera interpretari personalizate prin inteligenta artificiala. Nu folosim datele in scopuri publicitare si nu le vindem catre terti.") +
+  lh4("4. Temeiul legal") +
+  lp("Prelucrarea se bazeaza pe consimtamantul dvs. explicit (Art. 6(1)(a) GDPR), acordat la crearea contului si la introducerea datelor in formular, si pe executarea contractului atunci cand alegeti un plan platit (Art. 6(1)(b) GDPR).") +
+  lh4("5. Servicii terte implicate") +
+  lp("Pentru functionare, folosim urmatorii furnizori (subprocesori), fiecare cu propria politica de confidentialitate: <strong>Supabase</strong> (baza de date si autentificare), <strong>Railway</strong> (server backend), <strong>OpenAI</strong> (genereaza interpretarile AI - textul intrebarilor/viselor introduse de dvs. este trimis catre OpenAI exclusiv pentru acest scop, daca alegeti sa folositi functia de interpretare AI), <strong>Vercel</strong> (gazduire aplicatie web). Platile se proceseaza manual prin Revolut, care are propria politica de confidentialitate.") +
+  lh4("6. Perioada de stocare") +
+  lp("Datele sunt pastrate cat timp contul dvs. este activ. Puteti solicita oricand stergerea completa a contului si a datelor asociate, scriindu-ne la adresa de contact.") +
+  lh4("7. Drepturile dumneavoastra") +
+  lp("Conform GDPR, aveti dreptul de acces, rectificare, stergere, restrictionare, portabilitate si opozitie la prelucrarea datelor dvs., precum si dreptul de a depune o plangere la Autoritatea Nationala de Supraveghere a Prelucrarii Datelor cu Caracter Personal (ANSPDCP).") +
+  lh4("8. Securitate") +
+  lp("Accesul la datele dvs. este restrictionat prin politici de securitate la nivel de baza de date (Row Level Security), astfel incat fiecare utilizator poate vedea si modifica doar propriile date; administratorii au acces extins strict pentru administrarea platformei.") +
+  lh4("9. Cookie-uri si stocare locala") +
+  lp("Vezi Politica de Cookie-uri separata pentru detalii.") +
+  lh4("10. Minori") +
+  lp("Serviciul nu este destinat persoanelor sub 16 ani. Daca aveti sub 16 ani, va rugam sa nu creati un cont.") +
+  lh4("11. Modificari") +
+  lp("Aceasta politica poate fi actualizata periodic; data ultimei actualizari: 20 iulie 2026.") +
+  lh4("12. Contact") +
+  lp("Pentru orice solicitare legata de datele personale: <strong>bogdan.ilie@usa.com</strong>.");
+
+var LEGAL_PRIVACY_EN =
+  lh4("1. Operator and contact details") +
+  lp("The operator of this service (Mythos Oracle) is Bogdan Ilie, an individual, contact: <strong>bogdan.ilie@usa.com</strong>. For any question about your personal data, please write to this address.") +
+  lh4("2. What data we collect") +
+  lp("Account: email address and password (managed by Supabase Auth). Profile: full name, gender, birth date/time/place, blood type, dominant hand, profession, marital status - all optional except name, gender and birth date, which are required for the astrological/numerological calculations. Content you generate: any questions or dream descriptions you choose to submit for interpretation.") +
+  lh4("3. Purpose of processing") +
+  lp("Your data is used exclusively to generate your esoteric profile (astrology, numerology, biorhythm, divination, Human Design) and, if you choose to use this feature, to generate personalized interpretations via artificial intelligence. We do not use your data for advertising and do not sell it to third parties.") +
+  lh4("4. Legal basis") +
+  lp("Processing is based on your explicit consent (Art. 6(1)(a) GDPR), given when creating an account and entering data into the form, and on contract performance when you choose a paid plan (Art. 6(1)(b) GDPR).") +
+  lh4("5. Third-party services involved") +
+  lp("To operate, we use the following providers (subprocessors), each with its own privacy policy: <strong>Supabase</strong> (database and authentication), <strong>Railway</strong> (backend server), <strong>OpenAI</strong> (generates the AI interpretations - the text of questions/dreams you submit is sent to OpenAI solely for this purpose, if you choose to use the AI interpretation feature), <strong>Vercel</strong> (web app hosting). Payments are processed manually via Revolut, which has its own privacy policy.") +
+  lh4("6. Retention period") +
+  lp("Your data is kept for as long as your account is active. You may request full deletion of your account and associated data at any time by writing to the contact address.") +
+  lh4("7. Your rights") +
+  lp("Under GDPR, you have the right to access, rectify, delete, restrict, port and object to the processing of your data, as well as the right to lodge a complaint with the Romanian National Supervisory Authority for Personal Data Processing (ANSPDCP).") +
+  lh4("8. Security") +
+  lp("Access to your data is restricted via database-level security policies (Row Level Security), so each user can only see and modify their own data; administrators have extended access strictly for platform administration.") +
+  lh4("9. Cookies and local storage") +
+  lp("See the separate Cookie Policy for details.") +
+  lh4("10. Minors") +
+  lp("This service is not intended for individuals under 16. If you are under 16, please do not create an account.") +
+  lh4("11. Changes") +
+  lp("This policy may be updated periodically; last updated: July 20, 2026.") +
+  lh4("12. Contact") +
+  lp("For any request regarding your personal data: <strong>bogdan.ilie@usa.com</strong>.");
+
+var LEGAL_TERMS_RO =
+  lh4("1. Acceptarea termenilor") +
+  lp("Prin utilizarea Mythos Oracle, sunteti de acord cu acesti Termeni si Conditii. Daca nu sunteti de acord, va rugam sa nu folositi serviciul.") +
+  lh4("2. Descrierea serviciului") +
+  lp("Mythos Oracle este un serviciu de profil esoteric (astrologie, numerologie, bioritm, tarot, I Ching, rune, Human Design) cu scop de introspectie si autocunoastere. Continutul este generat pe baza unor traditii esoterice si, partial, prin inteligenta artificiala. <strong>Nu constituie consultanta medicala, psihologica, juridica sau financiara</strong> si nu inlocuieste sfatul unui specialist calificat.") +
+  lh4("3. Conturi de utilizator") +
+  lp("Sunteti responsabil pentru pastrarea confidentialitatii parolei contului si pentru toate activitatile desfasurate din contul dvs.") +
+  lh4("4. Planuri si preturi") +
+  lp("Serviciul ofera trei planuri: Free (0 lei), Pro (15 lei/luna) si Premium (9 EUR/luna), cu functionalitati diferite descrise in sectiunea Planuri &amp; Preturi. Preturile pot fi modificate cu notificare prealabila rezonabila.") +
+  lh4("5. Modalitate de plata si activare") +
+  lp("Upgrade-ul la Pro sau Premium se face in prezent <strong>manual</strong>: trimiteti suma corespunzatoare prin Revolut la @trueblood, mentionand contul dvs. de email, iar upgrade-ul este activat manual in maxim 24 de ore de la confirmarea platii.") +
+  lh4("6. Anulare si rambursare") +
+  lp("Puteti solicita anularea unui abonament oricand, scriind la adresa de contact; anularea opreste reinnoirea pentru perioada urmatoare. Daca solicitati rambursarea inainte ca upgrade-ul sa fi fost activat, suma va fi returnata integral. Dupa activarea abonamentului pentru perioada curenta, rambursarea se analizeaza de la caz la caz, contactandu-ne direct.") +
+  lh4("7. Continut generat de utilizator") +
+  lp("Sunteti responsabil pentru continutul pe care il introduceti (intrebari, descrieri de vise). Nu introduceti informatii sensibile ale unor terte persoane fara acordul lor.") +
+  lh4("8. Proprietate intelectuala") +
+  lp("Continutul, designul si codul aplicatiei Mythos Oracle sunt proprietatea operatorului, cu exceptia continutului generat de dvs. sau al continutului tras din traditii publice (simboluri astrologice, tarot etc.).") +
+  lh4("9. Limitarea raspunderii") +
+  lp("Interpretarile oferite au scop strict de divertisment si introspectie personala. Operatorul nu isi asuma raspunderea pentru deciziile luate pe baza continutului platformei.") +
+  lh4("10. Incetarea contului") +
+  lp("Puteti sterge contul oricand. Ne rezervam dreptul de a suspenda conturi care incalca acesti termeni.") +
+  lh4("11. Legea aplicabila") +
+  lp("Acesti termeni sunt guvernati de legea romana.") +
+  lh4("12. Contact") +
+  lp("Pentru intrebari despre acesti termeni: <strong>bogdan.ilie@usa.com</strong>.");
+
+var LEGAL_TERMS_EN =
+  lh4("1. Acceptance of terms") +
+  lp("By using Mythos Oracle, you agree to these Terms &amp; Conditions. If you do not agree, please do not use the service.") +
+  lh4("2. Service description") +
+  lp("Mythos Oracle is an esoteric profile service (astrology, numerology, biorhythm, tarot, I Ching, runes, Human Design) intended for introspection and self-knowledge. Content is generated from esoteric traditions and, in part, via artificial intelligence. <strong>It does not constitute medical, psychological, legal or financial advice</strong> and does not replace the advice of a qualified professional.") +
+  lh4("3. User accounts") +
+  lp("You are responsible for keeping your account password confidential and for all activity under your account.") +
+  lh4("4. Plans and pricing") +
+  lp("The service offers three plans: Free (0 lei), Pro (15 lei/month) and Premium (9 EUR/month), with different features described in the Plans &amp; Pricing section. Prices may change with reasonable prior notice.") +
+  lh4("5. Payment method and activation") +
+  lp("Upgrading to Pro or Premium is currently <strong>manual</strong>: send the corresponding amount via Revolut to @trueblood, mentioning your account email, and the upgrade is activated manually within 24 hours of payment confirmation.") +
+  lh4("6. Cancellation and refunds") +
+  lp("You may request cancellation of a subscription at any time by writing to the contact address; cancellation stops renewal for the following period. If you request a refund before the upgrade has been activated, the amount is refunded in full. After the subscription has been activated for the current period, refunds are reviewed case by case - please contact us directly.") +
+  lh4("7. User-generated content") +
+  lp("You are responsible for the content you submit (questions, dream descriptions). Do not enter sensitive information about third parties without their consent.") +
+  lh4("8. Intellectual property") +
+  lp("The content, design and code of the Mythos Oracle application belong to the operator, except for content you generate yourself or content drawn from public traditions (astrological symbols, tarot, etc.).") +
+  lh4("9. Limitation of liability") +
+  lp("The interpretations provided are strictly for entertainment and personal introspection purposes. The operator is not liable for decisions made based on the platform's content.") +
+  lh4("10. Account termination") +
+  lp("You may delete your account at any time. We reserve the right to suspend accounts that violate these terms.") +
+  lh4("11. Governing law") +
+  lp("These terms are governed by Romanian law.") +
+  lh4("12. Contact") +
+  lp("For questions about these terms: <strong>bogdan.ilie@usa.com</strong>.");
+
+var LEGAL_COOKIES_RO =
+  lh4("Ce folosim") +
+  lp("Mythos Oracle foloseste cookie-uri/stocare locala (localStorage) strict functionale - nu folosim cookie-uri de publicitate sau de urmarire de la terti (ex. Google Analytics, Facebook Pixel).") +
+  lh4("Autentificare") +
+  lp("Supabase (furnizorul nostru de autentificare) foloseste un token de sesiune stocat local in browser pentru a va mentine autentificat intre vizite.") +
+  lh4("Preferinte") +
+  lp("Limba selectata (Romana/Engleza) este salvata local, in browser-ul dvs., pentru a fi retinuta la urmatoarea vizita.") +
+  lh4("Utilizare AI (utilizatori neautentificati)") +
+  lp("Pentru a limita interpretarile AI gratuite conform planului Free, retinem local o marcare simpla ('folosit azi') atunci cand nu sunteti autentificat.") +
+  lh4("Control") +
+  lp("Puteti sterge aceste date oricand din setarile browser-ului dvs. (stergerea datelor de navigare / stocare locala pentru acest site); veti fi deconectat si preferintele vor reveni la valorile implicite.");
+
+var LEGAL_COOKIES_EN =
+  lh4("What we use") +
+  lp("Mythos Oracle uses strictly functional cookies/local storage (localStorage) - we do not use third-party advertising or tracking cookies (e.g. Google Analytics, Facebook Pixel).") +
+  lh4("Authentication") +
+  lp("Supabase (our authentication provider) uses a session token stored locally in your browser to keep you signed in between visits.") +
+  lh4("Preferences") +
+  lp("Your selected language (Romanian/English) is saved locally in your browser, to be remembered on your next visit.") +
+  lh4("AI usage (signed-out users)") +
+  lp("To enforce the Free plan's daily AI interpretation limit, we store a simple local marker ('used today') when you are not signed in.") +
+  lh4("Control") +
+  lp("You can delete this data at any time from your browser settings (clear browsing data / local storage for this site); you will be signed out and preferences will revert to their defaults.");
+
+var LEGAL_CONTENT = {
+  privacy: { ro: LEGAL_PRIVACY_RO, en: LEGAL_PRIVACY_EN },
+  terms: { ro: LEGAL_TERMS_RO, en: LEGAL_TERMS_EN },
+  cookies: { ro: LEGAL_COOKIES_RO, en: LEGAL_COOKIES_EN }
+};
 
 // ── Tab system ──
 function showTab(id, btn) {
@@ -3562,6 +3793,19 @@ function hidePalmModal() {
   modal.classList.remove('show');
 }
 </script>
+
+<!-- LEGAL MODAL -->
+<div id="legalModal" class="au-modal">
+  <div class="adm-box" style="max-width:760px">
+    <span class="au-close" onclick="closeLegalModal()">&#10005;</span>
+    <div class="hist-tabs">
+      <div class="hist-tab act" id="legalTabPrivacy" onclick="switchLegalTab('privacy')" data-i18n="legal.tab.privacy">Confidențialitate</div>
+      <div class="hist-tab" id="legalTabTerms" onclick="switchLegalTab('terms')" data-i18n="legal.tab.terms">Termeni</div>
+      <div class="hist-tab" id="legalTabCookies" onclick="switchLegalTab('cookies')" data-i18n="legal.tab.cookies">Cookie-uri</div>
+    </div>
+    <div class="legal-body" id="legalContent"></div>
+  </div>
+</div>
 
 <!-- PALM ZOOM MODAL -->
 <div id="palmModal" class="palm-modal" onclick="hidePalmModal()">
