@@ -481,6 +481,7 @@ canvas{width:100%;height:180px;display:block}
 </div>
 <div class="disc">MYTHOS ORACLE v3 este un sistem de profil esoteric integrat cu scop de introspec&#355;ie &#351;i autocunoa&#351;tere. Interpretările sunt generate pe baza unui corpus tradi&#355;ional consolidat. Nu constituie consultan&#355;&#259; medical&#259;, juridic&#259; sau financiar&#259;.</div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script>
 // ═══ MYTHOS ORACLE v2 — Clean JS Engine ═══
 // All strings use double quotes. No Romanian unquoted keys.
@@ -513,27 +514,38 @@ function toggleSec(hd) {
   tog.classList.toggle("op");
 }
 
-// ═══ EPHEMERIS (synthetic, ±3° accuracy) ═══
-// [base_longitude_jan1_2024, degrees_per_day]
-var EPHEM = {
-  "sun":    [280.5, 0.9856],
-  "moon":   [169.0, 13.176],
-  "mercury":[245.0, 1.383],
-  "venus":  [198.0, 1.202],
-  "mars":   [72.0,  0.524],
-  "jupiter":[50.3,  0.0831],
-  "saturn": [354.5, 0.0335],
-  "uranus": [51.5,  0.0116],
-  "neptune":[357.0, 0.0060],
-  "pluto":  [300.0, 0.0040],
-  "node":   [16.0, -0.0529]
-};
+// ═══ EPHEMERIS ═══
+// Real planetary positions via astronomy-engine (VSOP87/ELP2000-based, arcminute
+// precision) for Sun..Pluto and a precise Mean Lunar Node. Chiron/asteroids further
+// below remain a synthetic linear approximation — real orbital elements for those
+// minor bodies are out of scope for a client-side, no-build single-page app.
 var ENAMES = {"sun":"Soare","moon":"Luna","mercury":"Mercur","venus":"Venus","mars":"Marte","jupiter":"Jupiter","saturn":"Saturn","uranus":"Uranus","neptune":"Neptun","pluto":"Pluton","node":"Nod Nord"};
 var ESYMS  = {"sun":"☉","moon":"☽","mercury":"☿","venus":"♀","mars":"♂","jupiter":"♃","saturn":"♄","uranus":"♅","neptune":"♆","pluto":"♇","node":"☊"};
 var REF = new Date("2024-01-01");
 
-function daysSince(d) { return (d - REF) / 86400000; }
-function getPLon(p, d) { return (((EPHEM[p][0] + EPHEM[p][1]*daysSince(d)) % 360) + 360) % 360; }
+function daysSince(d) { return (d - REF) / 86400000; } // used only by the synthetic minor-body approximations below
+
+var ASTRO_BODY = {
+  "sun":"Sun","moon":"Moon","mercury":"Mercury","venus":"Venus","mars":"Mars",
+  "jupiter":"Jupiter","saturn":"Saturn","uranus":"Uranus","neptune":"Neptune","pluto":"Pluto"
+};
+
+function julianDay(d) { return (d.getTime() / 86400000) + 2440587.5; }
+
+function getMeanNodeLon(d) {
+  var T = (julianDay(d) - 2451545.0) / 36525;
+  var omega = 125.0445479 - 1934.1362891*T + 0.0020754*T*T + (T*T*T)/467441 - (T*T*T*T)/60616000;
+  return ((omega % 360) + 360) % 360;
+}
+
+function getPLon(p, d) {
+  if (p === "node") return getMeanNodeLon(d);
+  var body = ASTRO_BODY[p];
+  if (!body || typeof Astronomy === "undefined") return 0;
+  var vec = Astronomy.GeoVector(body, d, true);
+  var ecl = Astronomy.Ecliptic(vec);
+  return ((ecl.elon % 360) + 360) % 360;
+}
 function lonToSign(lon) {
   var S=["Berbec","Taur","Gemeni","Rac","Leu","Fecioara","Balanta","Scorpion","Sagetator","Capricorn","Varsator","Pesti"];
   var SY=["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
@@ -2431,10 +2443,18 @@ function buildResult() {
   var asc = hour!==null ? getAscendent(hour, month) : null;
   var profile = ZP[zodiac.s] || ZP["Berbec"];
 
+  // Combine birth date + time (when known) for the ephemeris — planetary
+  // positions (especially the Moon, ~13°/day) depend on time-of-day, which
+  // the previous synthetic model ignored entirely. Falls back to noon when
+  // no birth time is given (minimizes worst-case error vs. assuming midnight).
+  var bdTime = (hour !== null)
+    ? new Date(year, month-1, day, hour, parseInt(bt.split(":")[1]||"0"))
+    : new Date(year, month-1, day, 12, 0);
+
   var bp = {};
   var pkeys = ["sun","moon","mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto","node"];
   for(var i=0;i<pkeys.length;i++){
-    var lon = getPLon(pkeys[i], bd);
+    var lon = getPLon(pkeys[i], bdTime);
     bp[pkeys[i]] = {lon:lon, sign:lonToSign(lon)};
   }
 
