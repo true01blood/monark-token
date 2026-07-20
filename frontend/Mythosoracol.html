@@ -264,6 +264,8 @@ canvas{width:100%;height:180px;display:block}
 <div class="w">
 <div class="authbar" id="authBar">
   <span class="au-status" id="authStatus">&#10022; Neautentificat</span>
+  <span class="adm-badge free" id="tierBadge" style="display:none">FREE</span>
+  <button class="au-btn" id="plansBtn" onclick="openPlansModal()">&#9733; Planuri &amp; Preturi</button>
   <button class="au-btn" id="historyBtn" onclick="openHistoryModal()" style="display:none">&#9733; Istoricul Meu</button>
   <button class="au-btn" id="adminBtn" onclick="openAdminModal()" style="display:none">&#9881; Admin</button>
   <button class="au-btn" id="authBtn" onclick="openAuthModal()">Autentificare</button>
@@ -1595,19 +1597,34 @@ function buildDreamFallback(dreamText, found) {
   return html;
 }
 
+async function canUseAIQuota() {
+  if (currentTier !== "free") return true;
+  if (currentUser) return (await getAiUsageToday(currentUser.id)) < 1;
+  var key = "mythos_ai_quota_" + new Date().toISOString().slice(0,10);
+  return !localStorage.getItem(key);
+}
+
+async function markAIQuotaUsed() {
+  if (currentTier !== "free") return;
+  if (currentUser) { await incrementAiUsageToday(currentUser.id); return; }
+  localStorage.setItem("mythos_ai_quota_" + new Date().toISOString().slice(0,10), "1");
+}
+
 async function buildDreamSection(dreamText, aiContext) {
   if(!dreamText) return p("Nu a fost furnizat un vis pentru interpretare.");
   var html = sh("Visul Furnizat");
   html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&ldquo;" + dreamText.substring(0,300) + (dreamText.length>300?"...":"") + "&rdquo;</div></div>";
 
-  var aiText = await fetchAISynthesis("dream", { dreamText: dreamText, context: aiContext });
+  var aiText = (await canUseAIQuota()) ? await fetchAISynthesis("dream", { dreamText: dreamText, context: aiContext }) : null;
   if (aiText) {
+    await markAIQuotaUsed();
     html += sh("Interpretare Personalizata (AI)");
     html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
   } else {
     var found = findDreamKeywords(dreamText);
     html += buildDreamFallback(dreamText, found);
-    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Interpretarea AI nu a fost disponibila momentan - se afiseaza interpretarea de baza pe cuvinte-cheie.</p>";
+    if (currentTier === "free") html += buildUpsellHtml("Interpretari AI nelimitate", "pro");
+    else html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Interpretarea AI nu a fost disponibila momentan - se afiseaza interpretarea de baza pe cuvinte-cheie.</p>";
   }
   return html;
 }
@@ -1632,6 +1649,7 @@ function buildCompatSection(zodiac) {
 
 function buildSynastrySec(synData, bioData, zodiac, element, lp) {
   if(!synData) return p("Nu a fost furnizata data nașterii unui partener. Completati Tab III pentru a activa modulul de sinastrie.");
+  if(currentTier === "free") return buildUpsellHtml("Sinastria", "pro");
   var bioSync = Math.round((100-Math.abs(bioData.physical-synData.bio.physical)/2-Math.abs(bioData.emoțional-synData.bio.emoțional)/2)/1.5);
   var html = "<div class=\"syg\">";
   html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold)\">Dvs.</div><div style=\"font-size:22px;margin:7px 0\">" + (ALL_SYMS[ALL_SIGNS.indexOf(zodiac)]||"&#10022;") + "</div><div style=\"font-style:italic;color:var(--silver)\">" + zodiac + " &middot; LP " + lp + "</div></div>";
@@ -1695,14 +1713,16 @@ async function buildQuestionSection(question, zodiac, lp, element, py, profile, 
   var html = sh("Intrebarea Formulata");
   html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&bdquo;" + question + "&rdquo;</div></div>";
 
-  var aiText = await fetchAISynthesis("question", { question: question, context: aiContext });
+  var aiText = (await canUseAIQuota()) ? await fetchAISynthesis("question", { question: question, context: aiContext }) : null;
   if (aiText) {
+    await markAIQuotaUsed();
     html += sh("Raspuns Personalizat (AI)");
     html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
   } else {
     html += sh("Raspuns Integrat");
     html += buildQuestionFallback(question, zodiac, lp, element, py, profile, transits);
-    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Interpretarea AI nu a fost disponibila momentan - se afiseaza raspunsul de baza.</p>";
+    if (currentTier === "free") html += buildUpsellHtml("Interpretari AI nelimitate", "pro");
+    else html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Interpretarea AI nu a fost disponibila momentan - se afiseaza raspunsul de baza.</p>";
   }
   return html;
 }
@@ -1929,11 +1949,25 @@ function buildTarotCardHtml(label, draw) {
   "</div>";
 }
 
+function buildUpsellHtml(featureName, minTier) {
+  return "<div class=\"sab\" style=\"text-align:center\">" +
+    "<div class=\"sab-s\">&#128274; " + featureName + " este disponibil din planul <strong>" + minTier.toUpperCase() + "</strong></div>" +
+    "<div class=\"sab-i\">Upgrade la " + PLAN_PRICES[minTier.toLowerCase()] + " pentru acces.</div>" +
+    "<button class=\"au-btn\" style=\"margin-top:10px\" onclick=\"openPlansModal()\">Vezi Planurile</button>" +
+  "</div>";
+}
+
 function buildTarotSection(seedStr) {
   var html = sh("Cartea Zilei (extragere fixa pentru azi)");
   var dailyRnd = seededRandomFn(seedStr + "-tarot-daily");
   var dailyDraw = drawTarotCards(1, dailyRnd)[0];
   html += buildTarotCardHtml("", dailyDraw);
+
+  if (currentTier === "free") {
+    html += sh("Extragere Trecut &middot; Prezent &middot; Viitor &amp; Crucea Celtica");
+    html += buildUpsellHtml("Extragerile de 3 si 10 carti", "pro");
+    return html;
+  }
 
   html += sh("Extragere Trecut &middot; Prezent &middot; Viitor");
   var three = drawTarotCards(3);
@@ -3133,6 +3167,54 @@ function hidePalmModal() {
   </div>
 </div>
 
+<!-- PLANS MODAL -->
+<div id="plansModal" class="au-modal">
+  <div class="adm-box" style="max-width:760px">
+    <span class="au-close" onclick="closePlansModal()">&#10005;</span>
+    <h3>&#9733; PLANURI &amp; PRETURI</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px">
+      <div style="background:rgba(4,3,10,.7);border:1px solid var(--border);padding:20px 16px;text-align:center">
+        <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--text-d);letter-spacing:2px;margin-bottom:8px">FREE</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">0 lei</div>
+        <div style="font-size:12px;color:var(--silver);text-align:left;line-height:2">
+          &#10003; Astrologie, Numerologie, Bioritm complete<br>
+          &#10003; Istoric ultimele 5 citiri<br>
+          &#10003; Maxim 5 favorite<br>
+          &#10003; Tarot: doar cartea zilei<br>
+          &#10003; 1 interpretare AI / zi<br>
+          &#10007; Sinastrie<br>
+          &#10007; Human Design
+        </div>
+      </div>
+      <div style="background:var(--gold-f);border:1px solid var(--gold);padding:20px 16px;text-align:center">
+        <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">PRO</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">15 lei/luna</div>
+        <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
+          &#10003; Tot ce e in Free, plus:<br>
+          &#10003; Istoric nelimitat<br>
+          &#10003; Favorite nelimitate<br>
+          &#10003; Tarot complet (3 carti + Crucea Celtica)<br>
+          &#10003; Interpretari AI nelimitate<br>
+          &#10003; Sinastrie completa<br>
+          &#10007; Human Design
+        </div>
+      </div>
+      <div style="background:rgba(4,3,10,.7);border:1px solid var(--border-b);padding:20px 16px;text-align:center">
+        <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold-l);letter-spacing:2px;margin-bottom:8px">PREMIUM</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">9 &euro;/luna</div>
+        <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
+          &#10003; Tot ce e in Pro, plus:<br>
+          &#10003; Human Design complet<br>
+          &#10003; Prioritate la sinteza AI<br>
+          &#10003; Acces anticipat la module noi
+        </div>
+      </div>
+    </div>
+    <div class="sh3">Cum faci upgrade (momentan manual)</div>
+    <p style="font-size:13px;color:var(--silver);line-height:1.8">Trimite suma corespunzatoare planului dorit + contul tau (emailul cu care esti inregistrat) la <strong id="plansContact">contact@mythos-oracle.ro</strong>. Upgrade-ul se face manual in maxim 24h de la confirmarea platii.</p>
+  </div>
+</div>
+
 <!-- ADMIN MODAL -->
 <div id="adminModal" class="au-modal">
   <div class="adm-box">
@@ -3153,6 +3235,8 @@ var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var authMode = "login"; // "login" | "signup"
 var currentUser = null;
 var currentProfile = null;
+var currentTier = "free";
+var PLAN_PRICES = { free: "0 lei", pro: "15 lei/lună", premium: "9 &euro;/lună" };
 
 function openAuthModal() {
   document.getElementById("authModal").classList.add("show");
@@ -3205,6 +3289,40 @@ async function loadProfile(userId) {
     prefillFormFromProfile(res.data);
   }
   document.getElementById("adminBtn").style.display = (currentProfile && currentProfile.is_admin) ? "inline-block" : "none";
+}
+
+async function loadSubscriptionTier(userId) {
+  var res = await sb.from("subscriptions").select("tier,status").eq("user_id", userId).maybeSingle();
+  currentTier = (res.data && res.data.status === "active" && res.data.tier) ? res.data.tier : "free";
+  updateTierBadge();
+}
+
+function updateTierBadge() {
+  var el = document.getElementById("tierBadge");
+  if (!el) return;
+  if (!currentUser) { el.style.display = "none"; return; }
+  el.style.display = "inline-block";
+  el.textContent = currentTier.toUpperCase();
+  el.className = "adm-badge " + currentTier;
+}
+
+async function getAiUsageToday(userId) {
+  var today = new Date().toISOString().slice(0,10);
+  var res = await sb.from("daily_cache").select("cache_data").eq("user_id", userId).eq("cache_date", today).eq("cache_type", "daily_guidance").maybeSingle();
+  return (res.data && res.data.cache_data && res.data.cache_data.ai_uses) || 0;
+}
+
+async function incrementAiUsageToday(userId) {
+  var today = new Date().toISOString().slice(0,10);
+  var current = await getAiUsageToday(userId);
+  await sb.from("daily_cache").upsert({
+    user_id: userId, cache_date: today, cache_type: "daily_guidance", cache_data: { ai_uses: current + 1 }
+  }, { onConflict: "user_id,cache_date,cache_type" });
+}
+
+async function countFavoritesTotal(userId) {
+  var res = await sb.from("favorites").select("id", { count: "exact", head: true }).eq("user_id", userId);
+  return res.count || 0;
 }
 
 var GENDER_FORM_MAP = {"F":"feminin","M":"masculin","Other":"neutru"};
@@ -3292,7 +3410,8 @@ async function openHistoryModal() {
   document.getElementById("historyModal").classList.add("show");
   document.getElementById("historyList").innerHTML = "<div class=\"hist-empty\">Se încarcă...</div>";
 
-  var readRes = await sb.from("readings").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false }).limit(50);
+  var histLimit = currentTier === "free" ? 5 : 50;
+  var readRes = await sb.from("readings").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false }).limit(histLimit);
   var favRes = await sb.from("favorites").select("reading_id").eq("user_id", currentUser.id);
 
   historyReadings = readRes.data || [];
@@ -3344,6 +3463,7 @@ function renderHistoryList() {
     html += "<div class=\"hi-body\"><div class=\"hi-title\">" + readingSummary(r) + "</div><div class=\"hi-meta\">" + dt.toLocaleDateString("ro-RO") + " " + dt.toLocaleTimeString("ro-RO", {hour:"2-digit",minute:"2-digit"}) + "</div></div>";
     html += "</div>";
   }
+  if (currentTier === "free" && historyTab === "all") html += buildUpsellHtml("Istoric nelimitat (peste ultimele 5)", "pro");
   container.innerHTML = html;
 }
 
@@ -3353,11 +3473,23 @@ async function toggleFavorite(readingId) {
     await sb.from("favorites").delete().eq("user_id", currentUser.id).eq("reading_id", readingId);
     delete historyFavIds[readingId];
   } else {
+    if (currentTier === "free" && (await countFavoritesTotal(currentUser.id)) >= 5) {
+      alert("Ai atins limita de 5 favorite pentru planul Free. Fa upgrade la Pro pentru favorite nelimitate.");
+      return;
+    }
     var res = await sb.from("favorites").insert({ user_id: currentUser.id, reading_id: readingId });
     if (res.error) { console.error("favorite save error:", res.error); return; }
     historyFavIds[readingId] = true;
   }
   renderHistoryList();
+}
+
+// ═══ PLANS & PRICING ═══
+function openPlansModal() {
+  document.getElementById("plansModal").classList.add("show");
+}
+function closePlansModal() {
+  document.getElementById("plansModal").classList.remove("show");
 }
 
 // ═══ ADMIN DASHBOARD (view-only: reports + user list) ═══
@@ -3447,13 +3579,13 @@ async function adminToggleAdmin(userId, makeAdmin) {
 sb.auth.onAuthStateChange(function(event, session) {
   currentUser = session ? session.user : null;
   updateAuthUI();
-  if (currentUser) loadProfile(currentUser.id);
+  if (currentUser) { loadProfile(currentUser.id); loadSubscriptionTier(currentUser.id); } else { updateTierBadge(); }
 });
 
 sb.auth.getSession().then(function(res) {
   currentUser = res.data.session ? res.data.session.user : null;
   updateAuthUI();
-  if (currentUser) loadProfile(currentUser.id);
+  if (currentUser) { loadProfile(currentUser.id); loadSubscriptionTier(currentUser.id); } else { updateTierBadge(); }
 });
 </script>
 
