@@ -223,12 +223,26 @@ canvas{width:100%;height:180px;display:block}
 .au-box .au-msg.sh{display:block}
 .au-toggle{text-align:center;font-size:12px;color:var(--text-d);margin-top:14px;cursor:pointer;text-decoration:underline}
 .au-close{position:absolute;top:14px;right:18px;color:var(--text-d);cursor:pointer;font-size:18px}
+/* HISTORY MODAL */
+.hist-box{background:linear-gradient(135deg,rgba(18,11,40,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:640px;width:92%;max-height:80vh;overflow-y:auto;position:relative}
+.hist-box h3{font-family:"Cinzel Decorative",serif;font-size:14px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
+.hist-tabs{display:flex;gap:2px;margin-bottom:16px}
+.hist-tab{flex:1;font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:9px;border:1px solid var(--border);background:rgba(4,3,10,.7);color:var(--text-d);cursor:pointer;text-align:center}
+.hist-tab.act{background:var(--gold-f);border-color:var(--gold);color:var(--gold)}
+.hist-item{background:rgba(4,3,10,.6);border:1px solid var(--border);padding:14px 16px;margin-bottom:9px;display:flex;align-items:center;gap:12px}
+.hist-item .hi-star{font-size:20px;cursor:pointer;flex-shrink:0;color:var(--text-dd);transition:color .2s}
+.hist-item .hi-star.fav{color:var(--gold)}
+.hist-item .hi-body{flex:1}
+.hist-item .hi-title{font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:1px;color:var(--gold-l);margin-bottom:3px}
+.hist-item .hi-meta{font-size:12px;color:var(--text-d);font-style:italic}
+.hist-empty{text-align:center;color:var(--text-d);font-style:italic;padding:30px 0}
 </style>
 </head>
 <body>
 <div class="w">
 <div class="authbar" id="authBar">
   <span class="au-status" id="authStatus">&#10022; Neautentificat</span>
+  <button class="au-btn" id="historyBtn" onclick="openHistoryModal()" style="display:none">&#9733; Istoricul Meu</button>
   <button class="au-btn" id="authBtn" onclick="openAuthModal()">Autentificare</button>
   <button class="au-btn" id="logoutBtn" onclick="doLogout()" style="display:none">Deconectare</button>
 </div>
@@ -2635,6 +2649,19 @@ function hidePalmModal() {
   </div>
 </div>
 
+<!-- HISTORY MODAL -->
+<div id="historyModal" class="au-modal">
+  <div class="hist-box">
+    <span class="au-close" onclick="closeHistoryModal()">&#10005;</span>
+    <h3>&#9733; ISTORICUL MEU</h3>
+    <div class="hist-tabs">
+      <div class="hist-tab act" id="histTabAll" onclick="switchHistoryTab('all')">Toate Citirile</div>
+      <div class="hist-tab" id="histTabFav" onclick="switchHistoryTab('fav')">Favorite</div>
+    </div>
+    <div id="historyList"><div class="hist-empty">Se încarcă...</div></div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // ═══ SUPABASE INTEGRATION ═══
@@ -2738,16 +2765,96 @@ function updateAuthUI() {
   var statusEl = document.getElementById("authStatus");
   var loginBtn = document.getElementById("authBtn");
   var logoutBtn = document.getElementById("logoutBtn");
+  var historyBtn = document.getElementById("historyBtn");
   if (currentUser) {
-    statusEl.textContent = "&#10022; Autentificat: " + currentUser.email;
     statusEl.innerHTML = "&#10022; Autentificat: " + currentUser.email;
     loginBtn.style.display = "none";
     logoutBtn.style.display = "inline-block";
+    historyBtn.style.display = "inline-block";
   } else {
     statusEl.innerHTML = "&#10022; Neautentificat";
     loginBtn.style.display = "inline-block";
     logoutBtn.style.display = "none";
+    historyBtn.style.display = "none";
   }
+}
+
+// ═══ HISTORY & FAVORITES ═══
+var historyReadings = [];
+var historyFavIds = {};
+var historyTab = "all";
+
+async function openHistoryModal() {
+  if (!currentUser) return;
+  document.getElementById("historyModal").classList.add("show");
+  document.getElementById("historyList").innerHTML = "<div class=\"hist-empty\">Se încarcă...</div>";
+
+  var readRes = await sb.from("readings").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false }).limit(50);
+  var favRes = await sb.from("favorites").select("reading_id").eq("user_id", currentUser.id);
+
+  historyReadings = readRes.data || [];
+  historyFavIds = {};
+  (favRes.data || []).forEach(function(f) { historyFavIds[f.reading_id] = true; });
+
+  historyTab = "all";
+  document.getElementById("histTabAll").classList.add("act");
+  document.getElementById("histTabFav").classList.remove("act");
+  renderHistoryList();
+}
+
+function closeHistoryModal() {
+  document.getElementById("historyModal").classList.remove("show");
+}
+
+function switchHistoryTab(tab) {
+  historyTab = tab;
+  document.getElementById("histTabAll").classList.toggle("act", tab === "all");
+  document.getElementById("histTabFav").classList.toggle("act", tab === "fav");
+  renderHistoryList();
+}
+
+function readingSummary(r) {
+  var d = r.reading_data || {};
+  var parts = [];
+  if (d.zodiac) parts.push(d.zodiac);
+  if (d.element) parts.push(d.element);
+  if (d.chineseYear) parts.push(d.chineseYear);
+  if (d.lifePath) parts.push("LP " + d.lifePath);
+  return parts.length ? parts.join(" &middot; ") : (r.reading_type || "Citire");
+}
+
+function renderHistoryList() {
+  var list = historyReadings;
+  if (historyTab === "fav") list = list.filter(function(r) { return historyFavIds[r.id]; });
+  var container = document.getElementById("historyList");
+  if (list.length === 0) {
+    container.innerHTML = "<div class=\"hist-empty\">" + (historyTab === "fav" ? "Nicio citire favorită încă." : "Nicio citire generată încă.") + "</div>";
+    return;
+  }
+  var html = "";
+  for (var i = 0; i < list.length; i++) {
+    var r = list[i];
+    var isFav = !!historyFavIds[r.id];
+    var dt = new Date(r.created_at);
+    html += "<div class=\"hist-item\">";
+    html += "<span class=\"hi-star" + (isFav ? " fav" : "") + "\" onclick=\"toggleFavorite('" + r.id + "')\">" + (isFav ? "&#9733;" : "&#9734;") + "</span>";
+    html += "<div class=\"hi-body\"><div class=\"hi-title\">" + readingSummary(r) + "</div><div class=\"hi-meta\">" + dt.toLocaleDateString("ro-RO") + " " + dt.toLocaleTimeString("ro-RO", {hour:"2-digit",minute:"2-digit"}) + "</div></div>";
+    html += "</div>";
+  }
+  container.innerHTML = html;
+}
+
+async function toggleFavorite(readingId) {
+  if (!currentUser) return;
+  if (historyFavIds[readingId]) {
+    await sb.from("favorites").delete().eq("user_id", currentUser.id).eq("reading_id", readingId);
+    delete historyFavIds[readingId];
+  } else {
+    var res = await sb.from("favorites").insert({ user_id: currentUser.id, reading_id: readingId });
+    if (res.error) { console.error("favorite save error:", res.error); return; }
+    historyFavIds[readingId] = true;
+  }
+  renderHistoryList();
 }
 
 sb.auth.onAuthStateChange(function(event, session) {
