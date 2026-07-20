@@ -2779,6 +2779,11 @@ function prefillFormFromProfile(profile) {
   if (profile.birth_date) document.getElementById("birthDate").value = profile.birth_date;
   if (profile.birth_time) document.getElementById("birthTime").value = profile.birth_time.substring(0,5);
   if (profile.birth_place) document.getElementById("birthPlace").value = profile.birth_place;
+  if (profile.blood_type) document.getElementById("bloodType").value = profile.blood_type;
+  if (profile.sens_type) document.getElementById("sensType").value = profile.sens_type;
+  if (profile.dominant_hand) document.getElementById("dominantHand").value = profile.dominant_hand;
+  if (profile.profession) document.getElementById("profession").value = profile.profession;
+  if (profile.marital_status) document.getElementById("marital").value = profile.marital_status;
 }
 
 var GENDER_DB_MAP = {"feminin":"F","masculin":"M","neutru":"Other"};
@@ -2790,6 +2795,11 @@ async function saveProfileAndReading(readingData) {
   var birthDate = document.getElementById("birthDate").value;
   var birthTime = document.getElementById("birthTime").value;
   var birthPlace = document.getElementById("birthPlace").value.trim();
+  var bloodType = document.getElementById("bloodType").value;
+  var sensType = document.getElementById("sensType").value;
+  var dominantHand = document.getElementById("dominantHand").value;
+  var profession = document.getElementById("profession").value;
+  var marital = document.getElementById("marital").value;
 
   var profRes = await sb.from("profiles").upsert({
     user_id: currentUser.id,
@@ -2798,7 +2808,12 @@ async function saveProfileAndReading(readingData) {
     gender: GENDER_DB_MAP[gender] || null,
     birth_date: birthDate,
     birth_time: birthTime || null,
-    birth_place: birthPlace || null
+    birth_place: birthPlace || null,
+    blood_type: bloodType || null,
+    sens_type: sensType || null,
+    dominant_hand: dominantHand || null,
+    profession: profession || null,
+    marital_status: marital || null
   }, { onConflict: "user_id" });
   if (profRes.error) console.error("profile save error:", profRes.error);
 
