@@ -1701,16 +1701,21 @@ async function buildDreamSection(dreamText, aiContext) {
   var html = sh("Visul Furnizat");
   html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&ldquo;" + dreamText.substring(0,300) + (dreamText.length>300?"...":"") + "&rdquo;</div></div>";
 
-  var aiText = (await canUseAIQuota()) ? await fetchAISynthesis("dream", { dreamText: dreamText, context: aiContext }) : null;
+  var quotaOk = await canUseAIQuota();
+  var aiText = quotaOk ? await fetchAISynthesis("dream", { dreamText: dreamText, context: aiContext }) : null;
   if (aiText) {
     await markAIQuotaUsed();
     html += sh("Interpretare Personalizata (AI)");
     html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
   } else {
+    if (!quotaOk) {
+      html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Ati folosit deja interpretarea AI gratuita de azi (limita Free: 1/zi). Mai jos, o interpretare de baza pe cuvinte-cheie.</p>";
+    } else {
+      html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Serviciul de interpretare AI nu a raspuns momentan (posibil temporar indisponibil). Mai jos, o interpretare de baza pe cuvinte-cheie.</p>";
+    }
     var found = findDreamKeywords(dreamText);
     html += buildDreamFallback(dreamText, found);
-    if (currentTier === "free") html += buildUpsellHtml("Interpretari AI nelimitate", "pro");
-    else html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Interpretarea AI nu a fost disponibila momentan - se afiseaza interpretarea de baza pe cuvinte-cheie.</p>";
+    if (currentTier === "free" && !quotaOk) html += buildUpsellHtml("Interpretari AI nelimitate", "pro");
   }
   return html;
 }
@@ -1799,16 +1804,21 @@ async function buildQuestionSection(question, zodiac, lp, element, py, profile, 
   var html = sh("Intrebarea Formulata");
   html += "<div class=\"sab\"><div class=\"sab-s\" style=\"font-style:italic\">&bdquo;" + question + "&rdquo;</div></div>";
 
-  var aiText = (await canUseAIQuota()) ? await fetchAISynthesis("question", { question: question, context: aiContext }) : null;
+  var quotaOk = await canUseAIQuota();
+  var aiText = quotaOk ? await fetchAISynthesis("question", { question: question, context: aiContext }) : null;
   if (aiText) {
     await markAIQuotaUsed();
     html += sh("Raspuns Personalizat (AI)");
     html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
   } else {
+    if (!quotaOk) {
+      html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Ati folosit deja interpretarea AI gratuita de azi (limita Free: 1/zi). Mai jos, un raspuns de baza pe reguli fixe.</p>";
+    } else {
+      html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Serviciul de interpretare AI nu a raspuns momentan (posibil temporar indisponibil). Mai jos, un raspuns de baza pe reguli fixe.</p>";
+    }
     html += sh("Raspuns Integrat");
     html += buildQuestionFallback(question, zodiac, lp, element, py, profile, transits);
-    if (currentTier === "free") html += buildUpsellHtml("Interpretari AI nelimitate", "pro");
-    else html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Interpretarea AI nu a fost disponibila momentan - se afiseaza raspunsul de baza.</p>";
+    if (currentTier === "free" && !quotaOk) html += buildUpsellHtml("Interpretari AI nelimitate", "pro");
   }
   return html;
 }
