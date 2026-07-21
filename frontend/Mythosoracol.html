@@ -51,12 +51,23 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .tab-toolbar{display:flex;justify-content:flex-end;gap:8px;margin:16px 0 2px}
 .ttb{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;background:transparent;border:1px solid var(--border);color:var(--text-d);cursor:pointer;transition:all .2s}
 .ttb:hover{border-color:var(--gold);color:var(--gold)}
+/* QUICK ACCESS */
+#quickAccess{background:linear-gradient(135deg,rgba(18,11,40,.97) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:24px;margin-bottom:24px}
+.qa-title{font-family:"Cinzel Decorative",serif;font-size:12px;letter-spacing:2px;color:var(--gold);text-align:center;margin-bottom:16px}
+.qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}
+.qa-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:16px 10px;background:rgba(4,3,10,.7);border:1px solid var(--border);color:var(--gold-d);cursor:pointer;transition:all .25s;text-align:center}
+.qa-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-f)}
+.qa-full{text-align:center;font-size:12px;color:var(--text-d);font-style:italic;margin-top:16px;cursor:pointer;text-decoration:underline}
 /* FORM CARD */
 .fc{background:linear-gradient(135deg,rgba(18,11,40,.97) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border);position:relative;overflow:hidden}
 .fc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-l),var(--gold),transparent)}
 .fi{padding:36px 40px}
 @media(max-width:640px){.fi{padding:22px 16px}}
 .ft{font-family:"Cinzel Decorative",serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-align:center;margin-bottom:28px}
+.rf-toggle{display:flex;justify-content:center;gap:2px;margin:-14px 0 26px}
+.rf-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px;background:rgba(4,3,10,.7);border:1px solid var(--border);color:var(--text-d);cursor:pointer;transition:all .2s}
+.rf-btn.act{background:var(--gold-f);border-color:var(--gold);color:var(--gold)}
+.rf-btn:hover{color:var(--gold)}
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .fg.fw{grid-template-columns:1fr}
 .fgr{display:flex;flex-direction:column;gap:7px}
@@ -335,6 +346,18 @@ canvas{width:100%;height:180px;display:block}
   </div>
 </div>
 <div class="dv"><span>&#10022;</span></div>
+<!-- QUICK ACCESS (returning users with a saved profile) -->
+<div id="quickAccess" style="display:none">
+  <div class="qa-title">&#10022; Bine ai revenit! Verificare rapida</div>
+  <div class="qa-grid">
+    <button class="qa-btn" onclick="quickLaunch('rt-syn','ORACOL ZILNIC')">&#9711; Horoscopul de Azi</button>
+    <button class="qa-btn" onclick="quickLaunch('rt-div','TAROT')">&#127183; Tarot</button>
+    <button class="qa-btn" onclick="quickLaunch('rt-div','RUNE')">&#5792; Rune</button>
+    <button class="qa-btn" onclick="quickLaunch('rt-div','I CHING')">&#9775; I Ching</button>
+    <button class="qa-btn" onclick="quickLaunch('rt-hd', null)">&#9784; Human Design</button>
+  </div>
+  <div class="qa-full" onclick="document.getElementById('formSection').scrollIntoView({behavior:'smooth'})">sau editeaza datele / genereaza raportul complet mai jos &#8595;</div>
+</div>
 <!-- FORM -->
 <div id="formSection">
   <div class="tab-nav">
@@ -347,6 +370,10 @@ canvas{width:100%;height:180px;display:block}
     <!-- TAB 1 -->
     <div class="tp act" id="t1"><div class="fi">
       <div class="ft">Date Natale Fundamentale</div>
+      <div class="rf-toggle">
+        <button type="button" id="reportForSelfBtn" class="rf-btn act" onclick="setReportFor('self')">&#9737; Pentru mine</button>
+        <button type="button" id="reportForOtherBtn" class="rf-btn" onclick="setReportFor('other')">&#9825; Pentru altcineva</button>
+      </div>
       <div class="fg">
         <div class="fgr"><label class="lb">&#10022; Prenume și Nume</label><input type="text" id="fullName" class="ip" placeholder="Prenumele și numele complet"></div>
         <div class="fgr"><label class="lb">Gen</label>
@@ -694,7 +721,7 @@ var LEGAL_TERMS_RO =
   lh4("3. Conturi de utilizator") +
   lp("Sunteti responsabil pentru pastrarea confidentialitatii parolei contului si pentru toate activitatile desfasurate din contul dvs.") +
   lh4("4. Planuri si preturi") +
-  lp("Serviciul ofera trei planuri: Free (0 lei), Pro (15 lei/luna) si Premium (9 EUR/luna), cu functionalitati diferite descrise in sectiunea Planuri &amp; Preturi. Preturile pot fi modificate cu notificare prealabila rezonabila.") +
+  lp("Serviciul ofera trei planuri: Free (0 &euro;), Pro (3 &euro;/luna) si Premium (9 &euro;/luna), cu functionalitati diferite descrise in sectiunea Planuri &amp; Preturi. Preturile pot fi modificate cu notificare prealabila rezonabila.") +
   lh4("5. Modalitate de plata si activare") +
   lp("Upgrade-ul la Pro sau Premium se face in prezent <strong>manual</strong>: trimiteti suma corespunzatoare prin Revolut la @trueblood, mentionand contul dvs. de email, iar upgrade-ul este activat manual in maxim 24 de ore de la confirmarea platii.") +
   lh4("6. Anulare si rambursare") +
@@ -720,7 +747,7 @@ var LEGAL_TERMS_EN =
   lh4("3. User accounts") +
   lp("You are responsible for keeping your account password confidential and for all activity under your account.") +
   lh4("4. Plans and pricing") +
-  lp("The service offers three plans: Free (0 lei), Pro (15 lei/month) and Premium (9 EUR/month), with different features described in the Plans &amp; Pricing section. Prices may change with reasonable prior notice.") +
+  lp("The service offers three plans: Free (&euro;0), Pro (&euro;3/month) and Premium (&euro;9/month), with different features described in the Plans &amp; Pricing section. Prices may change with reasonable prior notice.") +
   lh4("5. Payment method and activation") +
   lp("Upgrading to Pro or Premium is currently <strong>manual</strong>: send the corresponding amount via Revolut to @trueblood, mentioning your account email, and the upgrade is activated manually within 24 hours of payment confirmation.") +
   lh4("6. Cancellation and refunds") +
@@ -801,7 +828,8 @@ function showResultTab(id, btn) {
   document.querySelectorAll(".rtb").forEach(function(b){b.classList.remove("act")});
   var panel = document.getElementById(id);
   panel.classList.add("act");
-  btn.classList.add("act");
+  btn = btn || document.querySelector(".rtb[data-tab='" + id + "']");
+  if (btn) btn.classList.add("act");
   // Each report tab's sections start collapsed; without this, switching to a
   // tab you haven't opened before shows a wall of empty-looking headers.
   var firstHead = panel.querySelector(".sh2");
@@ -2874,6 +2902,7 @@ function launchOracle() {
   if(!name||!gender||!bdStr){err.classList.add("sh");return;}
   err.classList.remove("sh");
   document.getElementById("formSection").style.display="none";
+  document.getElementById("quickAccess").style.display="none";
   var ldr=document.getElementById("loaderSection"); ldr.classList.add("sh");
   var steps=["s1","s2","s3","s4","s5","s6","s7","s8","s9","s10","s11","s12","s13","s14","s15"];
   var si=0;
@@ -2888,6 +2917,45 @@ function launchOracle() {
     await buildResult();
     ldr.classList.remove("sh");
   },5000);
+}
+
+// Quick Access: a returning user with saved data just wants "today's tarot" or
+// "my daily horoscope", not the full 15-step ceremony - skips the decorative
+// wait and jumps straight to (and expands) the relevant section.
+async function quickLaunch(targetTab, sectionMatch) {
+  var name=document.getElementById("fullName").value.trim();
+  var gender=document.getElementById("gender").value;
+  var bdStr=document.getElementById("birthDate").value;
+  var err=document.getElementById("errMsg");
+  if(!name||!gender||!bdStr){
+    err.classList.add("sh");
+    document.getElementById("formSection").scrollIntoView({behavior:"smooth"});
+    return;
+  }
+  err.classList.remove("sh");
+  document.getElementById("formSection").style.display="none";
+  document.getElementById("quickAccess").style.display="none";
+  var ldr=document.getElementById("loaderSection"); ldr.classList.add("sh");
+  document.getElementById("s1").className="si ac";
+  await buildResult();
+  ldr.classList.remove("sh");
+  showResultTab(targetTab);
+  if (sectionMatch) {
+    var panel = document.getElementById(targetTab);
+    var heads = panel.querySelectorAll(".sh2");
+    for (var i = 0; i < heads.length; i++) {
+      var stEl = heads[i].querySelector(".st");
+      if (stEl && stEl.textContent.toUpperCase().indexOf(sectionMatch.toUpperCase()) >= 0) {
+        var body = heads[i].nextElementSibling;
+        if (!body.classList.contains("op")) {
+          body.classList.add("op");
+          heads[i].querySelector(".stg").classList.add("op");
+        }
+        heads[i].scrollIntoView({behavior:"smooth", block:"start"});
+        break;
+      }
+    }
+  }
 }
 
 
@@ -3843,12 +3911,12 @@ async function buildResult() {
   htmlSyn += safeSection("&#9670;", "V &middot; PROFILUL PSIHOLOGIC (ARHETIPURI JUNGIENE)", await buildPsychProfile(zodiac.s, asc, bp.moon.sign.name, lp, challenges));
 
   html += "<div class=\"rtab-nav\">";
-  html += "<button class=\"rtb act\" onclick=\"showResultTab('rt-astro',this)\">&#9737; Astrologie</button>";
-  html += "<button class=\"rtb\" onclick=\"showResultTab('rt-num',this)\">&#10022; Numerologie</button>";
-  html += "<button class=\"rtb\" onclick=\"showResultTab('rt-bio',this)\">&#9675; Bioritm</button>";
-  html += "<button class=\"rtb\" onclick=\"showResultTab('rt-div',this)\">&#9775; Divinatie</button>";
-  html += "<button class=\"rtb\" onclick=\"showResultTab('rt-hd',this)\">&#9784; Human Design</button>";
-  html += "<button class=\"rtb\" onclick=\"showResultTab('rt-syn',this)\">&#9670; Sinteza Zilnica</button>";
+  html += "<button class=\"rtb act\" data-tab=\"rt-astro\" onclick=\"showResultTab('rt-astro',this)\">&#9737; Astrologie</button>";
+  html += "<button class=\"rtb\" data-tab=\"rt-num\" onclick=\"showResultTab('rt-num',this)\">&#10022; Numerologie</button>";
+  html += "<button class=\"rtb\" data-tab=\"rt-bio\" onclick=\"showResultTab('rt-bio',this)\">&#9675; Bioritm</button>";
+  html += "<button class=\"rtb\" data-tab=\"rt-div\" onclick=\"showResultTab('rt-div',this)\">&#9775; Divinatie</button>";
+  html += "<button class=\"rtb\" data-tab=\"rt-hd\" onclick=\"showResultTab('rt-hd',this)\">&#9784; Human Design</button>";
+  html += "<button class=\"rtb\" data-tab=\"rt-syn\" onclick=\"showResultTab('rt-syn',this)\">&#9670; Sinteza Zilnica</button>";
   html += "</div>";
   html += "<div id=\"rt-astro\" class=\"rtp act\">" + buildTabToolbar("rt-astro") + htmlAstro + "</div>";
   html += "<div id=\"rt-num\" class=\"rtp\">" + buildTabToolbar("rt-num") + htmlNum + "</div>";
@@ -3918,8 +3986,10 @@ async function buildResult() {
 
 function resetOracle() {
   document.getElementById("formSection").style.display="block";
+  document.getElementById("quickAccess").style.display = (currentProfile && currentProfile.birth_date) ? "block" : "none";
   var r=document.getElementById("resultSection");
   r.classList.remove("sh"); r.innerHTML="";
+  setReportFor("self");
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -4011,7 +4081,7 @@ function hidePalmModal() {
       <div id="planCardFree" class="plan-card" style="background:rgba(4,3,10,.7);border:1px solid var(--border);padding:20px 16px;text-align:center">
         <div class="plan-current-badge">Planul tau actual</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--text-d);letter-spacing:2px;margin-bottom:8px">FREE</div>
-        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">0 lei</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">0 &euro;</div>
         <div style="font-size:12px;color:var(--silver);text-align:left;line-height:2">
           &#10003; Astrologie, Numerologie, Bioritm complete<br>
           &#10003; Istoric ultimele 5 citiri<br>
@@ -4025,7 +4095,7 @@ function hidePalmModal() {
       <div id="planCardPro" class="plan-card" style="background:var(--gold-f);border:1px solid var(--gold);padding:20px 16px;text-align:center">
         <div class="plan-current-badge">Planul tau actual</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">PRO</div>
-        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">15 lei/luna</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">3 &euro;/luna</div>
         <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
           &#10003; Tot ce e in Free, plus:<br>
           &#10003; Istoric nelimitat<br>
@@ -4074,7 +4144,23 @@ var authMode = "login"; // "login" | "signup"
 var currentUser = null;
 var currentProfile = null;
 var currentTier = "free";
-var PLAN_PRICES = { free: "0 lei", pro: "15 lei/lună", premium: "9 &euro;/lună" };
+var PLAN_PRICES = { free: "0 &euro;", pro: "3 &euro;/lună", premium: "9 &euro;/lună" };
+
+// "self" = report is about the logged-in user (saved to their profile, as
+// before); "other" = report is about someone else they're looking up - still
+// saved to history, but never overwrites the user's own saved profile data.
+var reportFor = "self";
+function setReportFor(mode) {
+  reportFor = mode;
+  document.getElementById("reportForSelfBtn").classList.toggle("act", mode === "self");
+  document.getElementById("reportForOtherBtn").classList.toggle("act", mode === "other");
+  var fields = ["fullName","gender","birthDate","birthTime","birthPlace","birthName","bloodType","sensType","dominantHand","profession","marital"];
+  if (mode === "other") {
+    fields.forEach(function(id) { document.getElementById(id).value = ""; });
+  } else if (currentProfile) {
+    prefillFormFromProfile(currentProfile);
+  }
+}
 
 function openAuthModal() {
   document.getElementById("authModal").classList.add("show");
@@ -4127,6 +4213,7 @@ async function loadProfile(userId) {
     prefillFormFromProfile(res.data);
   }
   document.getElementById("adminBtn").style.display = (currentProfile && currentProfile.is_admin) ? "inline-block" : "none";
+  document.getElementById("quickAccess").style.display = (currentProfile && currentProfile.birth_date) ? "block" : "none";
 }
 
 async function loadSubscriptionTier(userId) {
@@ -4220,33 +4307,40 @@ var GENDER_DB_MAP = {"feminin":"F","masculin":"M","neutru":"Other"};
 
 async function saveProfileAndReading(readingData) {
   if (!currentUser) return;
-  var name = document.getElementById("fullName").value.trim();
-  var gender = document.getElementById("gender").value;
-  var birthDate = document.getElementById("birthDate").value;
-  var birthTime = document.getElementById("birthTime").value;
-  var birthPlace = document.getElementById("birthPlace").value.trim();
-  var bloodType = document.getElementById("bloodType").value;
-  var sensType = document.getElementById("sensType").value;
-  var dominantHand = document.getElementById("dominantHand").value;
-  var profession = document.getElementById("profession").value;
-  var marital = document.getElementById("marital").value;
 
-  var profRes = await sb.from("profiles").upsert({
-    user_id: currentUser.id,
-    email: currentUser.email,
-    display_name: name,
-    full_name: name,
-    gender: GENDER_DB_MAP[gender] || null,
-    birth_date: birthDate,
-    birth_time: birthTime || null,
-    birth_place: birthPlace || null,
-    blood_type: bloodType || null,
-    sens_type: sensType || null,
-    dominant_hand: dominantHand || null,
-    profession: profession || null,
-    marital_status: marital || null
-  }, { onConflict: "user_id" });
-  if (profRes.error) console.error("profile save error:", profRes.error);
+  // "Pentru altcineva": save the reading (so it's still in history) but never
+  // overwrite the logged-in user's own saved profile with someone else's data -
+  // this was the original "doesn't remember my data" bug (generating for
+  // another person used to silently replace your own saved birth data).
+  if (reportFor === "self") {
+    var name = document.getElementById("fullName").value.trim();
+    var gender = document.getElementById("gender").value;
+    var birthDate = document.getElementById("birthDate").value;
+    var birthTime = document.getElementById("birthTime").value;
+    var birthPlace = document.getElementById("birthPlace").value.trim();
+    var bloodType = document.getElementById("bloodType").value;
+    var sensType = document.getElementById("sensType").value;
+    var dominantHand = document.getElementById("dominantHand").value;
+    var profession = document.getElementById("profession").value;
+    var marital = document.getElementById("marital").value;
+
+    var profRes = await sb.from("profiles").upsert({
+      user_id: currentUser.id,
+      email: currentUser.email,
+      display_name: name,
+      full_name: name,
+      gender: GENDER_DB_MAP[gender] || null,
+      birth_date: birthDate,
+      birth_time: birthTime || null,
+      birth_place: birthPlace || null,
+      blood_type: bloodType || null,
+      sens_type: sensType || null,
+      dominant_hand: dominantHand || null,
+      profession: profession || null,
+      marital_status: marital || null
+    }, { onConflict: "user_id" });
+    if (profRes.error) console.error("profile save error:", profRes.error);
+  }
 
   var readRes = await sb.from("readings").insert({
     user_id: currentUser.id,
@@ -4272,6 +4366,7 @@ function updateAuthUI() {
     logoutBtn.style.display = "none";
     historyBtn.style.display = "none";
     document.getElementById("adminBtn").style.display = "none";
+    document.getElementById("quickAccess").style.display = "none";
     currentProfile = null;
   }
 }
