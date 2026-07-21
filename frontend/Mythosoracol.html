@@ -8,24 +8,28 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Raleway:wght@300;400;500;600&display=swap');
 :root{
+  /* Warmed palette (Varianta B): same cosmic-dark + gold-sacred direction as
+     before, text/silver shifted from cool lavender toward parchment/ivory,
+     and the three colors that failed WCAG AA at small sizes (gold-d,
+     silver-d, text-dd) brightened to ~4.6:1+ while keeping their hue family. */
   --void:#04030a;--deep:#0a0718;--cosmic:#120b28;
-  --gold:#c9a84c;--gold-l:#f0d98a;--gold-d:#7a6030;--gold-f:rgba(201,168,76,0.08);
-  --silver:#9ba8c0;--silver-l:#cdd5e8;--silver-d:#5a6278;
+  --gold:#cba054;--gold-l:#f2d99a;--gold-d:#9c8148;--gold-f:rgba(203,160,84,0.08);
+  --silver:#c9bfa8;--silver-l:#e4dcc6;--silver-d:#827762;
   --crim-l:#c4395e;--viol-l:#9b59d0;--viol-f:rgba(74,31,122,0.15);
   --jade-l:#2ecc9a;--cob-l:#4a8fd4;
-  --text:#e0d8f4;--text-d:#8a82a0;--text-dd:#4a4560;
-  --border:rgba(201,168,76,0.2);--border-b:rgba(201,168,76,0.55);--border-s:rgba(201,168,76,0.06);
+  --text:#f0e6d2;--text-d:#9d9285;--text-dd:#948a72;
+  --border:rgba(203,160,84,0.2);--border-b:rgba(203,160,84,0.55);--border-s:rgba(203,160,84,0.06);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--void);color:var(--text);font-family:"Cormorant Garamond",Georgia,serif;font-size:16px;line-height:1.75;min-height:100vh;overflow-x:hidden}
+body{background:var(--void);color:var(--text);font-family:"Cormorant Garamond",Georgia,serif;font-size:16px;line-height:1.8;min-height:100vh;overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(74,31,122,0.15) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 100% 50%,rgba(26,92,74,0.07) 0%,transparent 60%)}
 .w{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 18px 80px}
 /* HEADER */
 .hdr{text-align:center;padding:52px 0 36px}
-.hdr-sig{font-size:52px;display:block;margin-bottom:14px;animation:drift 18s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(201,168,76,0.55))}
+.hdr-sig{font-size:52px;display:block;margin-bottom:14px;animation:drift 18s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(203,160,84,0.55))}
 @keyframes drift{0%,100%{transform:rotate(0deg) scale(1)}33%{transform:rotate(3deg) scale(1.04)}66%{transform:rotate(-3deg) scale(0.97)}}
-.hdr h1{font-family:"Cinzel Decorative",serif;font-size:clamp(22px,5vw,50px);font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#7a6030 0%,#f0d98a 35%,#c9a84c 65%,#7a6030 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:6px}
+.hdr h1{font-family:"Cinzel Decorative",serif;font-size:clamp(22px,5vw,50px);font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#9c8148 0%,#f2d99a 35%,#cba054 65%,#9c8148 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:6px}
 .hdr-v{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:7px;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
 .hdr-tag{font-style:italic;color:var(--silver);font-size:14px;max-width:580px;margin:0 auto 20px;line-height:1.85}
 .mod-row{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:14px}
@@ -75,7 +79,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 @media(max-width:600px){.fg{grid-template-columns:1fr}.fgr.s{grid-column:1}}
 .lb{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
 .ip{background:rgba(4,3,10,.85);border:1px solid var(--border);padding:12px 15px;color:var(--text);font-family:"Cormorant Garamond",serif;font-size:15px;outline:none;transition:all .28s;width:100%}
-.ip:focus{border-color:var(--gold);box-shadow:0 0 14px rgba(201,168,76,.1)}
+.ip:focus{border-color:var(--gold);box-shadow:0 0 14px rgba(203,160,84,.1)}
 .ip::placeholder{color:var(--text-dd);font-style:italic}
 .ip option{background:var(--deep)}
 .hn{font-size:12px;color:var(--text-d);font-style:italic}
@@ -85,8 +89,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .ho{background:rgba(4,3,10,.7);border:1px solid var(--border);padding:9px 11px;cursor:pointer;font-size:13px;color:var(--silver);font-family:"Cormorant Garamond",serif;text-align:center;transition:all .22s}
 .ho:hover,.ho.sl{border-color:var(--gold);color:var(--gold);background:var(--gold-f)}
 /* BUTTON */
-.ob{display:block;width:100%;padding:19px 44px;background:linear-gradient(135deg,rgba(201,168,76,.1) 0%,rgba(201,168,76,.22) 50%,rgba(201,168,76,.1) 100%);border:1px solid var(--gold);color:var(--gold-l);font-family:"Cinzel Decorative",serif;font-size:12px;letter-spacing:5px;cursor:pointer;transition:all .4s;position:relative;overflow:hidden;margin-top:0}
-.ob:hover{box-shadow:0 0 36px rgba(201,168,76,.22);letter-spacing:7px}
+.ob{display:block;width:100%;padding:19px 44px;background:linear-gradient(135deg,rgba(203,160,84,.1) 0%,rgba(203,160,84,.22) 50%,rgba(203,160,84,.1) 100%);border:1px solid var(--gold);color:var(--gold-l);font-family:"Cinzel Decorative",serif;font-size:12px;letter-spacing:5px;cursor:pointer;transition:all .4s;position:relative;overflow:hidden;margin-top:0}
+.ob:hover{box-shadow:0 0 36px rgba(203,160,84,.22);letter-spacing:7px}
 .ob:disabled{opacity:.4;cursor:not-allowed}
 .btn-wrap{padding:22px 40px;border-top:1px solid var(--border-s)}
 @media(max-width:640px){.btn-wrap{padding:16px}}
@@ -98,8 +102,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .ldr.sh{display:block}
 .lr{width:100px;height:100px;margin:0 auto 24px;position:relative}
 .lr::before,.lr::after{content:"";position:absolute;border-radius:50%;inset:0}
-.lr::before{border:1px solid rgba(201,168,76,.22);animation:rs 3.5s linear infinite}
-.lr::after{inset:14px;border:1px solid rgba(201,168,76,.48);animation:rs 2s linear infinite reverse}
+.lr::before{border:1px solid rgba(203,160,84,.22);animation:rs 3.5s linear infinite}
+.lr::after{inset:14px;border:1px solid rgba(203,160,84,.48);animation:rs 2s linear infinite reverse}
 @keyframes rs{to{transform:rotate(360deg)}}
 .lc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:30px;animation:pg 1.4s ease-in-out infinite}
 @keyframes pg{0%,100%{opacity:.3}50%{opacity:1}}
@@ -114,24 +118,24 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 /* ID BANNER */
 .idb{background:linear-gradient(135deg,rgba(18,11,40,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:40px 30px;text-align:center;position:relative;overflow:hidden}
 @media(max-width:480px){.idb{padding:26px 18px}}
-.idb::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(201,168,76,.05) 0%,transparent 70%)}
+.idb::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(203,160,84,.05) 0%,transparent 70%)}
 .idb-name{font-family:"Cinzel Decorative",serif;font-size:clamp(18px,4vw,38px);color:var(--gold-l);letter-spacing:3px;margin-bottom:8px}
 .idb-sub{font-style:italic;color:var(--silver);font-size:14px;line-height:1.8;margin-bottom:16px}
 .idb-bgs{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:14px}
 .idb-bg{background:var(--gold-f);border:1px solid var(--border);padding:6px 14px;font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d)}
 /* SECTIONS */
-.sc{background:linear-gradient(135deg,rgba(18,11,40,.9) 0%,rgba(10,7,24,.95) 100%);border:1px solid var(--border);margin-top:14px;position:relative}
+.sc{background:linear-gradient(135deg,rgba(18,11,40,.9) 0%,rgba(10,7,24,.95) 100%);border:1px solid var(--border);margin-top:20px;position:relative}
 .sc::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--gold-d))}
-.sh2{padding:18px 26px 14px 30px;border-bottom:1px solid var(--border-s);display:flex;align-items:center;gap:11px;cursor:pointer;transition:background .2s;user-select:none}
+.sh2{padding:20px 28px 16px 32px;border-bottom:1px solid var(--border-s);display:flex;align-items:center;gap:11px;cursor:pointer;transition:background .2s;user-select:none}
 .sh2:hover{background:var(--gold-f)}
 .si2{font-size:19px;flex-shrink:0}
 .st{font-family:"Cinzel Decorative",serif;font-size:11px;letter-spacing:2.5px;color:var(--gold);flex:1}
 .stg{color:var(--gold-d);font-size:13px;transition:transform .28s}
 .stg.op{transform:rotate(180deg)}
-.sb{padding:26px 30px;display:none;line-height:1.9}
-@media(max-width:640px){.sb{padding:18px 16px}}
+.sb{padding:30px 32px;display:none;line-height:1.9}
+@media(max-width:640px){.sb{padding:20px 18px}}
 .sb.op{display:block}
-.sb p{margin-bottom:15px;color:var(--text);font-size:16px}
+.sb p{margin-bottom:18px;color:var(--text);font-size:16px}
 .sb p:last-child{margin-bottom:0}
 /* SUB-HEADING */
 .sh3{font-family:"Cinzel Decorative",serif;font-size:10px;letter-spacing:2.5px;color:var(--gold-d);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:9px}
@@ -150,19 +154,19 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 /* TRANSIT ITEMS */
 .tl{display:flex;flex-direction:column;gap:9px;margin:14px 0}
 .ti{background:rgba(4,3,10,.6);border:1px solid var(--border);padding:13px 16px;display:flex;align-items:flex-start;gap:12px}
-.ti.maj{border-color:rgba(201,168,76,.5);background:var(--gold-f)}
+.ti.maj{border-color:rgba(203,160,84,.5);background:var(--gold-f)}
 .ti.mod{border-color:rgba(74,31,122,.4)}
 .ts{font-size:22px;flex-shrink:0;line-height:1.3}
 .ti-inf{flex:1}
 .tn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
-.td{font-size:15px;color:var(--silver);font-style:italic;line-height:1.6}
+.td{font-size:15px;color:var(--silver);line-height:1.6}
 .tp2{font-size:11px;color:var(--text-d);margin-top:3px;font-family:"Raleway",sans-serif}
 .tbg{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border:1px solid;flex-shrink:0;align-self:flex-start}
 .tbg.m{border-color:var(--gold);color:var(--gold)}.tbg.mo{border-color:var(--viol-l);color:var(--viol-l)}.tbg.mi{border-color:var(--silver-d);color:var(--silver-d)}
 /* COMPAT BARS */
 .cr{display:flex;align-items:center;gap:11px;margin-bottom:9px}
 .cl{font-size:13px;color:var(--silver);width:88px;flex-shrink:0}
-.ct{flex:1;height:3px;background:rgba(201,168,76,.1);overflow:hidden}
+.ct{flex:1;height:3px;background:rgba(203,160,84,.1);overflow:hidden}
 .cf{height:100%;background:linear-gradient(to right,var(--gold-d),var(--gold));width:0%;transition:width 1.2s ease-out}
 .cv{font-size:12px;color:var(--gold);width:32px;text-align:right;font-family:"Raleway",sans-serif}
 /* BIO CANVAS */
@@ -189,7 +193,7 @@ canvas{width:100%;height:180px;display:block}
 /* DAILY ORACLE */
 .do{background:linear-gradient(135deg,rgba(26,15,55,.98) 0%,rgba(10,7,24,.99) 100%);border:1px solid var(--border-b);padding:28px 26px;margin:14px 0;text-align:center;position:relative;overflow:hidden}
 @media(max-width:480px){.do{padding:18px 16px}}
-.do::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,168,76,.05) 0%,transparent 70%)}
+.do::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(203,160,84,.05) 0%,transparent 70%)}
 .do-d{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d);margin-bottom:10px}
 .do-e{font-family:"Cinzel Decorative",serif;font-size:28px;color:var(--gold);margin-bottom:5px}
 .do-th{font-style:italic;font-size:16px;color:var(--silver-l);margin-bottom:16px}
@@ -218,10 +222,10 @@ canvas{width:100%;height:180px;display:block}
 .tag{background:var(--gold-f);border:1px solid var(--border);padding:4px 11px;font-size:12px;color:var(--silver-l);font-style:italic;display:inline-block;margin:3px}
 /* PALM IMAGE ZOOM */
 .palm-img{transition:transform 0.3s ease, box-shadow 0.3s ease;cursor:zoom-in}
-.palm-img:hover{transform:scale(1.4);box-shadow:0 8px 24px rgba(201,168,76,0.4);z-index:100;position:relative}
+.palm-img:hover{transform:scale(1.4);box-shadow:0 8px 24px rgba(203,160,84,0.4);z-index:100;position:relative}
 .palm-modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.92);justify-content:center;align-items:center;cursor:zoom-out}
 .palm-modal.show{display:flex}
-.palm-modal img{max-width:90vw;max-height:90vh;border:2px solid var(--gold);box-shadow:0 0 40px rgba(201,168,76,0.5)}
+.palm-modal img{max-width:90vw;max-height:90vh;border:2px solid var(--gold);box-shadow:0 0 40px rgba(203,160,84,0.5)}
 /* CHINESE ZODIAC */
 .czg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
 @media(max-width:500px){.czg{grid-template-columns:1fr}}
@@ -231,7 +235,7 @@ canvas{width:100%;height:180px;display:block}
 .czp-animal{font-family:"Cinzel Decorative",serif;font-size:20px;color:var(--gold-l);margin-bottom:4px}
 .czp-elem{font-family:"Raleway",sans-serif;font-size:11px;color:var(--viol-l);letter-spacing:1px;margin-bottom:3px}
 .czp-branch{font-family:"Raleway",sans-serif;font-size:10px;color:var(--text-d);letter-spacing:1px;margin-bottom:8px}
-.czp-interp{font-size:14px;color:var(--silver);font-style:italic;line-height:1.6;text-align:left}
+.czp-interp{font-size:14px;color:var(--silver);line-height:1.6;text-align:left}
 .czp-missing{opacity:.5;border-style:dashed}
 /* AUTH BAR */
 .authbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:10px 0;flex-wrap:wrap}
@@ -286,7 +290,7 @@ canvas{width:100%;height:180px;display:block}
 .adm-table{width:100%;border-collapse:collapse;font-size:13px}
 .adm-table th{text-align:left;font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);padding:8px 10px;border-bottom:1px solid var(--border)}
 .adm-table td{padding:8px 10px;border-bottom:1px solid var(--border-s);color:var(--silver)}
-.adm-table tr:hover td{background:rgba(201,168,76,.04)}
+.adm-table tr:hover td{background:rgba(203,160,84,.04)}
 .adm-badge{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border)}
 .adm-badge.pro{border-color:var(--jade-l);color:var(--jade-l)}
 .adm-badge.premium{border-color:var(--gold);color:var(--gold)}
@@ -411,13 +415,13 @@ canvas{width:100%;height:180px;display:block}
     </div></div>
     <!-- TAB 2 -->
     <div class="tp" id="t2"><div class="fi">
-      <div style="margin:0 0 22px 0;padding:16px;background:rgba(4,3,10,0.85);border:1px solid rgba(201,168,76,0.3);border-radius:4px">
+      <div style="margin:0 0 22px 0;padding:16px;background:rgba(4,3,10,0.85);border:1px solid rgba(203,160,84,0.3);border-radius:4px">
         <div style="font-family:'Cinzel Decorative',serif;font-size:11px;letter-spacing:2.5px;color:var(--gold);text-align:center;margin-bottom:14px">
           &#9759; HARTĂ DE REFERINȚĂ - Identificarea Liniilor Palmei
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;justify-content:center">
           <div style="flex-shrink:0">
-            <img src="Palm.jpg" alt="Hartă palmă" class="palm-img" onclick="showPalmModal()" style="width:200px;max-width:100%;border:1px solid rgba(201,168,76,0.25);display:block;opacity:0.88" />
+            <img src="Palm.jpg" alt="Hartă palmă" class="palm-img" onclick="showPalmModal()" style="width:200px;max-width:100%;border:1px solid rgba(203,160,84,0.25);display:block;opacity:0.88" />
           </div>
           <div style="flex:1;min-width:180px;max-width:340px">
             <div style="font-size:13px;color:var(--silver);line-height:1.8">
@@ -521,7 +525,7 @@ canvas{width:100%;height:180px;display:block}
 <div id="palmRefImg" style="display:none">
   <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-bottom:22px">
     <div style="flex-shrink:0">
-      <img src="Palm.jpg" alt="Harta palmei - referinta chiromantie" class="palm-img" onclick="showPalmModal()" style="width:220px;max-width:100%;border:1px solid rgba(201,168,76,0.3);display:block;opacity:0.88" />
+      <img src="Palm.jpg" alt="Harta palmei - referinta chiromantie" class="palm-img" onclick="showPalmModal()" style="width:220px;max-width:100%;border:1px solid rgba(203,160,84,0.3);display:block;opacity:0.88" />
       <div style="font-family:Raleway,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);text-align:center;margin-top:6px">Hart&#259; de referinț&#259; a palmei</div>
     </div>
     <div style="flex:1;min-width:200px">
@@ -2421,7 +2425,7 @@ function drawTarotCards(n, rndFn) {
 function buildTarotCardImg(draw, size) {
   if (!draw.card.img) return "";
   var rot = draw.reversed ? "transform:rotate(180deg);" : "";
-  return "<img src=\"" + draw.card.img + "\" alt=\"" + draw.card.name + "\" style=\"width:" + size + "px;max-width:40%;float:left;margin:0 14px 8px 0;border:1px solid rgba(201,168,76,0.3);" + rot + "\" onerror=\"this.style.display='none'\">";
+  return "<img src=\"" + draw.card.img + "\" alt=\"" + draw.card.name + "\" style=\"width:" + size + "px;max-width:40%;float:left;margin:0 14px 8px 0;border:1px solid rgba(203,160,84,0.3);" + rot + "\" onerror=\"this.style.display='none'\">";
 }
 
 function buildTarotCardHtml(label, draw) {
@@ -2469,7 +2473,7 @@ function buildTarotSection(seedStr) {
   html += "<div class=\"tl\">";
   for (var j = 0; j < 10; j++) {
     var d = ten[j];
-    var imgTag = d.card.img ? ("<img src=\"" + d.card.img + "\" alt=\"" + d.card.name + "\" style=\"width:44px;flex-shrink:0;border:1px solid rgba(201,168,76,0.3);" + (d.reversed?"transform:rotate(180deg);":"") + "\" onerror=\"this.style.display='none'\">") : "";
+    var imgTag = d.card.img ? ("<img src=\"" + d.card.img + "\" alt=\"" + d.card.name + "\" style=\"width:44px;flex-shrink:0;border:1px solid rgba(203,160,84,0.3);" + (d.reversed?"transform:rotate(180deg);":"") + "\" onerror=\"this.style.display='none'\">") : "";
     html += "<div class=\"ti\">" + imgTag + "<span class=\"ts\">" + d.card.sym + "</span><div class=\"ti-inf\"><div class=\"tn\">" + labels10[j] + " &mdash; " + d.card.name + " (" + (d.reversed?"Inversata":"Dreapta") + ")</div><div class=\"td\">" + (d.reversed?d.card.reversed:d.card.upright) + "</div></div></div>";
   }
   html += "</div>";
@@ -2869,7 +2873,7 @@ function drawBio(bio, birthDate, now) {
   ctx.scale(dpr,dpr);
   ctx.fillStyle="rgba(4,3,10,0.5)"; ctx.fillRect(0,0,W,H);
   var midY=H/2;
-  ctx.strokeStyle="rgba(201,168,76,0.08)"; ctx.lineWidth=1;
+  ctx.strokeStyle="rgba(203,160,84,0.08)"; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(0,midY); ctx.lineTo(W,midY); ctx.stroke();
   for(var x=0;x<=60;x+=10){
     var px=(x/60)*W;
@@ -2889,7 +2893,7 @@ function drawBio(bio, birthDate, now) {
   draw(28,"rgba(74,139,210,0.85)");
   draw(33,"rgba(46,204,154,0.85)");
   var todayX=(30/60)*W;
-  ctx.strokeStyle="rgba(201,168,76,0.6)"; ctx.setLineDash([4,4]);
+  ctx.strokeStyle="rgba(203,160,84,0.6)"; ctx.setLineDash([4,4]);
   ctx.beginPath(); ctx.moveTo(todayX,0); ctx.lineTo(todayX,H); ctx.stroke();
   ctx.setLineDash([]);
   ctx.font="10px Raleway,sans-serif";
@@ -3099,7 +3103,7 @@ function getPlanetHouse(planetLon, houses) {
 
 // ── 3. PLANETARY ASPECTS TABLE (natal) ──
 var ASPECT_TYPES = [
-  {name:"Conjunctie",sym:"&#9792;",angle:0,orb:8,nature:"intense",color:"#c9a84c"},
+  {name:"Conjunctie",sym:"&#9792;",angle:0,orb:8,nature:"intense",color:"#cba054"},
   {name:"Sextil",sym:"&#9738;",angle:60,orb:6,nature:"harmonious",color:"#2ecc9a"},
   {name:"Patrat",sym:"&#9632;",angle:90,orb:7,nature:"tense",color:"#c4395e"},
   {name:"Trigon",sym:"&#9651;",angle:120,orb:8,nature:"harmonious",color:"#2ecc9a"},
@@ -3521,7 +3525,7 @@ function buildHousesSection(bp, asc, zodiac, hour) {
     if (interp) {
       html += "<div style='margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border-s)'>";
       html += "<div style='font-family:Raleway,sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:4px'>" + ESYMS[pk] + " " + ENAMES[pk] + " in Casa " + (hIdx+1) + " (" + ALL_SIGNS[(ascIdx+hIdx)%12] + ")</div>";
-      html += "<div style='font-size:14px;color:var(--silver);font-style:italic'>" + interp + "</div>";
+      html += "<div style='font-size:15px;color:var(--silver)'>" + interp + "</div>";
       html += "</div>";
     }
   }
@@ -3978,11 +3982,11 @@ async function buildResult() {
   } catch(buildErr) {
     console.error("buildResult error:", buildErr);
     try {
-      RS.innerHTML = "<div style=\"padding:30px;background:rgba(18,11,40,0.95);border:1px solid rgba(201,168,76,0.4);margin-top:20px\">" +
-        "<div style=\"font-family:Cinzel Decorative,serif;font-size:18px;color:#c9a84c;margin-bottom:14px\">Profil generat partial</div>" +
-        "<p style=\"color:#9ba8c0;font-size:15px;margin-bottom:10px\">Eroare detectata: " + (buildErr.message || String(buildErr)) + "</p>" +
-        "<p style=\"color:#8a82a0;font-size:13px;font-style:italic\">Va rugam sa reincercati cu datele introduse.</p>" +
-        "<button onclick=\"resetOracle()\" style=\"margin-top:16px;padding:10px 24px;background:transparent;border:1px solid #c9a84c;color:#c9a84c;font-family:Raleway,sans-serif;font-size:11px;letter-spacing:3px;cursor:pointer\">&#8635; Incercare noua</button>" +
+      RS.innerHTML = "<div style=\"padding:30px;background:rgba(18,11,40,0.95);border:1px solid var(--border-b);margin-top:20px\">" +
+        "<div style=\"font-family:Cinzel Decorative,serif;font-size:18px;color:var(--gold);margin-bottom:14px\">Profil generat partial</div>" +
+        "<p style=\"color:var(--silver);font-size:15px;margin-bottom:10px\">Eroare detectata: " + (buildErr.message || String(buildErr)) + "</p>" +
+        "<p style=\"color:var(--text-d);font-size:13px\">Va rugam sa reincercati cu datele introduse.</p>" +
+        "<button onclick=\"resetOracle()\" style=\"margin-top:16px;padding:10px 24px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:Raleway,sans-serif;font-size:11px;letter-spacing:3px;cursor:pointer\">&#8635; Incercare noua</button>" +
         "</div>";
       RS.classList.add("sh");
     } catch(e2) {}
