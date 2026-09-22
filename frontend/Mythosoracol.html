@@ -2121,7 +2121,7 @@ async function fetchAISynthesis(type, payload) {
   try {
     var body = Object.assign({ type: type }, payload);
     var ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
-    var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 35000) : null;
+    var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 45000) : null;
     var res = await fetch(RAILWAY_API_URL + "/api/synthesize", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
