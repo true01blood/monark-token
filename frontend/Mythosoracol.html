@@ -267,6 +267,11 @@ canvas{width:100%;height:180px;display:block}
 .authbar .au-btn:hover{border-color:var(--gold)}
 .lang-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;padding:7px 12px;background:transparent;border:1px solid var(--border-b);color:var(--gold-l);cursor:pointer;transition:all .2s}
 .lang-btn:hover{background:var(--gold-f)}
+.expiry-banner{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+  background:var(--viol-f);border:1px solid var(--viol-l);border-radius:2px;padding:9px 16px;margin:0 0 10px}
+.expiry-banner .exb-txt{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:.5px;color:var(--text)}
+.expiry-banner .exb-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  padding:5px 12px;background:var(--viol-l);border:none;color:var(--void);cursor:pointer;font-weight:600}
 .site-footer{text-align:center;padding:26px 10px 18px;border-top:1px solid var(--border-s);margin-top:20px}
 .site-footer .footer-links{font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:1px;color:var(--text-d)}
 .site-footer .footer-links span{cursor:pointer;transition:color .2s}
@@ -336,6 +341,10 @@ canvas{width:100%;height:180px;display:block}
   <button class="au-btn" id="adminBtn" onclick="openAdminModal()" style="display:none" data-i18n="auth.admin">&#9881; Admin</button>
   <button class="au-btn" id="authBtn" onclick="openAuthModal()" data-i18n="auth.login">Autentificare</button>
   <button class="au-btn" id="logoutBtn" onclick="doLogout()" style="display:none" data-i18n="auth.logout">Deconectare</button>
+</div>
+<div class="expiry-banner" id="expiryBanner" style="display:none">
+  <span class="exb-txt">Planul tau expira in curand.</span>
+  <button class="exb-btn" onclick="openPlansModal()">Reinnoieste</button>
 </div>
 <div class="hdr">
   <svg class="hero-cosmos" viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
@@ -3144,6 +3153,7 @@ function launchOracle() {
   var bdStr=document.getElementById("birthDate").value;
   var err=document.getElementById("errMsg");
   if(!name||!gender||!bdStr){err.classList.add("sh");return;}
+  if (currentUser && subLocked) { openPlansModal(); return; }
   err.classList.remove("sh");
   document.getElementById("formSection").style.display="none";
   document.getElementById("quickAccess").style.display="none";
@@ -3176,6 +3186,7 @@ async function quickLaunch(targetTab, sectionMatch) {
     document.getElementById("formSection").scrollIntoView({behavior:"smooth"});
     return;
   }
+  if (currentUser && subLocked) { openPlansModal(); return; }
   err.classList.remove("sh");
   document.getElementById("formSection").style.display="none";
   document.getElementById("quickAccess").style.display="none";
@@ -4358,7 +4369,8 @@ function hidePalmModal() {
       <div id="planCardPro" class="plan-card" style="background:var(--gold-f);border:1px solid var(--gold);padding:20px 16px;text-align:center">
         <div class="plan-current-badge">Planul tau actual</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">PRO</div>
-        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">3 &euro;/luna</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:2px">3 &euro;/luna</div>
+        <div style="font-size:11px;color:var(--text-d);margin-bottom:14px">sau 30 &euro;/an <span style="color:var(--jade-l)">(2 luni gratis)</span></div>
         <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
           &#10003; Tot ce e in Free, plus:<br>
           &#10003; Istoric nelimitat<br>
@@ -4373,7 +4385,8 @@ function hidePalmModal() {
       <div id="planCardPremium" class="plan-card" style="background:rgba(33,31,44,.7);border:1px solid var(--border-b);padding:20px 16px;text-align:center">
         <div class="plan-current-badge">Planul tau actual</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold-l);letter-spacing:2px;margin-bottom:8px">PREMIUM</div>
-        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">9 &euro;/luna</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:2px">9 &euro;/luna</div>
+        <div style="font-size:11px;color:var(--text-d);margin-bottom:14px">sau 90 &euro;/an <span style="color:var(--jade-l)">(2 luni gratis)</span></div>
         <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
           &#10003; Tot ce e in Pro, plus:<br>
           &#10003; Human Design complet<br>
@@ -4383,8 +4396,9 @@ function hidePalmModal() {
         </div>
       </div>
     </div>
-    <div class="sh3">Cum faci upgrade (momentan manual)</div>
-    <p style="font-size:13px;color:var(--silver);line-height:1.8">Trimite suma corespunzatoare planului dorit prin Revolut la <strong id="plansContact">@trueblood</strong>, mentionand in descrierea platii contul tau (emailul cu care esti inregistrat). Upgrade-ul se face manual in maxim 24h de la confirmarea platii.</p>
+    <div id="planExpiryStatus" style="text-align:center;margin-bottom:14px;font-size:13px"></div>
+    <div class="sh3">Cum faci upgrade / reinnoiesti (momentan manual)</div>
+    <p style="font-size:13px;color:var(--silver);line-height:1.8">Trimite suma corespunzatoare planului si ciclului dorit (lunar sau anual) prin Revolut la <strong id="plansContact">@trueblood</strong>, mentionand in descrierea platii contul tau (emailul cu care esti inregistrat) si ciclul ales (ex: "Pro anual"). Upgrade-ul/reinnoirea se fac manual in maxim 24h de la confirmarea platii.</p>
   </div>
 </div>
 
@@ -4481,10 +4495,43 @@ async function loadProfile(userId) {
   document.getElementById("quickAccess").style.display = (currentProfile && currentProfile.birth_date) ? "block" : "none";
 }
 
+// Reutilizeaza subscriptions.current_period_end pentru toate planurile:
+// trialul Free (15 zile) si perioada platita Pro/Premium. Cand data a
+// trecut, subLocked=true - indiferent de tier, nu exista un nivel "sub
+// Free" in care sa retrogradeze, deci contul e blocat pentru generari
+// noi pana la reinnoire (manuala, prin admin, ca si azi).
+var subExpiresAt = null;
+var subDaysLeft = null;
+var subLocked = false;
+
 async function loadSubscriptionTier(userId) {
-  var res = await sb.from("subscriptions").select("tier,status").eq("user_id", userId).maybeSingle();
+  var res = await sb.from("subscriptions").select("tier,status,current_period_end").eq("user_id", userId).maybeSingle();
   currentTier = (res.data && res.data.status === "active" && res.data.tier) ? res.data.tier : "free";
+  subExpiresAt = (res.data && res.data.current_period_end) ? new Date(res.data.current_period_end + "T23:59:59") : null;
+  if (subExpiresAt) {
+    subDaysLeft = Math.ceil((subExpiresAt - new Date()) / 86400000);
+    subLocked = subDaysLeft < 0;
+  } else {
+    // Niciun rand in subscriptions (userii vechi, dinainte de trigger-ul
+    // de la inregistrare) - nu blocam retroactiv fara o data explicita.
+    subDaysLeft = null;
+    subLocked = false;
+  }
   updateTierBadge();
+  updateExpiryBanner();
+}
+
+function updateExpiryBanner() {
+  var el = document.getElementById("expiryBanner");
+  if (!el) return;
+  if (!currentUser || subDaysLeft === null || subLocked || subDaysLeft > 10) {
+    el.style.display = "none";
+    return;
+  }
+  el.style.display = "flex";
+  el.querySelector(".exb-txt").textContent = subDaysLeft <= 0
+    ? "Planul tau expira astazi."
+    : "Planul tau expira in " + subDaysLeft + (subDaysLeft === 1 ? " zi." : " zile.");
 }
 
 function updateTierBadge() {
@@ -4742,6 +4789,17 @@ function openPlansModal() {
     if (!el) return;
     el.classList.toggle("plan-current", t === activeTier);
   });
+  var statusEl = document.getElementById("planExpiryStatus");
+  if (statusEl) {
+    if (!currentUser || subDaysLeft === null) {
+      statusEl.innerHTML = "";
+    } else if (subLocked) {
+      statusEl.innerHTML = "<span style=\"color:var(--crim-l)\">&#9888; Planul tau a expirat - genereaza rapoarte noi doar dupa reinnoire.</span>";
+    } else {
+      var dateStr = subExpiresAt ? subExpiresAt.toLocaleDateString("ro-RO") : "";
+      statusEl.innerHTML = "<span style=\"color:var(--text-d)\">Planul tau expira pe <strong style=\"color:var(--gold-l)\">" + dateStr + "</strong> (" + subDaysLeft + (subDaysLeft===1?" zi":" zile") + ")</span>";
+    }
+  }
   document.getElementById("plansModal").classList.add("show");
 }
 function closePlansModal() {
@@ -4766,7 +4824,7 @@ async function openAdminModal() {
   var profilesRes = await sb.from("profiles").select("*").order("created_at", { ascending: false });
   var readingsCountRes = await sb.from("readings").select("id", { count: "exact", head: true });
   var favoritesCountRes = await sb.from("favorites").select("id", { count: "exact", head: true });
-  var subsRes = await sb.from("subscriptions").select("user_id, tier, status");
+  var subsRes = await sb.from("subscriptions").select("user_id, tier, status, current_period_end, billing_cycle");
 
   if (profilesRes.error) { console.error("admin profiles fetch error:", profilesRes.error); document.getElementById("adminStats").innerHTML = "<div class=\"hist-empty\">Eroare la încărcare.</div>"; return; }
 
@@ -4789,12 +4847,24 @@ async function openAdminModal() {
   statsHtml += buildAdminStat(tierCounts.premium, "Nivel Premium");
   document.getElementById("adminStats").innerHTML = statsHtml;
 
-  var tableHtml = "<tr><th>Nume</th><th>Email</th><th>Data Nasterii</th><th>Nivel</th><th>Admin</th><th>Inregistrat</th><th>Actiuni</th></tr>";
+  var tableHtml = "<tr><th>Nume</th><th>Email</th><th>Data Nasterii</th><th>Nivel</th><th>Expira</th><th>Admin</th><th>Inregistrat</th><th>Actiuni</th></tr>";
   for (var i = 0; i < profiles.length; i++) {
     var p = profiles[i];
-    var tier = (subsByUser[p.user_id] && subsByUser[p.user_id].tier) || "free";
+    var sub = subsByUser[p.user_id];
+    var tier = (sub && sub.tier) || "free";
     var regDate = p.created_at ? new Date(p.created_at).toLocaleDateString("ro-RO") : "-";
     var selId = "tierSel_" + p.user_id;
+    var expCell;
+    if (sub && sub.current_period_end) {
+      var expD = new Date(sub.current_period_end + "T23:59:59");
+      var daysLeft = Math.ceil((expD - new Date()) / 86400000);
+      var expDateStr = expD.toLocaleDateString("ro-RO") + (sub.billing_cycle ? " (" + (sub.billing_cycle==="annual"?"an":"luna") + ")" : "");
+      expCell = daysLeft < 0
+        ? "<span style=\"color:var(--crim-l)\">EXPIRAT (" + expDateStr + ")</span>"
+        : (daysLeft <= 10 ? "<span style=\"color:var(--viol-l)\">" + expDateStr + " (" + daysLeft + "z)</span>" : expDateStr);
+    } else {
+      expCell = "<span style=\"color:var(--text-dd)\">&#8212;</span>";
+    }
     tableHtml += "<tr>";
     tableHtml += "<td>" + escapeHtml(p.full_name || "-") + "</td>";
     tableHtml += "<td>" + escapeHtml(p.email || "-") + "</td>";
@@ -4804,15 +4874,44 @@ async function openAdminModal() {
       "<option value=\"pro\"" + (tier==="pro"?" selected":"") + ">PRO</option>" +
       "<option value=\"premium\"" + (tier==="premium"?" selected":"") + ">PREMIUM</option>" +
       "</select></td>";
+    tableHtml += "<td style=\"font-size:11px;white-space:nowrap\">" + expCell + "</td>";
     tableHtml += "<td>" + (p.is_admin ? "&#9733;" : "") + "</td>";
     tableHtml += "<td>" + regDate + "</td>";
     tableHtml += "<td style=\"white-space:nowrap\">";
     tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px;margin-right:4px\" onclick=\"adminSetTier('" + p.user_id + "','" + selId + "')\">Salveaza Nivel</button>";
+    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px;margin-right:4px\" onclick=\"adminExtendPlan('" + p.user_id + "','monthly')\">+1 Luna</button>";
+    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px;margin-right:4px\" onclick=\"adminExtendPlan('" + p.user_id + "','annual')\">+1 An</button>";
     tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px\" onclick=\"adminToggleAdmin('" + p.user_id + "'," + (!p.is_admin) + ")\">" + (p.is_admin ? "Revoca Admin" : "Fa Admin") + "</button>";
     tableHtml += "</td>";
     tableHtml += "</tr>";
   }
   document.getElementById("adminUsersTable").innerHTML = tableHtml;
+}
+
+// Adminul apasa acest buton manual, DUPA ce confirma plata Revolut - nu
+// exista automatizare de incasare (vezi ToS: upgrade manual). Extinde de
+// la data curenta de expirare daca e in viitor (reinnoire din timp, se
+// adauga la ce a mai rimas), sau de la azi daca a expirat deja/nu exista.
+async function adminExtendPlan(userId, cycle) {
+  var existing = await sb.from("subscriptions").select("current_period_end,tier").eq("user_id", userId).maybeSingle();
+  var base = new Date();
+  if (existing.data && existing.data.current_period_end) {
+    var existingEnd = new Date(existing.data.current_period_end + "T00:00:00");
+    if (existingEnd > base) base = existingEnd;
+  }
+  var next = new Date(base);
+  if (cycle === "annual") next.setFullYear(next.getFullYear() + 1);
+  else next.setMonth(next.getMonth() + 1);
+  var res = await sb.from("subscriptions").upsert({
+    user_id: userId,
+    tier: (existing.data && existing.data.tier) || "free",
+    status: "active",
+    current_period_start: new Date().toISOString().slice(0,10),
+    current_period_end: next.toISOString().slice(0,10),
+    billing_cycle: cycle
+  }, { onConflict: "user_id" });
+  if (res.error) { console.error("admin extend plan error:", res.error); alert("Eroare la salvare: " + res.error.message); return; }
+  openAdminModal();
 }
 
 async function adminSetTier(userId, selId) {
