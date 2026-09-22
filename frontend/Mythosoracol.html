@@ -512,6 +512,7 @@ canvas{width:100%;height:180px;display:block}
       <div class="ft">Sinastrie &amp; Interpretarea Viselor</div>
       <div class="fg fw">
         <div class="fgr"><label class="lb">Data Nașterii Partenerului (Sinastrie)</label><input type="date" id="partnerDate" class="ip" min="1920-01-01" max="2010-12-31"><span class="hn">Opțional &#8212; activeaz&#259; modulul de sinastrie</span></div>
+        <div class="fgr"><label class="lb">Numele la Naștere al Partenerului</label><input type="text" id="partnerBirthName" class="ip" placeholder="Prenume și Nume, exact din certificatul de naștere (daca se cunoaste)"><span class="hn">Opțional &#8212; activeaz&#259; compatibilitatea numerologic&#259; (Numarul Destinului/Sufletului), nu doar cea astrologic&#259;</span></div>
         <div class="fgr"><label class="lb">Vis Recent Semnificativ</label><textarea id="dreamText" class="ip" rows="5" placeholder="Descrieși cel mai recent vis semnificativ..."></textarea></div>
         <div class="fgr"><label class="lb">Faza Lunii la Naștere</label>
           <select id="birthLunarPhase" class="ip">
@@ -2220,7 +2221,7 @@ function buildCompatSection(zodiac) {
   return html;
 }
 
-async function buildSynastrySec(synData, bioData, zodiac, element, lp, bp) {
+async function buildSynastrySec(synData, bioData, zodiac, element, lp, bp, nn, sn) {
   if(!synData) return p("Nu a fost furnizata data nașterii unui partener. Completati Tab III pentru a activa modulul de sinastrie.");
   if(currentTier === "free") return buildUpsellHtml("Sinastria", "pro");
   var bioSync = Math.round((100-Math.abs(bioData.physical-synData.bio.physical)/2-Math.abs(bioData.emoțional-synData.bio.emoțional)/2)/1.5);
@@ -2270,6 +2271,24 @@ async function buildSynastrySec(synData, bioData, zodiac, element, lp, bp) {
       }
       html += "</div>";
     }
+  }
+
+  html += sh("Compatibilitate Numerologica (Drumul Vietii" + (synData.nn?" &amp; Numarul Destinului/Sufletului":"") + ")");
+  if (synData.nn) {
+    html += "<div class=\"syg\">";
+    html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold)\">Dvs.</div><div style=\"font-size:22px;margin:7px 0\">" + lp + " / " + nn + " / " + sn + "</div><div style=\"font-style:italic;color:var(--silver);font-size:11px\">Drum &middot; Destin &middot; Suflet</div></div>";
+    html += "<div class=\"sv\">&#10022;</div>";
+    html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold)\">Partener</div><div style=\"font-size:22px;margin:7px 0\">" + synData.lp + " / " + synData.nn + " / " + synData.sn + "</div><div style=\"font-style:italic;color:var(--silver);font-size:11px\">Drum &middot; Destin &middot; Suflet</div></div>";
+    html += "</div>";
+  }
+  html += p("Pe Drumul Vietii, dvs. " + getLPLoveHint(lp) + " Partenerul, cu Drumul Vietii " + synData.lp + ", " + getLPLoveHint(synData.lp));
+  if (lp === synData.lp) {
+    html += p("Aveti acelasi Drum al Vietii - o rezonanta puternica, aproape ca o oglinda: va intelegeti reciproc mai rapid decat majoritatea cuplurilor, dar riscati sa amplificati aceleasi slabiciuni in loc sa va completati.");
+  } else {
+    html += p("Drumurile Vietii diferite inseamna nevoi de baza diferite in relatie - nu un blocaj in sine, ci un semnal ca merita sa discutati explicit despre ce inseamna pentru fiecare independenta, ritmul si angajamentul, in loc sa presupuneti ca partenerul simte identic cu dvs.");
+  }
+  if (!synData.nn) {
+    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:6px\">&#9888; Completati Numele la Nastere al Partenerului (Tab III) pentru a compara si Numarul Destinului si al Sufletului, nu doar Drumul Vietii (care se calculeaza din data, nu din nume).</p>";
   }
 
   html += sh("Bioritm de Cuplu - Astazi");
@@ -3941,6 +3960,7 @@ async function buildResult() {
   var bname = document.getElementById("birthName").value.trim()||name;
   var question = document.getElementById("question").value.trim();
   var partnerDate = document.getElementById("partnerDate").value;
+  var partnerBirthName = document.getElementById("partnerBirthName").value.trim();
   var dreamText = document.getElementById("dreamText").value.trim();
 
   var day=bd.getDate(), month=bd.getMonth()+1, year=bd.getFullYear();
@@ -4048,7 +4068,13 @@ async function buildResult() {
       lp:calcLP(pd2.getDate(),pd2.getMonth()+1,pd2.getFullYear()),
       bio:getBio(pd2,now),
       element:getElement(pz.s),
-      bp:synBp
+      bp:synBp,
+      // Numerologia clasica (Numarul Destinului/Sufletului) se calculeaza din
+      // numele de la nastere, nu din data - de aceea e nevoie de un camp
+      // separat de nume pentru partener; fara el, comparatia ramane doar
+      // astrologica (zodie/element/Drumul Vietii).
+      nn: partnerBirthName ? nameToNum(partnerBirthName) : null,
+      sn: partnerBirthName ? soulNum(partnerBirthName) : null
     };
   }
 
@@ -4092,7 +4118,7 @@ async function buildResult() {
   htmlAstro += buildSection("&#9737;", "I &middot; PROFIL ASTROLOGIC NATAL COMPLET", buildAstroSection(zodiac,element,modality,ruler,chinese,asc,profile,bp,partFortune,northNode,southNode,bplace));
   htmlAstro += buildSection("&#10023;", "II &middot; SIMBOLISTICA SABIANA", buildSabianSection(bp,asc,northNode));
   htmlAstro += buildSection("&#8635;", "III &middot; TRANZITE PLANETARE ACTIVE", buildTransitSection(transits,progSun,progMoon,daysToSR,northNode,southNode));
-  htmlAstro += buildSection("&#9825;", "IV &middot; SINASTRIE &amp; BIORITM DE CUPLU", await buildSynastrySec(synData,bio,zodiac.s,element,lp,bp));
+  htmlAstro += buildSection("&#9825;", "IV &middot; SINASTRIE &amp; BIORITM DE CUPLU", await buildSynastrySec(synData,bio,zodiac.s,element,lp,bp,nn,sn));
   htmlAstro += buildSection("&#9790;", "V &middot; COMPATIBILITATE ZODIACALA", buildCompatSection(zodiac.s));
   htmlAstro += safeSection("&#9737;&#9742;", "VI &middot; PLANETE MINORE: CHIRON, LILITH, ASTEROIZI", buildAsteroidsSection(bp, asc, now));
   htmlAstro += safeSection("&#9632;", "VII &middot; ASPECTELE NATALE SI STELLIUM", buildNatalAspectsSection(bp));
@@ -4188,6 +4214,7 @@ async function buildResult() {
             finThreeYearGoal: document.getElementById("finThreeYearGoal").value.trim() || null,
             question: question || null, dreamText: dreamText || null,
             partnerDate: partnerDate || null,
+            partnerBirthName: partnerBirthName || null,
             handSel: Object.keys(handSel)
           }
         });
@@ -4510,6 +4537,7 @@ function restoreFormFromSnapshot(snap) {
   document.getElementById("question").value = snap.question || "";
   document.getElementById("dreamText").value = snap.dreamText || "";
   document.getElementById("partnerDate").value = snap.partnerDate || "";
+  document.getElementById("partnerBirthName").value = snap.partnerBirthName || "";
 
   restoreHandSelections(snap.handSel);
 }
