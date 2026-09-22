@@ -537,6 +537,13 @@ canvas{width:100%;height:180px;display:block}
           </select>
         </div>
         <div class="fgr s"><label class="lb">Obiective pentru Perioada Urm&#259;toare</label><input type="text" id="objectives" class="ip" placeholder="Lansare proiect, schimbare job, investitie..."></div>
+        <div class="fgr s" style="margin-top:6px;padding-top:16px;border-top:1px solid var(--border-s)">
+          <label class="lb">&#128176; Profil Financiar Numerologic <span style="font-size:9px;color:var(--gold-d);text-transform:none;letter-spacing:0">(opțional - imbunatateste raportul Premium)</span></label>
+        </div>
+        <div class="fgr s"><label class="lb">Situația Financiar&#259; Actual&#259;, in Cateva Cuvinte</label><input type="text" id="finCurrentSituation" class="ip" placeholder="Ex: stabil, dar simt ca nu progresez suficient de rapid"></div>
+        <div class="fgr s"><label class="lb">O Pasiune sau Interes din Copil&#259;rie (intre 9 si 14 ani)</label><input type="text" id="finChildhoodPassion" class="ip" placeholder="Ex: imi placea sa desenez si sa vand desene colegilor"></div>
+        <div class="fgr s"><label class="lb">Ce Credea Familia Ta despre Bani, Cand Erai Mic</label><input type="text" id="finFamilyBeliefs" class="ip" placeholder="Ex: 'banii nu cresc in copaci', discutii tensionate despre facturi"></div>
+        <div class="fgr s"><label class="lb">Obiectivul T&#259;u Financiar pentru Urm&#259;torii 3 Ani</label><input type="text" id="finThreeYearGoal" class="ip" placeholder="Ex: venit stabil dintr-o afacere proprie"></div>
       </div>
     </div></div>
     <!-- ALWAYS VISIBLE BUTTON -->
@@ -1413,6 +1420,89 @@ function soulNum(name){
   name.toLowerCase().split("").forEach(function(c){if(vowels.indexOf(c)>=0)s+=(vm[c]||0);});
   return reduce(s)||1;
 }
+// ═══ PROFIL FINANCIAR NUMEROLOGIC ═══
+// Cifra Financiara: metodologie proprie (nu reproduce formula nedivulgata a
+// niciunui produs comercial) - blend simplu si transparent al celor doua
+// numere numerologice "canonice" deja calculate (Drumul Vietii + Numarul
+// Destinului din nume), redus mereu la un singur digit 1-9 (fara exceptia
+// numerelor maestre, pentru ca tabelul de interpretari acopera doar 1-9).
+function reduceToSingleDigit(n) {
+  while (n > 9) {
+    var s = 0; String(n).split("").forEach(function(c){ s += parseInt(c); }); n = s;
+  }
+  return n;
+}
+function calcFinancialDigit(lifePath, destinyNum) {
+  return reduceToSingleDigit(lifePath + destinyNum);
+}
+
+// Profil Financiar Numerologic — baza de interpretari per cifra (1-9).
+// Fiecare cifra are 4 sectiuni: forta centrala, blocaje tipice, directii
+// recomandate, relatia cu riscul. Text propriu, compus pe baza traditiei
+// numerologice pitagoreice larg documentate (verificata cu surse externe),
+// NU o reproducere a formulei nedivulgate a vreunui produs comercial.
+// Acest continut e stratul de baza/fallback - varianta afisata efectiv
+// userului e generata de AI, grounded in aceste texte + datele reale ale
+// persoanei (Drumul Vietii, Venus/Jupiter/Saturn, casa II, element chinezesc,
+// Human Design) + raspunsurile ei libere - asa incat doi useri cu aceeasi
+// cifra financiara primesc rapoarte diferite in practica.
+
+var FINANCIAL_DIGIT_INTERPS = {
+  1: {
+    core: "Cifra 1 aduce o relatie cu banii construita pe autonomie. Nu te simti in siguranta financiara pentru ca ai un depozit mare sau un venit garantat, ci pentru ca stii ca poti genera resurse din propriile forte, oriunde ai fi pus. Siguranta ta e interna, nu externa. Preferi sa castigi prin initiativa directa - un proiect propriu, o pozitie de conducere, o afacere pornita de la zero - decat sa astepti ca altcineva sa-ti ofere stabilitate. Banii, pentru tine, sunt o confirmare a capacitatii de a conduce, nu un scop in sine.",
+    blocks: "Riscul central e supraestimarea propriei capacitati de a face totul singur. Refuzul de a delega sau de a accepta parteneriate financiare (societati, investitori, consilieri) te poate lasa sa cari greutati inutile sau sa ratezi oportunitati care ar fi crescut mult mai rapid cu un partener potrivit. A doua capcana: impatienta - vrei rezultate rapide si poti abandona un plan solid pe termen lung pentru o miscare rapida, dar riscanta.",
+    directions: "Domenii unde initiativa personala e recompensata direct - antreprenoriat, vanzari pe comision, consultanta, pozitii de conducere cu autonomie reala de decizie. Eviti mediile birocratice unde rezultatul tau personal se dizolva in efortul colectiv.",
+    risk: "Risc calculat, nu impulsiv - esti dispus sa pariezi pe tine insuti, dar vrei sa controlezi variabilele. Frica reala nu e pierderea banilor, ci pierderea controlului asupra deciziei."
+  },
+  2: {
+    core: "Cifra 2 iti da o relatie cu banii mediata de altii - familie, partener, echipa. Generozitatea e reala, nu performata: simti nevoia autentica de a contribui la bunastarea celor din jur, si aceasta calitate iti aduce adesea sprijin reciproc atunci cand ai nevoie. Nu esti motivat de acumulare pentru tine, ci de armonia financiara a grupului din care faci parte.",
+    blocks: "Tendinta de a prioritiza nevoile altora in fata propriei sigurante pe termen lung poate crea un tipar de sacrificiu financiar repetat, fara o rezerva proprie solida. Poti evita conversatii dificile despre bani (negocierea unui salariu, cererea unei datorii inapoi) din teama de a crea tensiune - iar aceasta evitare te costa direct.",
+    directions: "Parteneriate financiare clare (cont comun cu reguli explicite, afaceri in doi, roluri bine definite intr-o echipa) functioneaza mult mai bine pentru tine decat independenta totala. Beneficiezi de un consilier financiar sau un partener care iti tine partea cand esti tentat sa cedezi prea mult.",
+    risk: "Aversiune la conflict financiar, nu la risc in sine - eviti sa iei decizii unilaterale, preferi consensul, chiar daca asta incetineste procesul. Punctul de crestere: sa inveti sa spui nu fara vinovatie."
+  },
+  3: {
+    core: "Cifra 3 e asociata traditional cu o dobandire facila a banilor - nu pentru ca vin fara efort, ci pentru ca talentul tau de comunicare, creativitate si sociabilitate iti creeaza constant oportunitati noi. Esti optimist in privinta banilor intr-un mod care atrage, la randul lui, mai multe oportunitati. Monetizezi natural ce altii considera doar un hobby: scris, vorbit in public, arta, retele sociale.",
+    blocks: "Spontaneitatea care iti aduce oportunitati e aceeasi calitate care iti submineaza economiile - cheltuiesti liber, adesea pe experiente si placeri imediate, fara o structura de planificare pe termen lung. Poti avea mai multe surse de venit simultan, dar niciuna organizata suficient de riguros ca sa creasca stabil.",
+    directions: "Domenii creative cu potential de monetizare directa - continut, arta, vanzari prin comunicare, evenimente, retele sociale. Beneficiezi enorm de un sistem simplu de economisire automata, pus in miscare de altcineva sau de un instrument, ca sa nu depinzi de disciplina proprie.",
+    risk: "Confortabil cu riscul din impuls, mai putin cu riscul calculat pe hartie. Punctul de crestere: sa cuplezi entuziasmul cu cel putin un plan minim scris, inainte de a te avanta intr-o oportunitate noua."
+  },
+  4: {
+    core: "Cifra 4 construieste siguranta financiara prin structura, disciplina si repetitie. Esti arhitectul propriei stabilitati: preferi progresul lent si solid unei cresteri spectaculoase dar fragile. Sistemele, bugetele si rutinele nu te sufoca, te elibereaza - odata ce ai un plan clar, executia devine aproape automata pentru tine.",
+    blocks: "Rigiditatea e principalul risc: te poti agata de un plan devenit depasit, refuzand sa te adaptezi cand circumstantele cer o schimbare de directie. Prudenta excesiva te poate face sa ratezi oportunitati reale de crestere din teama de a parasi un sistem care functioneaza deja.",
+    directions: "Domenii cu structuri clare de avansare - constructii, contabilitate, administrare, proprietati imobiliare, functii cu progresie previzibila. Investitiile pe termen lung, cu crestere lenta si constanta, se aliniaza natural cu temperamentul tau.",
+    risk: "Aversiune reala la risc - preferi certitudinea unui castig mic sigur unei sanse mari de castig incert. Punctul de crestere: sa aloci constient o mica parte din resurse experimentarii, ca sa nu ratezi complet oportunitatile care cer flexibilitate."
+  },
+  5: {
+    core: "Cifra 5 traieste banii ca pe un instrument al libertatii, nu ca pe un depozit de siguranta. Ai nevoie de miscare, varietate si experiente noi, si resursele financiare exista pentru tine ca sa faci posibile aceste experiente, nu ca sa se acumuleze static. Esti adaptabil si resursat: gasesti solutii financiare neconventionale acolo unde altii vad blocaje.",
+    blocks: "Cheltuiesti liber si impulsiv, adesea pe calatorii, experiente si schimbari de directie, fara o rezerva construita pentru perioadele instabile. Restrictiile financiare (bugete rigide, contracte pe termen lung) te sufoca psihologic, ceea ce te poate face sa le eviti chiar cand ar fi in avantajul tau.",
+    directions: "Venituri flexibile, multiple surse, proiecte pe termen scurt-mediu, calatorii legate de munca, domenii care recompenseaza adaptabilitatea (vanzari, freelancing, industrii in schimbare rapida). Un fond minim de urgenta, gandit ca 'libertate de a spune nu', te motiveaza mai mult decat unul gandit ca 'economie'.",
+    risk: "Confortabil, aproape cautand activ, riscul asociat schimbarii - ceea ce ii dezechilibreaza pe altii te energizeaza pe tine. Punctul de crestere: sa distingi intre riscul care iti aduce libertate reala si impulsul de moment."
+  },
+  6: {
+    core: "Traditia numerologica numeste cifra 6 'cifra bogatiei' - nu pentru ca atrage sume enorme fara efort, ci pentru ca iti da o relatie naturala, lipsita de anxietate, cu resursele materiale, mai ales cele legate de casa si familie. Norocul tau financiar se manifesta rar izolat; el vine adesea prin reteaua ta apropiata - familie, comunitate, oameni pe care i-ai ajutat anterior. Ai un talent instinctiv pentru a crea confort material in jurul tau, nu doar pentru tine.",
+    blocks: "Generozitatea, dusa la extrem, devine principalul tau blocaj financiar. Tendinta de a prioritiza nevoile altora (copii, parteneri, parinti, prieteni la nevoie) in fata propriei sigurante pe termen lung poate crea un tipar de sacrificiu financiar repetat, fara o rezerva proprie solida. A doua capcana: confortul poate deveni stagnare - odata atins un nivel de trai decent, motivatia de a creste mai mult se poate stinge.",
+    directions: "Domenii legate de ingrijire, casa, educatie, servicii pentru familie/comunitate, dar structurate astfel incat sa fii platit corect pentru ele, nu doar sa le oferi gratuit din obligatie morala. Beneficiezi de parteneriate financiare stabile pe termen lung (casatorie, afacere de familie).",
+    risk: "Aversiune naturala la risc - preferi stabilitatea lenta si sigura unei cresteri rapide dar incerte. Punctul de crestere: sa inveti sa investesti in tine cu aceeasi generozitate cu care investesti in altii."
+  },
+  7: {
+    core: "Cifra 7 se raporteaza la bani analitic, nu emotional. Nu esti motivat de statut sau de bunuri vizibile; vezi banii ca mijloc spre libertate interioara si spre timpul necesar pentru cautarile tale intelectuale sau spirituale. Cercetezi temeinic inainte de a investi si rareori actionezi din impuls - cand te miști, o faci dupa o analiza reala.",
+    blocks: "Traditia numerologica descrie un paradox recurent la cifra 7: fie prosperi vizibil peste medie, fie pierzi mai mult decat cei din jurul tau - iar diferenta vine adesea din cat de mult te lasi absorbit de analiza pana la paralizie. Poti subevalua importanta practica a banilor, tratand planificarea financiara ca pe o corvoada secundara fata de preocuparile tale reale.",
+    directions: "Cercetare, consultanta specializata, domenii tehnice sau analitice unde profunzimea e recompensata, investitii pe termen lung bazate pe analiza proprie (nu pe recomandari populare). Beneficiezi de a delega partea administrativa/repetitiva a finantelor catre altcineva, ca sa nu-ti consume energia mentala.",
+    risk: "Risc calculat dupa cercetare extensiva - eviti impulsul, dar odata convins, poti investi cu convingere neobisnuit de ferma pentru profilul tau retras. Punctul de crestere: sa accepti ca nu toate deciziile financiare merita saptamani de analiza."
+  },
+  8: {
+    core: "Dintre toate cele noua cifre, 8 are cea mai directa afinitate cu manifestarea materiala - succes, statut, acumulare, structuri de putere. Nu e o coincidenta ca majoritatea traditiilor numerologice asociaza exact aceasta cifra cu abilitatea de a 'materializa' oportunitati financiare din idei abstracte. Ai un simt natural pentru scala: vezi un proiect mic si instinctiv calculezi cum ar putea deveni unul mare. Munca serioasa, sustinuta, e pentru tine calea fireasca spre abundenta - nu o corvoada.",
+    blocks: "Riscul central e identificarea excesiva a valorii personale cu rezultatul financiar - succesul devine masura propriei valori, ceea ce poate duce la epuizare (workaholism) sau la relatii sacrificate in numele 'constructiei'. A doua capcana: puterea dobandita prin bani poate deveni scop in sine, nu mijloc, ducand la decizii rigide, orientate spre control, nu spre sens.",
+    directions: "Afaceri proprii, management executiv, investitii imobiliare, domenii cu structuri clare de crestere si recompensa proportionala cu efortul (nu salarii plate, egalitare). Beneficiezi enorm de mentori sau parteneri care te ajuta sa nu pierzi din vedere latura umana a ambitiei.",
+    risk: "Confortabil cu risc calculat de amploare - esti dispus sa investesti mult daca vezi o structura logica de crestere. Punctul de umbra: poti confunda increderea in propriul plan cu certitudinea, ignorand semnale de avertizare."
+  },
+  9: {
+    core: "Cifra 9 atrage abundenta, dar o directioneaza rar spre acumulare pura. Ai o relatie cu banii legata de impact si sens - castigi bine mai ales atunci cand munca ta serveste o cauza sau ajuta oameni concreti, nu doar cand urmareste profitul de dragul profitului. Generozitatea ta e la scara larga: te gandesti la impactul asupra comunitatii, nu doar asupra familiei apropiate.",
+    blocks: "Poti da prea mult, prea des, catre cauze sau oameni, in detrimentul propriei sigurante financiare pe termen lung - idealismul, dus la extrem, devine o gaura constanta in bugetul personal. Dificultatea de a cere sau de a negocia in nume propriu (desi o faci facil pentru altii) te poate lasa subplatit.",
+    directions: "Domenii cu impact social vizibil - organizatii non-profit, educatie, sanatate, arta cu mesaj, consultanta pentru cauze - structurate astfel incat sa fii platit corect pentru contributia ta, nu doar sa o oferi. Beneficiezi de a separa explicit 'bugetul pentru cauze' de 'bugetul propriu de siguranta', ca sa nu se dilueze unul in celalalt.",
+    risk: "Risc asumat mai degraba pentru o cauza decat pentru castig personal - esti dispus sa pariezi mult pe ceva in care crezi. Punctul de crestere: sa recunosti ca propria ta siguranta financiara nu e egoism, e conditia care iti permite sa continui sa dai."
+  }
+};
 function personalYear(day,month,year){return reduce(day+month+reduce(year));}
 function personalMonth(day,month,year,tm){return reduce(personalYear(day,month,year)+tm);}
 function personalDay(day,month,year,td){return reduce(personalMonth(day,month,year,td.getMonth()+1)+td.getDate());}
@@ -2887,6 +2977,60 @@ function buildHumanDesignSection(bdTime, hasExactTime) {
   return html;
 }
 
+async function buildFinancialProfileSection(lp, nn, bp, element, bdTime) {
+  if (currentTier !== "premium") return buildUpsellHtml("Profilul Financiar Numerologic", "premium");
+
+  var digit = calcFinancialDigit(lp, nn);
+  var interp = FINANCIAL_DIGIT_INTERPS[digit];
+  var hdType = null;
+  try { hdType = computeHumanDesign(bdTime).type; } catch (e) { hdType = null; }
+
+  var html = sh("Cifra Financiara: " + digit);
+  html += "<div class=\"pg\">";
+  html += buildPCard("&#128176;", "Cifra Financiara", digit);
+  html += buildPCard("&#10022;", "Drumul Vieții", lp);
+  html += buildPCard("&#9825;", "Venus in", bp.venus.sign.name);
+  html += buildPCard("&#9795;", "Jupiter in", bp.jupiter.sign.name);
+  html += buildPCard("&#9787;", "Saturn in", bp.saturn.sign.name);
+  html += buildPCard(element.sym || "&#10022;", "Element", element.name);
+  html += "</div>";
+
+  var finAnswers = {
+    situatiaActuala: document.getElementById("finCurrentSituation").value.trim(),
+    pasiuneCopilarie: document.getElementById("finChildhoodPassion").value.trim(),
+    credinteFamilie: document.getElementById("finFamilyBeliefs").value.trim(),
+    obiectiv3Ani: document.getElementById("finThreeYearGoal").value.trim()
+  };
+  var finCtx = {
+    cifraFinanciara: digit,
+    interpretareDeBaza: interp,
+    drumulVietii: lp, numarDestin: nn,
+    venus: bp.venus.sign.name, jupiter: bp.jupiter.sign.name, saturn: bp.saturn.sign.name,
+    element: element.name, humanDesignType: hdType,
+    raspunsuriUtilizator: finAnswers
+  };
+
+  var aiText = await fetchAISynthesis("financial", { context: finCtx });
+  if (aiText) {
+    html += sh("Profilul Tau Financiar Personalizat (AI)");
+    html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
+  } else {
+    html += sh("Forta Centrala");
+    html += p(interp.core);
+    html += sh("Blocaje Tipice");
+    html += p(interp.blocks);
+    html += sh("Directii Recomandate");
+    html += p(interp.directions);
+    html += sh("Relatia cu Riscul");
+    html += p(interp.risk);
+    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
+  }
+
+  html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:14px\">&#9888; Cifra Financiara e o metodologie numerologica proprie (Drumul Vieții + Numarul Destinului din nume), nu o predictie financiara reala si nu constituie consultanta financiara.</p>";
+
+  return html;
+}
+
 // ═══ DRAW BIORHYTHM ═══
 function drawBio(bio, birthDate, now) {
   var canvas = document.getElementById("bioCanvas");
@@ -3937,6 +4081,10 @@ async function buildResult() {
   var htmlHD = "";
   htmlHD += safeSection("&#9784;", "I &middot; HARTA HUMAN DESIGN COMPLETA", buildHumanDesignSection(bdTime, hour !== null));
 
+  // ── PROFIL FINANCIAR NUMEROLOGIC ──
+  var htmlFin = "";
+  htmlFin += safeSection("&#128176;", "I &middot; PROFILUL TAU FINANCIAR NUMEROLOGIC", await buildFinancialProfileSection(lp, nn, bp, element, bdTime));
+
   // ── SINTEZA ZILNICA ──
   var htmlSyn = "";
   htmlSyn += buildSection("&#9651;", "I &middot; PROGNOZA ANUALA &amp; CALENDAR", buildAnnualSection(monthForecasts,now,progSun,bd,question));
@@ -3951,6 +4099,7 @@ async function buildResult() {
   html += "<button class=\"rtb\" data-tab=\"rt-bio\" onclick=\"showResultTab('rt-bio',this)\">&#9675; Bioritm</button>";
   html += "<button class=\"rtb\" data-tab=\"rt-div\" onclick=\"showResultTab('rt-div',this)\">&#9775; Divinatie</button>";
   html += "<button class=\"rtb\" data-tab=\"rt-hd\" onclick=\"showResultTab('rt-hd',this)\">&#9784; Human Design</button>";
+  html += "<button class=\"rtb\" data-tab=\"rt-fin\" onclick=\"showResultTab('rt-fin',this)\">&#128176; Profil Financiar</button>";
   html += "<button class=\"rtb\" data-tab=\"rt-syn\" onclick=\"showResultTab('rt-syn',this)\">&#9670; Sinteza Zilnica</button>";
   html += "</div>";
   html += "<div id=\"rt-astro\" class=\"rtp act\">" + buildTabToolbar("rt-astro") + htmlAstro + "</div>";
@@ -3958,6 +4107,7 @@ async function buildResult() {
   html += "<div id=\"rt-bio\" class=\"rtp\">" + buildTabToolbar("rt-bio") + htmlBio + "</div>";
   html += "<div id=\"rt-div\" class=\"rtp\">" + buildTabToolbar("rt-div") + htmlDiv + "</div>";
   html += "<div id=\"rt-hd\" class=\"rtp\">" + buildTabToolbar("rt-hd") + htmlHD + "</div>";
+  html += "<div id=\"rt-fin\" class=\"rtp\">" + buildTabToolbar("rt-fin") + htmlFin + "</div>";
   html += "<div id=\"rt-syn\" class=\"rtp\">" + buildTabToolbar("rt-syn") + htmlSyn + "</div>";
 
   html += "<button class=\"rb\" onclick=\"resetOracle()\">&#8635; Consultatie Noua</button>";
@@ -3986,6 +4136,10 @@ async function buildResult() {
             dominantHand: document.getElementById("dominantHand").value || null,
             profession: document.getElementById("profession").value || null,
             marital: document.getElementById("marital").value || null,
+            finCurrentSituation: document.getElementById("finCurrentSituation").value.trim() || null,
+            finChildhoodPassion: document.getElementById("finChildhoodPassion").value.trim() || null,
+            finFamilyBeliefs: document.getElementById("finFamilyBeliefs").value.trim() || null,
+            finThreeYearGoal: document.getElementById("finThreeYearGoal").value.trim() || null,
             question: question || null, dreamText: dreamText || null,
             partnerDate: partnerDate || null,
             handSel: Object.keys(handSel)
@@ -4124,7 +4278,8 @@ function hidePalmModal() {
           &#10003; Tarot: doar cartea zilei<br>
           &#10003; 1 interpretare AI / zi<br>
           &#10007; Sinastrie<br>
-          &#10007; Human Design
+          &#10007; Human Design<br>
+          &#10007; Profil Financiar Numerologic
         </div>
       </div>
       <div id="planCardPro" class="plan-card" style="background:var(--gold-f);border:1px solid var(--gold);padding:20px 16px;text-align:center">
@@ -4138,7 +4293,8 @@ function hidePalmModal() {
           &#10003; Tarot complet (3 carti + Crucea Celtica)<br>
           &#10003; Interpretari AI nelimitate<br>
           &#10003; Sinastrie completa<br>
-          &#10007; Human Design
+          &#10007; Human Design<br>
+          &#10007; Profil Financiar Numerologic
         </div>
       </div>
       <div id="planCardPremium" class="plan-card" style="background:rgba(33,31,44,.7);border:1px solid var(--border-b);padding:20px 16px;text-align:center">
@@ -4148,6 +4304,7 @@ function hidePalmModal() {
         <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
           &#10003; Tot ce e in Pro, plus:<br>
           &#10003; Human Design complet<br>
+          &#10003; Profil Financiar Numerologic<br>
           &#10003; Prioritate la sinteza AI<br>
           &#10003; Acces anticipat la module noi
         </div>
@@ -4300,6 +4457,10 @@ function restoreFormFromSnapshot(snap) {
   document.getElementById("dominantHand").value = snap.dominantHand || "";
   document.getElementById("profession").value = snap.profession || "";
   document.getElementById("marital").value = snap.marital || "";
+  document.getElementById("finCurrentSituation").value = snap.finCurrentSituation || "";
+  document.getElementById("finChildhoodPassion").value = snap.finChildhoodPassion || "";
+  document.getElementById("finFamilyBeliefs").value = snap.finFamilyBeliefs || "";
+  document.getElementById("finThreeYearGoal").value = snap.finThreeYearGoal || "";
   document.getElementById("question").value = snap.question || "";
   document.getElementById("dreamText").value = snap.dreamText || "";
   document.getElementById("partnerDate").value = snap.partnerDate || "";
