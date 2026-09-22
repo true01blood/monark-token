@@ -24,7 +24,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--void);color:var(--text);font-family:"Cormorant Garamond",Georgia,serif;font-size:16px;line-height:1.8;min-height:100vh;overflow-x:hidden}
+body{background:var(--void);color:var(--text);font-family:"Cormorant Garamond",Georgia,serif;font-size:19px;line-height:1.8;min-height:100vh;overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(166,133,224,0.13) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 100% 50%,rgba(212,175,106,0.05) 0%,transparent 60%)}
 .w{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 18px 80px}
 /* HEADER */
@@ -33,46 +33,46 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 @keyframes drift{0%,100%{transform:rotate(0deg) scale(1)}33%{transform:rotate(1.2deg) scale(1.015)}66%{transform:rotate(-1.2deg) scale(0.985)}}
 @media(prefers-reduced-motion:reduce){.hero-cosmos{animation:none}}
 .hdr h1{font-family:"Cinzel Decorative",serif;font-size:clamp(22px,5vw,50px);font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#9471cb 0%,#c4a8f0 35%,#9471cb 65%,#9471cb 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:6px}
-.hdr-v{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:7px;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
-.hdr-tag{font-style:italic;color:var(--silver);font-size:14px;max-width:580px;margin:0 auto 20px;line-height:1.85}
+.hdr-v{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:7px;text-transform:uppercase;color:var(--gold-d);margin-bottom:6px}
+.hdr-tag{font-style:italic;color:var(--silver);font-size:17px;max-width:580px;margin:0 auto 20px;line-height:1.85}
 .mod-row{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:14px}
-.mod-t{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 11px;border:1px solid var(--border);color:var(--gold-d);background:var(--gold-f)}
+.mod-t{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:4px 11px;border:1px solid var(--border);color:var(--gold-d);background:var(--gold-f)}
 .mod-toggle{cursor:pointer;background:transparent;border-style:dashed;transition:all .2s}
 .mod-toggle:hover{border-color:var(--gold);color:var(--gold)}
 /* DIVIDER */
 .dv{display:flex;align-items:center;gap:12px;margin:30px 0}
 .dv::before,.dv::after{content:"";flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-d),transparent)}
-.dv span{color:var(--gold);font-size:15px}
+.dv span{color:var(--gold);font-size:18px}
 /* TABS */
 .tab-nav{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:2px}
-.tb{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:10px 16px;border:1px solid var(--border);background:rgba(33,31,44,0.8);color:var(--text-d);cursor:pointer;transition:all .25s;flex:1;min-width:90px;text-align:center}
+.tb{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:10px 16px;border:1px solid var(--border);background:rgba(33,31,44,0.8);color:var(--text-d);cursor:pointer;transition:all .25s;flex:1;min-width:90px;text-align:center}
 .tb:hover{color:var(--gold);border-color:var(--gold-d)}
 .tb.act{background:var(--gold-f);border-color:var(--gold);color:var(--gold)}
 .tp{display:none}.tp.act{display:block}
 /* RESULT TABS (by module) */
 .rtab-nav{display:flex;gap:5px;flex-wrap:wrap;margin:22px 0 0}
-.rtb{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:12px 14px;border:1px solid var(--border);background:rgba(33,31,44,0.8);color:var(--text-d);cursor:pointer;transition:all .25s;flex:1;min-width:100px;text-align:center}
+.rtb{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:12px 14px;border:1px solid var(--border);background:rgba(33,31,44,0.8);color:var(--text-d);cursor:pointer;transition:all .25s;flex:1;min-width:100px;text-align:center}
 .rtb:hover{color:var(--gold);border-color:var(--gold-d)}
 .rtb.act{background:var(--gold-f);border-color:var(--gold);color:var(--gold)}
 .rtp{display:none}.rtp.act{display:block}
 .tab-toolbar{display:flex;justify-content:flex-end;gap:8px;margin:16px 0 2px}
-.ttb{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;background:transparent;border:1px solid var(--border);color:var(--text-d);cursor:pointer;transition:all .2s}
+.ttb{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;background:transparent;border:1px solid var(--border);color:var(--text-d);cursor:pointer;transition:all .2s}
 .ttb:hover{border-color:var(--gold);color:var(--gold)}
 /* QUICK ACCESS */
 #quickAccess{background:linear-gradient(135deg,rgba(37,35,50,.97) 0%,rgba(21,20,29,.99) 100%);border:1px solid var(--border-b);padding:24px;margin-bottom:24px}
-.qa-title{font-family:"Cinzel Decorative",serif;font-size:12px;letter-spacing:2px;color:var(--gold);text-align:center;margin-bottom:16px}
+.qa-title{font-family:"Cinzel Decorative",serif;font-size:15px;letter-spacing:2px;color:var(--gold);text-align:center;margin-bottom:16px}
 .qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}
-.qa-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:16px 10px;background:rgba(33,31,44,.7);border:1px solid var(--border);color:var(--gold-d);cursor:pointer;transition:all .25s;text-align:center}
+.qa-btn{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:16px 10px;background:rgba(33,31,44,.7);border:1px solid var(--border);color:var(--gold-d);cursor:pointer;transition:all .25s;text-align:center}
 .qa-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-f)}
-.qa-full{text-align:center;font-size:12px;color:var(--text-d);font-style:italic;margin-top:16px;cursor:pointer;text-decoration:underline}
+.qa-full{text-align:center;font-size:15px;color:var(--text-d);font-style:italic;margin-top:16px;cursor:pointer;text-decoration:underline}
 /* FORM CARD */
 .fc{background:linear-gradient(135deg,rgba(37,35,50,.97) 0%,rgba(21,20,29,.99) 100%);border:1px solid var(--border);position:relative;overflow:hidden}
 .fc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-l),var(--gold),transparent)}
 .fi{padding:36px 40px}
 @media(max-width:640px){.fi{padding:22px 16px}}
-.ft{font-family:"Cinzel Decorative",serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-align:center;margin-bottom:28px}
+.ft{font-family:"Cinzel Decorative",serif;font-size:14px;letter-spacing:3px;color:var(--gold);text-align:center;margin-bottom:28px}
 .rf-toggle{display:flex;justify-content:center;gap:2px;margin:-14px 0 26px}
-.rf-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px;background:rgba(33,31,44,.7);border:1px solid var(--border);color:var(--text-d);cursor:pointer;transition:all .2s}
+.rf-btn{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 18px;background:rgba(33,31,44,.7);border:1px solid var(--border);color:var(--text-d);cursor:pointer;transition:all .2s}
 .rf-btn.act{background:var(--gold-f);border-color:var(--gold);color:var(--gold)}
 .rf-btn:hover{color:var(--gold)}
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:20px}
@@ -80,19 +80,19 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .fgr{display:flex;flex-direction:column;gap:7px}
 .fgr.s{grid-column:1/-1}
 @media(max-width:600px){.fg{grid-template-columns:1fr}.fgr.s{grid-column:1}}
-.lb{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
-.ip{background:rgba(33,31,44,.85);border:1px solid var(--border);padding:12px 15px;color:var(--text);font-family:"Cormorant Garamond",serif;font-size:15px;outline:none;transition:all .28s;width:100%}
+.lb{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
+.ip{background:rgba(33,31,44,.85);border:1px solid var(--border);padding:12px 15px;color:var(--text);font-family:"Cormorant Garamond",serif;font-size:18px;outline:none;transition:all .28s;width:100%}
 .ip:focus{border-color:var(--gold);box-shadow:0 0 14px rgba(166,133,224,.1)}
 .ip::placeholder{color:var(--text-dd);font-style:italic}
 .ip option{background:var(--deep)}
-.hn{font-size:12px;color:var(--text-d);font-style:italic}
+.hn{font-size:15px;color:var(--text-d);font-style:italic}
 /* HAND OPTS */
 .hg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
 @media(max-width:420px){.hg{grid-template-columns:1fr}}
-.ho{background:rgba(33,31,44,.7);border:1px solid var(--border);padding:9px 11px;cursor:pointer;font-size:13px;color:var(--silver);font-family:"Cormorant Garamond",serif;text-align:center;transition:all .22s}
+.ho{background:rgba(33,31,44,.7);border:1px solid var(--border);padding:9px 11px;cursor:pointer;font-size:16px;color:var(--silver);font-family:"Cormorant Garamond",serif;text-align:center;transition:all .22s}
 .ho:hover,.ho.sl{border-color:var(--gold);color:var(--gold);background:var(--gold-f)}
 /* BUTTON */
-.ob{display:block;width:100%;padding:19px 44px;background:linear-gradient(135deg,rgba(166,133,224,.1) 0%,rgba(166,133,224,.22) 50%,rgba(166,133,224,.1) 100%);border:1px solid var(--gold);color:var(--gold-l);font-family:"Cinzel Decorative",serif;font-size:12px;letter-spacing:5px;cursor:pointer;transition:all .4s;position:relative;overflow:hidden;margin-top:0}
+.ob{display:block;width:100%;padding:19px 44px;background:linear-gradient(135deg,rgba(166,133,224,.1) 0%,rgba(166,133,224,.22) 50%,rgba(166,133,224,.1) 100%);border:1px solid var(--gold);color:var(--gold-l);font-family:"Cinzel Decorative",serif;font-size:15px;letter-spacing:5px;cursor:pointer;transition:all .4s;position:relative;overflow:hidden;margin-top:0}
 .ob:hover{box-shadow:0 0 36px rgba(166,133,224,.22);letter-spacing:7px}
 .ob:disabled{opacity:.4;cursor:not-allowed}
 .btn-wrap{padding:22px 40px;border-top:1px solid var(--border-s)}
@@ -110,9 +110,9 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 @keyframes rs{to{transform:rotate(360deg)}}
 .lc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:30px;animation:pg 1.4s ease-in-out infinite}
 @keyframes pg{0%,100%{opacity:.3}50%{opacity:1}}
-.lm{font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-d);animation:pg 1.4s ease-in-out infinite}
+.lm{font-family:"Raleway",sans-serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-d);animation:pg 1.4s ease-in-out infinite}
 .ls{display:flex;flex-direction:column;gap:5px;margin:22px auto 0;max-width:300px}
-.si{font-size:12px;color:var(--text-dd);font-style:italic;padding:3px 0;border-bottom:1px solid var(--border-s);transition:color .4s}
+.si{font-size:15px;color:var(--text-dd);font-style:italic;padding:3px 0;border-bottom:1px solid var(--border-s);transition:color .4s}
 .si.dn{color:var(--gold-d)}.si.ac{color:var(--gold);font-weight:600}
 /* RESULT */
 .res{display:none;animation:rv .7s ease-out}
@@ -123,37 +123,37 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 @media(max-width:480px){.idb{padding:26px 18px}}
 .idb::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(166,133,224,.05) 0%,transparent 70%)}
 .idb-name{font-family:"Cinzel Decorative",serif;font-size:clamp(18px,4vw,38px);color:var(--gold-l);letter-spacing:3px;margin-bottom:8px}
-.idb-sub{font-style:italic;color:var(--silver);font-size:14px;line-height:1.8;margin-bottom:16px}
+.idb-sub{font-style:italic;color:var(--silver);font-size:17px;line-height:1.8;margin-bottom:16px}
 .idb-bgs{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:14px}
-.idb-bg{background:var(--gold-f);border:1px solid var(--border);padding:6px 14px;font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d)}
+.idb-bg{background:var(--gold-f);border:1px solid var(--border);padding:6px 14px;font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d)}
 /* SECTIONS */
 .sc{background:linear-gradient(135deg,rgba(37,35,50,.9) 0%,rgba(21,20,29,.95) 100%);border:1px solid var(--border);margin-top:20px;position:relative}
 .sc::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--gold-d))}
 .sh2{padding:20px 28px 16px 32px;border-bottom:1px solid var(--border-s);display:flex;align-items:center;gap:11px;cursor:pointer;transition:background .2s;user-select:none}
 .sh2:hover{background:var(--gold-f)}
 .si2{font-size:19px;flex-shrink:0}
-.st{font-family:"Cinzel Decorative",serif;font-size:11px;letter-spacing:2.5px;color:var(--gold);flex:1}
-.stg{color:var(--gold-d);font-size:13px;transition:transform .28s}
+.st{font-family:"Cinzel Decorative",serif;font-size:14px;letter-spacing:2.5px;color:var(--gold);flex:1}
+.stg{color:var(--gold-d);font-size:16px;transition:transform .28s}
 .stg.op{transform:rotate(180deg)}
 .sb{padding:30px 32px;display:none;line-height:1.9}
 @media(max-width:640px){.sb{padding:20px 18px}}
 .sb.op{display:block}
-.sb p{margin-bottom:18px;color:var(--text);font-size:16px}
+.sb p{margin-bottom:18px;color:var(--text);font-size:19px}
 .sb p:last-child{margin-bottom:0}
 /* SUB-HEADING */
-.sh3{font-family:"Cinzel Decorative",serif;font-size:10px;letter-spacing:2.5px;color:var(--gold-d);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:9px}
+.sh3{font-family:"Cinzel Decorative",serif;font-size:13px;letter-spacing:2.5px;color:var(--gold-d);text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:9px}
 .sh3::after{content:"";flex:1;height:1px;background:var(--border-s)}
 /* NUM BADGES */
 .nr{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0}
 .nb{background:rgba(33,31,44,.8);border:1px solid var(--border);padding:13px 16px;text-align:center;min-width:82px}
 .nb .n{display:block;font-family:"Cinzel Decorative",serif;font-size:28px;color:var(--gold);line-height:1}
-.nb .nl{display:block;font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:3px}
+.nb .nl{display:block;font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:3px}
 /* PLANET GRID */
 .pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin:14px 0}
 .pc{background:rgba(33,31,44,.65);border:1px solid var(--border);padding:13px 10px;text-align:center}
 .pc .ps{display:block;font-size:21px;margin-bottom:4px}
-.pc .pn{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);display:block;margin-bottom:3px}
-.pc .pv{font-style:italic;color:var(--silver-l);font-size:14px}
+.pc .pn{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);display:block;margin-bottom:3px}
+.pc .pv{font-style:italic;color:var(--silver-l);font-size:17px}
 /* TRANSIT ITEMS */
 .tl{display:flex;flex-direction:column;gap:9px;margin:14px 0}
 .ti{background:rgba(33,31,44,.6);border:1px solid var(--border);padding:13px 16px;display:flex;align-items:flex-start;gap:12px}
@@ -161,17 +161,17 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .ti.mod{border-color:rgba(74,31,122,.4)}
 .ts{font-size:22px;flex-shrink:0;line-height:1.3}
 .ti-inf{flex:1}
-.tn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
-.td{font-size:15px;color:var(--silver);line-height:1.6}
-.tp2{font-size:11px;color:var(--text-d);margin-top:3px;font-family:"Raleway",sans-serif}
-.tbg{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border:1px solid;flex-shrink:0;align-self:flex-start}
+.tn{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.td{font-size:18px;color:var(--silver);line-height:1.6}
+.tp2{font-size:14px;color:var(--text-d);margin-top:3px;font-family:"Raleway",sans-serif}
+.tbg{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border:1px solid;flex-shrink:0;align-self:flex-start}
 .tbg.m{border-color:var(--gold);color:var(--gold)}.tbg.mo{border-color:var(--viol-l);color:var(--viol-l)}.tbg.mi{border-color:var(--silver-d);color:var(--silver-d)}
 /* COMPAT BARS */
 .cr{display:flex;align-items:center;gap:11px;margin-bottom:9px}
-.cl{font-size:13px;color:var(--silver);width:88px;flex-shrink:0}
+.cl{font-size:16px;color:var(--silver);width:88px;flex-shrink:0}
 .ct{flex:1;height:3px;background:rgba(166,133,224,.1);overflow:hidden}
 .cf{height:100%;background:linear-gradient(to right,var(--gold-d),var(--gold));width:0%;transition:width 1.2s ease-out}
-.cv{font-size:12px;color:var(--gold);width:32px;text-align:right;font-family:"Raleway",sans-serif}
+.cv{font-size:15px;color:var(--gold);width:32px;text-align:right;font-family:"Raleway",sans-serif}
 /* BIO CANVAS */
 .bw{position:relative;margin:14px 0;border:1px solid var(--border);background:rgba(33,31,44,.7);padding:7px}
 canvas{width:100%;height:180px;display:block}
@@ -180,8 +180,8 @@ canvas{width:100%;height:180px;display:block}
 .ps2{flex:1;padding:13px 9px;text-align:center;background:rgba(33,31,44,.6)}
 .ps2.cur{background:var(--viol-f);border-left:2px solid var(--viol-l);border-right:2px solid var(--viol-l)}
 .pn2{font-family:"Cinzel Decorative",serif;font-size:20px;color:var(--gold);display:block}
-.pl{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-d);margin-top:3px;display:block}
-.pp{font-size:11px;color:var(--text-d);margin-top:2px;display:block}
+.pl{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--text-d);margin-top:3px;display:block}
+.pp{font-size:14px;color:var(--text-d);margin-top:2px;display:block}
 .ps2.cur .pl{color:var(--viol-l)}
 /* MONTHLY GRID */
 .mg{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:14px 0}
@@ -190,27 +190,27 @@ canvas{width:100%;height:180px;display:block}
 .mc.cur{border-color:var(--gold);background:var(--gold-f)}
 .mc.fav{border-color:rgba(46,204,154,.3)}
 .mc.int{border-color:rgba(196,57,94,.3)}
-.mn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
+.mn{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
 .mm{font-family:"Cinzel Decorative",serif;font-size:18px;color:var(--gold)}
-.mt{font-size:12px;color:var(--silver);margin-top:3px;font-style:italic}
+.mt{font-size:15px;color:var(--silver);margin-top:3px;font-style:italic}
 /* DAILY ORACLE */
 .do{background:linear-gradient(135deg,rgba(30,22,46,.98) 0%,rgba(21,20,29,.99) 100%);border:1px solid var(--border-b);padding:28px 26px;margin:14px 0;text-align:center;position:relative;overflow:hidden}
 @media(max-width:480px){.do{padding:18px 16px}}
 .do::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(166,133,224,.05) 0%,transparent 70%)}
-.do-d{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d);margin-bottom:10px}
+.do-d{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d);margin-bottom:10px}
 .do-e{font-family:"Cinzel Decorative",serif;font-size:28px;color:var(--gold);margin-bottom:5px}
-.do-th{font-style:italic;font-size:16px;color:var(--silver-l);margin-bottom:16px}
+.do-th{font-style:italic;font-size:19px;color:var(--silver-l);margin-bottom:16px}
 .do-ind{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:16px 0}
 .di{text-align:center}
 .dv2{font-family:"Cinzel Decorative",serif;font-size:22px;color:var(--gold)}
-.dl{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:2px}
-.do-b{font-size:16px;color:var(--text);line-height:1.9;text-align:left;margin-top:14px;position:relative}
+.dl{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:2px}
+.do-b{font-size:19px;color:var(--text);line-height:1.9;text-align:left;margin-top:14px;position:relative}
 /* SABIAN */
 .sab{background:rgba(33,31,44,.75);border:1px solid var(--border);padding:16px 20px;margin:12px 0;position:relative}
 .sab::before{content:"\201C";position:absolute;top:-10px;left:14px;font-size:52px;color:var(--gold-d);font-family:Georgia,serif;line-height:1;opacity:.45}
-.sab-d{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
-.sab-s{font-style:italic;font-size:15px;color:var(--gold-l);margin-bottom:7px}
-.sab-i{font-size:15px;color:var(--silver);line-height:1.7}
+.sab-d{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px}
+.sab-s{font-style:italic;font-size:18px;color:var(--gold-l);margin-bottom:7px}
+.sab-i{font-size:18px;color:var(--silver);line-height:1.7}
 /* RUNE STONE + TRIGRAM BADGE (real Unicode Runic/Yijing glyphs, styled as carved emblems) */
 .rune-row{display:flex;gap:14px;align-items:flex-start;margin:12px 0}
 .rune-row .sab{flex:1;margin:0}
@@ -236,12 +236,12 @@ canvas{width:100%;height:180px;display:block}
 .syp{text-align:center;padding:14px;background:rgba(33,31,44,.6);border:1px solid var(--border)}
 .sv{font-family:"Cinzel Decorative",serif;font-size:18px;color:var(--gold-d)}
 /* RESET */
-.rb{display:block;margin:44px auto 0;padding:12px 34px;background:transparent;border:1px solid var(--gold-d);color:var(--gold-d);font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .3s}
+.rb{display:block;margin:44px auto 0;padding:12px 34px;background:transparent;border:1px solid var(--gold-d);color:var(--gold-d);font-family:"Raleway",sans-serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .3s}
 .rb:hover{border-color:var(--gold);color:var(--gold)}
 /* DISCLAIMER */
-.disc{margin-top:50px;padding:16px 18px;border:1px solid var(--border-s);background:rgba(33,31,44,.3);font-size:12px;color:var(--text-dd);font-style:italic;text-align:center;line-height:1.8}
+.disc{margin-top:50px;padding:16px 18px;border:1px solid var(--border-s);background:rgba(33,31,44,.3);font-size:15px;color:var(--text-dd);font-style:italic;text-align:center;line-height:1.8}
 /* TAGS */
-.tag{background:var(--gold-f);border:1px solid var(--border);padding:4px 11px;font-size:12px;color:var(--silver-l);font-style:italic;display:inline-block;margin:3px}
+.tag{background:var(--gold-f);border:1px solid var(--border);padding:4px 11px;font-size:15px;color:var(--silver-l);font-style:italic;display:inline-block;margin:3px}
 /* PALM IMAGE ZOOM */
 .palm-img{transition:transform 0.3s ease, box-shadow 0.3s ease;cursor:zoom-in}
 .palm-img:hover{transform:scale(1.4);box-shadow:0 8px 24px rgba(166,133,224,0.4);z-index:100;position:relative}
@@ -253,79 +253,79 @@ canvas{width:100%;height:180px;display:block}
 @media(max-width:500px){.czg{grid-template-columns:1fr}}
 .czp{background:rgba(33,31,44,.75);border:1px solid var(--border);padding:16px 14px;text-align:center;position:relative;overflow:hidden}
 .czp::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
-.czp-lbl{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px}
+.czp-lbl{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px}
 .czp-animal{font-family:"Cinzel Decorative",serif;font-size:20px;color:var(--gold-l);margin-bottom:4px}
-.czp-elem{font-family:"Raleway",sans-serif;font-size:11px;color:var(--viol-l);letter-spacing:1px;margin-bottom:3px}
-.czp-branch{font-family:"Raleway",sans-serif;font-size:10px;color:var(--text-d);letter-spacing:1px;margin-bottom:8px}
-.czp-interp{font-size:14px;color:var(--silver);line-height:1.6;text-align:left}
+.czp-elem{font-family:"Raleway",sans-serif;font-size:14px;color:var(--viol-l);letter-spacing:1px;margin-bottom:3px}
+.czp-branch{font-family:"Raleway",sans-serif;font-size:13px;color:var(--text-d);letter-spacing:1px;margin-bottom:8px}
+.czp-interp{font-size:17px;color:var(--silver);line-height:1.6;text-align:left}
 .czp-missing{opacity:.5;border-style:dashed}
 /* AUTH BAR */
 .authbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:10px 0;flex-wrap:wrap}
-@media(max-width:480px){.authbar{justify-content:center;gap:6px}.authbar .au-btn{padding:6px 10px;font-size:9px}}
-.authbar .au-status{font-family:"Raleway",sans-serif;font-size:11px;color:var(--text-d);letter-spacing:1px}
-.authbar .au-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;background:var(--gold-f);border:1px solid var(--border);color:var(--gold);cursor:pointer;transition:all .2s}
+@media(max-width:480px){.authbar{justify-content:center;gap:6px}.authbar .au-btn{padding:6px 10px;font-size:12px}}
+.authbar .au-status{font-family:"Raleway",sans-serif;font-size:14px;color:var(--text-d);letter-spacing:1px}
+.authbar .au-btn{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;background:var(--gold-f);border:1px solid var(--border);color:var(--gold);cursor:pointer;transition:all .2s}
 .authbar .au-btn:hover{border-color:var(--gold)}
-.lang-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;padding:7px 12px;background:transparent;border:1px solid var(--border-b);color:var(--gold-l);cursor:pointer;transition:all .2s}
+.lang-btn{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;padding:7px 12px;background:transparent;border:1px solid var(--border-b);color:var(--gold-l);cursor:pointer;transition:all .2s}
 .lang-btn:hover{background:var(--gold-f)}
 .expiry-banner{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
   background:var(--viol-f);border:1px solid var(--viol-l);border-radius:2px;padding:9px 16px;margin:0 0 10px}
-.expiry-banner .exb-txt{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:.5px;color:var(--text)}
-.expiry-banner .exb-btn{font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+.expiry-banner .exb-txt{font-family:"Raleway",sans-serif;font-size:15px;letter-spacing:.5px;color:var(--text)}
+.expiry-banner .exb-btn{font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;
   padding:5px 12px;background:var(--viol-l);border:none;color:var(--void);cursor:pointer;font-weight:600}
 .site-footer{text-align:center;padding:26px 10px 18px;border-top:1px solid var(--border-s);margin-top:20px}
-.site-footer .footer-links{font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:1px;color:var(--text-d)}
+.site-footer .footer-links{font-family:"Raleway",sans-serif;font-size:14px;letter-spacing:1px;color:var(--text-d)}
 .site-footer .footer-links span{cursor:pointer;transition:color .2s}
 .site-footer .footer-links span:hover{color:var(--gold)}
-.site-footer .footer-copy{font-size:11px;color:var(--text-dd);margin-top:8px}
+.site-footer .footer-copy{font-size:14px;color:var(--text-dd);margin-top:8px}
 .legal-body{max-height:60vh;overflow-y:auto;padding-right:6px}
-.legal-body h4{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
-.legal-body p{font-size:14px;color:var(--silver);line-height:1.7;margin-bottom:10px}
+.legal-body h4{font-family:"Raleway",sans-serif;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+.legal-body p{font-size:17px;color:var(--silver);line-height:1.7;margin-bottom:10px}
 .au-modal{display:none;position:fixed;z-index:9998;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center}
 .au-modal.show{display:flex}
 .au-box{background:linear-gradient(135deg,rgba(37,35,50,.98) 0%,rgba(21,20,29,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:340px;width:90%}
-.au-box h3{font-family:"Cinzel Decorative",serif;font-size:14px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
+.au-box h3{font-family:"Cinzel Decorative",serif;font-size:17px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
 .au-box .ip{margin-bottom:12px}
-.au-box .au-err{color:#e0637f;font-size:12px;font-style:italic;margin-bottom:10px;display:none}
+.au-box .au-err{color:#e0637f;font-size:15px;font-style:italic;margin-bottom:10px;display:none}
 .au-box .au-err.sh{display:block}
-.au-box .au-msg{color:var(--jade-l);font-size:12px;font-style:italic;margin-bottom:10px;display:none}
+.au-box .au-msg{color:var(--jade-l);font-size:15px;font-style:italic;margin-bottom:10px;display:none}
 .au-box .au-msg.sh{display:block}
-.au-toggle{text-align:center;font-size:12px;color:var(--text-d);margin-top:14px;cursor:pointer;text-decoration:underline}
+.au-toggle{text-align:center;font-size:15px;color:var(--text-d);margin-top:14px;cursor:pointer;text-decoration:underline}
 .au-close{position:absolute;top:14px;right:18px;color:var(--text-d);cursor:pointer;font-size:18px}
 /* HISTORY MODAL */
 .hist-box{background:linear-gradient(135deg,rgba(37,35,50,.98) 0%,rgba(21,20,29,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:640px;width:92%;max-height:80vh;overflow-y:auto;position:relative}
-.hist-box h3{font-family:"Cinzel Decorative",serif;font-size:14px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
+.hist-box h3{font-family:"Cinzel Decorative",serif;font-size:17px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
 .hist-tabs{display:flex;gap:2px;margin-bottom:16px}
-.hist-tab{flex:1;font-family:"Raleway",sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:9px;border:1px solid var(--border);background:rgba(33,31,44,.7);color:var(--text-d);cursor:pointer;text-align:center}
+.hist-tab{flex:1;font-family:"Raleway",sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:9px;border:1px solid var(--border);background:rgba(33,31,44,.7);color:var(--text-d);cursor:pointer;text-align:center}
 .hist-tab.act{background:var(--gold-f);border-color:var(--gold);color:var(--gold)}
 .hist-item{background:rgba(33,31,44,.6);border:1px solid var(--border);padding:14px 16px;margin-bottom:9px;display:flex;align-items:center;gap:12px}
 .hist-item .hi-star{font-size:20px;cursor:pointer;flex-shrink:0;color:var(--text-dd);transition:color .2s}
 .hist-item .hi-star.fav{color:var(--gold)}
 .hist-item .hi-body{flex:1;cursor:pointer}
 .hist-item .hi-body:hover .hi-title{color:var(--gold)}
-.hist-item .hi-title{font-family:"Raleway",sans-serif;font-size:11px;letter-spacing:1px;color:var(--gold-l);margin-bottom:3px}
-.hist-item .hi-meta{font-size:12px;color:var(--text-d);font-style:italic}
-.hist-item .hi-load{font-size:10px;color:var(--text-dd);letter-spacing:1px;text-transform:uppercase;flex-shrink:0}
+.hist-item .hi-title{font-family:"Raleway",sans-serif;font-size:14px;letter-spacing:1px;color:var(--gold-l);margin-bottom:3px}
+.hist-item .hi-meta{font-size:15px;color:var(--text-d);font-style:italic}
+.hist-item .hi-load{font-size:13px;color:var(--text-dd);letter-spacing:1px;text-transform:uppercase;flex-shrink:0}
 .hist-empty{text-align:center;color:var(--text-d);font-style:italic;padding:30px 0}
 /* ADMIN MODAL */
 .adm-box{background:linear-gradient(135deg,rgba(37,35,50,.98) 0%,rgba(21,20,29,.99) 100%);border:1px solid var(--border-b);padding:32px;max-width:900px;width:94%;max-height:86vh;overflow-y:auto;position:relative}
 @media(max-width:480px){.au-box,.hist-box,.adm-box{padding:20px 16px}}
-.adm-box h3{font-family:"Cinzel Decorative",serif;font-size:14px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
+.adm-box h3{font-family:"Cinzel Decorative",serif;font-size:17px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:20px}
 .adm-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-bottom:22px}
 .adm-stat{background:rgba(33,31,44,.7);border:1px solid var(--border);padding:14px 10px;text-align:center}
 .adm-stat .as-n{font-family:"Cinzel Decorative",serif;font-size:26px;color:var(--gold)}
-.adm-stat .as-l{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:3px}
-.adm-table{width:100%;border-collapse:collapse;font-size:13px}
-.adm-table th{text-align:left;font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);padding:8px 10px;border-bottom:1px solid var(--border)}
+.adm-stat .as-l{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-d);margin-top:3px}
+.adm-table{width:100%;border-collapse:collapse;font-size:16px}
+.adm-table th{text-align:left;font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);padding:8px 10px;border-bottom:1px solid var(--border)}
 .adm-table td{padding:8px 10px;border-bottom:1px solid var(--border-s);color:var(--silver)}
 .adm-table tr:hover td{background:rgba(166,133,224,.04)}
-.adm-badge{font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border)}
+.adm-badge{font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border)}
 .adm-badge.pro{border-color:var(--jade-l);color:var(--jade-l)}
 .adm-badge.premium{border-color:var(--gold);color:var(--gold)}
 .adm-badge.free{border-color:var(--text-dd);color:var(--text-d)}
 .adm-tablewrap{overflow-x:auto}
 .plan-card{position:relative;transition:box-shadow .25s,border-color .25s}
 .plan-card.plan-current{border-color:var(--gold)!important;box-shadow:0 0 22px rgba(212,175,55,.28)}
-.plan-current-badge{display:none;font-family:"Raleway",sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:3px 8px;margin-bottom:10px}
+.plan-current-badge{display:none;font-family:"Raleway",sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:3px 8px;margin-bottom:10px}
 .plan-card.plan-current .plan-current-badge{display:inline-block}
 
 </style>
@@ -470,7 +470,7 @@ canvas{width:100%;height:180px;display:block}
     <!-- TAB 2 -->
     <div class="tp" id="t2"><div class="fi">
       <div style="margin:0 0 22px 0;padding:16px;background:rgba(33,31,44,0.85);border:1px solid rgba(166,133,224,0.3);border-radius:4px">
-        <div style="font-family:'Cinzel Decorative',serif;font-size:11px;letter-spacing:2.5px;color:var(--gold);text-align:center;margin-bottom:14px">
+        <div style="font-family:'Cinzel Decorative',serif;font-size:14px;letter-spacing:2.5px;color:var(--gold);text-align:center;margin-bottom:14px">
           &#9759; HARTĂ DE REFERINȚĂ - Identificarea Liniilor Palmei
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;justify-content:center">
@@ -478,9 +478,9 @@ canvas{width:100%;height:180px;display:block}
             <img src="Palm.jpg" alt="Hartă palmă" class="palm-img" onclick="showPalmModal()" style="width:200px;max-width:100%;border:1px solid rgba(166,133,224,0.25);display:block;opacity:0.88" />
           </div>
           <div style="flex:1;min-width:180px;max-width:340px">
-            <div style="font-size:13px;color:var(--silver);line-height:1.8">
-              <strong style="color:var(--gold-d);font-size:12px;letter-spacing:0.5px">Legenda liniilor numerotate:</strong><br>
-              <span style="font-size:13px">
+            <div style="font-size:16px;color:var(--silver);line-height:1.8">
+              <strong style="color:var(--gold-d);font-size:15px;letter-spacing:0.5px">Legenda liniilor numerotate:</strong><br>
+              <span style="font-size:16px">
               <strong>1</strong>-Viață &bull; <strong>2</strong>-Cap &bull; <strong>3</strong>-Inimă &bull; <strong>4</strong>-Soartă &bull; <strong>5</strong>-Soare<br>
               <strong>6</strong>-Mercur &bull; <strong>7</strong>-Venus &bull; <strong>8</strong>-Solomon &bull; <strong>9</strong>-Saturn<br>
               <strong>10</strong>-Medicală &bull; <strong>11</strong>-Copii &bull; <strong>12</strong>-Căsătorie<br>
@@ -567,7 +567,7 @@ canvas{width:100%;height:180px;display:block}
         </div>
         <div class="fgr s"><label class="lb">Obiective pentru Perioada Urm&#259;toare</label><input type="text" id="objectives" class="ip" placeholder="Lansare proiect, schimbare job, investitie..."></div>
         <div class="fgr s" style="margin-top:6px;padding-top:16px;border-top:1px solid var(--border-s)">
-          <label class="lb">&#128176; Profil Financiar Numerologic <span style="font-size:9px;color:var(--gold-d);text-transform:none;letter-spacing:0">(opțional - imbunatateste raportul Premium)</span></label>
+          <label class="lb">&#128176; Profil Financiar Numerologic <span style="font-size:12px;color:var(--gold-d);text-transform:none;letter-spacing:0">(opțional - imbunatateste raportul Premium)</span></label>
         </div>
         <div class="fgr s"><label class="lb">Situația Financiar&#259; Actual&#259;, in Cateva Cuvinte</label><input type="text" id="finCurrentSituation" class="ip" placeholder="Ex: stabil, dar simt ca nu progresez suficient de rapid"></div>
         <div class="fgr s"><label class="lb">O Pasiune sau Interes din Copil&#259;rie (intre 9 si 14 ani)</label><input type="text" id="finChildhoodPassion" class="ip" placeholder="Ex: imi placea sa desenez si sa vand desene colegilor"></div>
@@ -588,11 +588,11 @@ canvas{width:100%;height:180px;display:block}
   <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-bottom:22px">
     <div style="flex-shrink:0">
       <img src="Palm.jpg" alt="Harta palmei - referinta chiromantie" class="palm-img" onclick="showPalmModal()" style="width:220px;max-width:100%;border:1px solid rgba(166,133,224,0.3);display:block;opacity:0.88" />
-      <div style="font-family:Raleway,sans-serif;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);text-align:center;margin-top:6px">Hart&#259; de referinț&#259; a palmei</div>
+      <div style="font-family:Raleway,sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);text-align:center;margin-top:6px">Hart&#259; de referinț&#259; a palmei</div>
     </div>
     <div style="flex:1;min-width:200px">
-      <div style="font-family:'Cinzel Decorative',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">LINIILE PRINCIPALE</div>
-      <div style="font-size:14px;color:var(--silver);line-height:1.8">
+      <div style="font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">LINIILE PRINCIPALE</div>
+      <div style="font-size:17px;color:var(--silver);line-height:1.8">
         <strong>1</strong> Linia Vieții &bull; <strong>2</strong> Linia Capului &bull; <strong>3</strong> Linia Inimii<br>
         <strong>4</strong> Linia Sortii &bull; <strong>5</strong> Linia Soarelui &bull; <strong>6</strong> Linia Mercurului<br>
         <strong>7</strong> Br&#226;ul lui Venus &bull; <strong>8</strong> Inelul lui Solomon<br>
@@ -630,7 +630,7 @@ canvas{width:100%;height:180px;display:block}
 </div>
 <!-- RESULT -->
 <div class="res" id="resultSection"></div>
-<div style="text-align:center;padding:18px 0 8px;font-family:Raleway,sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d)">
+<div style="text-align:center;padding:18px 0 8px;font-family:Raleway,sans-serif;font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d)">
   <span id="visitCounter">&#10022; &#238;ncarcare counter...</span>
 </div>
 <div class="disc">MYTHOS ORACLE v3 este un sistem de profil esoteric integrat cu scop de introspecție și autocunoaștere. Interpretările sunt generate pe baza unui corpus tradițional consolidat. Nu constituie consultanț&#259; medical&#259;, juridic&#259; sau financiar&#259;.</div>
@@ -1269,7 +1269,7 @@ function buildChineseSection(year, month, day, hour, gender) {
       "Scopul spiritual, relația cu copiii si creatia. Ora " + czHour.hourName + ". " + (hProf.nature||"")
     );
   } else {
-    html += '<div class="czp czp-missing"><div class="czp-lbl">&#9790; Stalpul Orei</div><div class="czp-animal" style="font-size:14px;color:var(--text-d)">Ora nașterii nespecificata</div><div class="czp-interp">Introduceti ora nașterii in Tab I pentru calculul celui de-al patrulea stalp.</div></div>';
+    html += '<div class="czp czp-missing"><div class="czp-lbl">&#9790; Stalpul Orei</div><div class="czp-animal" style="font-size:17px;color:var(--text-d)">Ora nașterii nespecificata</div><div class="czp-interp">Introduceti ora nașterii in Tab I pentru calculul celui de-al patrulea stalp.</div></div>';
   }
   html += "</div>";
 
@@ -2103,7 +2103,7 @@ async function buildDailyOracleSection(bio, pd, pm, py, zodiac, transits, elemen
     html += "<div class=\"do-b\">" + aiText.split(/\n{2,}/).map(function(par){ return "<p>" + par + "</p>"; }).join("") + "</div>";
   } else {
     html += "<div class=\"do-b\">" + getDailyOracle(bio, pd, pm, py, zodiac, transits, element) + "</div>";
-    if (currentTier !== "free") html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:8px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
+    if (currentTier !== "free") html += "<p style=\"font-size:14px;color:var(--text-dd);font-style:italic;margin-top:8px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
   }
   html += "</div>";
   return html;
@@ -2201,9 +2201,9 @@ async function buildDreamSection(dreamText, aiContext) {
     html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
   } else {
     if (!quotaOk) {
-      html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Ati folosit deja interpretarea AI gratuita de azi (limita Free: 1/zi). Mai jos, o interpretare de baza pe cuvinte-cheie.</p>";
+      html += "<p style=\"font-size:15px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Ati folosit deja interpretarea AI gratuita de azi (limita Free: 1/zi). Mai jos, o interpretare de baza pe cuvinte-cheie.</p>";
     } else {
-      html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Serviciul de interpretare AI nu a raspuns momentan (posibil temporar indisponibil). Mai jos, o interpretare de baza pe cuvinte-cheie.</p>";
+      html += "<p style=\"font-size:15px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Serviciul de interpretare AI nu a raspuns momentan (posibil temporar indisponibil). Mai jos, o interpretare de baza pe cuvinte-cheie.</p>";
     }
     var found = findDreamKeywords(dreamText);
     html += buildDreamFallback(dreamText, found);
@@ -2226,7 +2226,7 @@ function buildCompatSection(zodiac) {
   for(var j=0;j<Math.min(items.length,8);j++){
     html += buildCompatBar(items[j].sym, items[j].sign, items[j].pct);
   }
-  html += "<p style=\"font-size:13px;color:var(--text-d);font-style:italic;margin-top:14px\">Compatibilitatea maxima apare intre zodii de acelasi element sau elemente complementare (Foc-Aer; Apa-Pamant).</p>";
+  html += "<p style=\"font-size:16px;color:var(--text-d);font-style:italic;margin-top:14px\">Compatibilitatea maxima apare intre zodii de acelasi element sau elemente complementare (Foc-Aer; Apa-Pamant).</p>";
   return html;
 }
 
@@ -2235,9 +2235,9 @@ async function buildSynastrySec(synData, bioData, zodiac, element, lp, bp, nn, s
   if(currentTier === "free") return buildUpsellHtml("Sinastria", "pro");
   var bioSync = Math.round((100-Math.abs(bioData.physical-synData.bio.physical)/2-Math.abs(bioData.emoțional-synData.bio.emoțional)/2)/1.5);
   var html = "<div class=\"syg\">";
-  html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold)\">Dvs.</div><div style=\"font-size:22px;margin:7px 0\">" + (ALL_SYMS[ALL_SIGNS.indexOf(zodiac)]||"&#10022;") + "</div><div style=\"font-style:italic;color:var(--silver)\">" + zodiac + " &middot; LP " + lp + "</div></div>";
+  html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold)\">Dvs.</div><div style=\"font-size:22px;margin:7px 0\">" + (ALL_SYMS[ALL_SIGNS.indexOf(zodiac)]||"&#10022;") + "</div><div style=\"font-style:italic;color:var(--silver)\">" + zodiac + " &middot; LP " + lp + "</div></div>";
   html += "<div class=\"sv\">&#10022;</div>";
-  html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold)\">Partener</div><div style=\"font-size:22px;margin:7px 0\">" + (synData.zodiac.sy||"&#10022;") + "</div><div style=\"font-style:italic;color:var(--silver)\">" + synData.zodiac.s + " &middot; LP " + synData.lp + "</div></div>";
+  html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold)\">Partener</div><div style=\"font-size:22px;margin:7px 0\">" + (synData.zodiac.sy||"&#10022;") + "</div><div style=\"font-style:italic;color:var(--silver)\">" + synData.zodiac.s + " &middot; LP " + synData.lp + "</div></div>";
   html += "</div>";
   html += sh("Analiza Sinastrie");
 
@@ -2253,7 +2253,7 @@ async function buildSynastrySec(synData, bioData, zodiac, element, lp, bp, nn, s
     html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
   } else {
     html += p("Configuratia astrologica combina energiile " + element.name + " (" + zodiac + ") cu energiile " + synData.element.name + " (" + synData.zodiac.s + "). " + getSynDesc(element.name, synData.element.name));
-    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:6px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
+    html += "<p style=\"font-size:14px;color:var(--text-dd);font-style:italic;margin-top:6px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
   }
 
   if (bp && synData.bp) {
@@ -2285,9 +2285,9 @@ async function buildSynastrySec(synData, bioData, zodiac, element, lp, bp, nn, s
   html += sh("Compatibilitate Numerologica (Drumul Vietii" + (synData.nn?" &amp; Numarul Destinului/Sufletului":"") + ")");
   if (synData.nn) {
     html += "<div class=\"syg\">";
-    html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold)\">Dvs.</div><div style=\"font-size:22px;margin:7px 0\">" + lp + " / " + nn + " / " + sn + "</div><div style=\"font-style:italic;color:var(--silver);font-size:11px\">Drum &middot; Destin &middot; Suflet</div></div>";
+    html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold)\">Dvs.</div><div style=\"font-size:22px;margin:7px 0\">" + lp + " / " + nn + " / " + sn + "</div><div style=\"font-style:italic;color:var(--silver);font-size:14px\">Drum &middot; Destin &middot; Suflet</div></div>";
     html += "<div class=\"sv\">&#10022;</div>";
-    html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold)\">Partener</div><div style=\"font-size:22px;margin:7px 0\">" + synData.lp + " / " + synData.nn + " / " + synData.sn + "</div><div style=\"font-style:italic;color:var(--silver);font-size:11px\">Drum &middot; Destin &middot; Suflet</div></div>";
+    html += "<div class=\"syp\"><div style=\"font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold)\">Partener</div><div style=\"font-size:22px;margin:7px 0\">" + synData.lp + " / " + synData.nn + " / " + synData.sn + "</div><div style=\"font-style:italic;color:var(--silver);font-size:14px\">Drum &middot; Destin &middot; Suflet</div></div>";
     html += "</div>";
   }
   html += p("Pe Drumul Vietii, dvs. " + getLPLoveHint(lp) + " Partenerul, cu Drumul Vietii " + synData.lp + ", " + getLPLoveHint(synData.lp));
@@ -2297,7 +2297,7 @@ async function buildSynastrySec(synData, bioData, zodiac, element, lp, bp, nn, s
     html += p("Drumurile Vietii diferite inseamna nevoi de baza diferite in relatie - nu un blocaj in sine, ci un semnal ca merita sa discutati explicit despre ce inseamna pentru fiecare independenta, ritmul si angajamentul, in loc sa presupuneti ca partenerul simte identic cu dvs.");
   }
   if (!synData.nn) {
-    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:6px\">&#9888; Completati Numele la Nastere al Partenerului (Tab III) pentru a compara si Numarul Destinului si al Sufletului, nu doar Drumul Vietii (care se calculeaza din data, nu din nume).</p>";
+    html += "<p style=\"font-size:14px;color:var(--text-dd);font-style:italic;margin-top:6px\">&#9888; Completati Numele la Nastere al Partenerului (Tab III) pentru a compara si Numarul Destinului si al Sufletului, nu doar Drumul Vietii (care se calculeaza din data, nu din nume).</p>";
   }
 
   html += sh("Bioritm de Cuplu - Astazi");
@@ -2363,9 +2363,9 @@ async function buildQuestionSection(question, zodiac, lp, element, py, profile, 
     html += aiText.split(/\n{2,}/).map(function(par){ return p(par); }).join("");
   } else {
     if (!quotaOk) {
-      html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Ati folosit deja interpretarea AI gratuita de azi (limita Free: 1/zi). Mai jos, un raspuns de baza pe reguli fixe.</p>";
+      html += "<p style=\"font-size:15px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Ati folosit deja interpretarea AI gratuita de azi (limita Free: 1/zi). Mai jos, un raspuns de baza pe reguli fixe.</p>";
     } else {
-      html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Serviciul de interpretare AI nu a raspuns momentan (posibil temporar indisponibil). Mai jos, un raspuns de baza pe reguli fixe.</p>";
+      html += "<p style=\"font-size:15px;color:var(--gold-l);font-style:italic;margin:10px 0\">&#9888; Serviciul de interpretare AI nu a raspuns momentan (posibil temporar indisponibil). Mai jos, un raspuns de baza pe reguli fixe.</p>";
     }
     html += sh("Raspuns Integrat");
     html += buildQuestionFallback(question, zodiac, lp, element, py, profile, transits);
@@ -2686,7 +2686,7 @@ function renderHexagramLines(lines, useChanged) {
     var bar = yang
       ? "<div style=\"width:90px;height:8px;background:var(--gold)\"></div>"
       : "<div style=\"display:flex;gap:16px\"><div style=\"width:37px;height:8px;background:var(--gold)\"></div><div style=\"width:37px;height:8px;background:var(--gold)\"></div></div>";
-    html += "<div style=\"position:relative\">" + bar + (changing && !useChanged ? "<span style=\"position:absolute;left:100px;top:-6px;color:var(--viol-l);font-size:16px\">&#9679;</span>" : "") + "</div>";
+    html += "<div style=\"position:relative\">" + bar + (changing && !useChanged ? "<span style=\"position:absolute;left:100px;top:-6px;color:var(--viol-l);font-size:19px\">&#9679;</span>" : "") + "</div>";
   }
   html += "</div>";
   return html;
@@ -3001,7 +3001,7 @@ function buildHumanDesignSection(bdTime, hasExactTime) {
   var hd = computeHumanDesign(bdTime);
   var html = "";
   if (!hasExactTime) {
-    html += "<p style=\"font-size:12px;color:var(--gold-l);font-style:italic;margin-bottom:14px\">&#9888; Nu ati introdus ora exacta a nașterii - harta de mai jos foloseste ora 12:00 ca aproximare. Portile Lunii si ale altor corpuri cu miscare rapida pot fi imprecise fara ora reala; introduceti-o in Tab I pentru precizie completa.</p>";
+    html += "<p style=\"font-size:15px;color:var(--gold-l);font-style:italic;margin-bottom:14px\">&#9888; Nu ati introdus ora exacta a nașterii - harta de mai jos foloseste ora 12:00 ca aproximare. Portile Lunii si ale altor corpuri cu miscare rapida pot fi imprecise fara ora reala; introduceti-o in Tab I pentru precizie completa.</p>";
   }
   html += sh("Rezumatul Tipului Energetic");
   html += "<div class=\"pg\">";
@@ -3046,7 +3046,7 @@ function buildHumanDesignSection(bdTime, hasExactTime) {
     html += buildPCard("&#9675;", HD_BODY_NAMES[k], "Poarta " + hd.dAct[k].gate + "." + hd.dAct[k].line);
   });
   html += "</div>";
-  html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Roata portilor foloseste o reconstructie proprie a mandalei traditionale Human Design; cuspidele exacte dintre doua porti pot diferi cu putin fata de un calculator HD dedicat, mai ales pentru activari foarte aproape de limita dintre doua porti.</p>";
+  html += "<p style=\"font-size:14px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Roata portilor foloseste o reconstructie proprie a mandalei traditionale Human Design; cuspidele exacte dintre doua porti pot diferi cu putin fata de un calculator HD dedicat, mai ales pentru activari foarte aproape de limita dintre doua porti.</p>";
 
   return html;
 }
@@ -3097,10 +3097,10 @@ async function buildFinancialProfileSection(lp, nn, bp, element, bdTime) {
     html += p(interp.directions);
     html += sh("Relatia cu Riscul");
     html += p(interp.risk);
-    html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
+    html += "<p style=\"font-size:14px;color:var(--text-dd);font-style:italic;margin-top:10px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
   }
 
-  html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:14px\">&#9888; Cifra Financiara e o metodologie numerologica proprie (Drumul Vieții + Numarul Destinului din nume), nu o predictie financiara reala si nu constituie consultanta financiara.</p>";
+  html += "<p style=\"font-size:14px;color:var(--text-dd);font-style:italic;margin-top:14px\">&#9888; Cifra Financiara e o metodologie numerologica proprie (Drumul Vieții + Numarul Destinului din nume), nu o predictie financiara reala si nu constituie consultanta financiara.</p>";
 
   return html;
 }
@@ -3658,7 +3658,7 @@ async function buildPsychProfile(zodiac, asc, moonSign, lp, challenges) {
   html += sh("Anima/Animus si Proiectia Romantica");
   html += p("Luna din harta natala (semnul in care se afla) descrie calitatea anima/animus - ceea ce cautati inconștient in partener. Proiectati aceste calitati, adesea idealizate, in persoanele de care va indragostiti, inainte de a le integra in propria personalitate.");
 
-  if (currentTier !== "free") html += "<p style=\"font-size:11px;color:var(--text-dd);font-style:italic;margin-top:8px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
+  if (currentTier !== "free") html += "<p style=\"font-size:14px;color:var(--text-dd);font-style:italic;margin-top:8px\">&#9888; Sinteza AI nu a fost disponibila momentan - se afiseaza varianta de baza.</p>";
   return html;
 }
 
@@ -3770,8 +3770,8 @@ function buildHousesSection(bp, asc, zodiac, hour) {
     var interp = getPlanetInHouse(pk, hIdx);
     if (interp) {
       html += "<div style='margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border-s)'>";
-      html += "<div style='font-family:Raleway,sans-serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:4px'>" + ESYMS[pk] + " " + ENAMES[pk] + " in Casa " + (hIdx+1) + " (" + ALL_SIGNS[(ascIdx+hIdx)%12] + ")</div>";
-      html += "<div style='font-size:15px;color:var(--silver)'>" + interp + "</div>";
+      html += "<div style='font-family:Raleway,sans-serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:4px'>" + ESYMS[pk] + " " + ENAMES[pk] + " in Casa " + (hIdx+1) + " (" + ALL_SIGNS[(ascIdx+hIdx)%12] + ")</div>";
+      html += "<div style='font-size:18px;color:var(--silver)'>" + interp + "</div>";
       html += "</div>";
     }
   }
@@ -3846,7 +3846,7 @@ function buildGoodDaysSection(day, month, year, zodiac, now) {
     for (var i = 0; i < gd.good.length; i++) {
       html += "<div style='background:rgba(46,204,154,0.12);border:1px solid rgba(46,204,154,0.35);padding:8px 14px;text-align:center'>";
       html += "<div style='font-family:Cinzel Decorative,serif;font-size:18px;color:#4fd8a8'>" + gd.good[i].day + "</div>";
-      html += "<div style='font-size:11px;color:var(--text-d);margin-top:2px'>" + gd.good[i].reason + "</div>";
+      html += "<div style='font-size:14px;color:var(--text-d);margin-top:2px'>" + gd.good[i].reason + "</div>";
       html += "</div>";
     }
     html += "</div></div>";
@@ -3859,7 +3859,7 @@ function buildGoodDaysSection(day, month, year, zodiac, now) {
     for (var j = 0; j < gd.critical.length; j++) {
       html += "<div style='background:rgba(196,57,94,0.1);border:1px solid rgba(196,57,94,0.3);padding:8px 14px;text-align:center'>";
       html += "<div style='font-family:Cinzel Decorative,serif;font-size:18px;color:#e0637f'>" + gd.critical[j].day + "</div>";
-      html += "<div style='font-size:11px;color:var(--text-d);margin-top:2px'>" + gd.critical[j].reason + "</div>";
+      html += "<div style='font-size:14px;color:var(--text-d);margin-top:2px'>" + gd.critical[j].reason + "</div>";
       html += "</div>";
     }
     html += "</div></div>";
@@ -4248,9 +4248,9 @@ async function buildResult() {
     try {
       RS.innerHTML = "<div style=\"padding:30px;background:rgba(37,35,50,0.95);border:1px solid var(--border-b);margin-top:20px\">" +
         "<div style=\"font-family:Cinzel Decorative,serif;font-size:18px;color:var(--gold);margin-bottom:14px\">Profil generat partial</div>" +
-        "<p style=\"color:var(--silver);font-size:15px;margin-bottom:10px\">Eroare detectata: " + (buildErr.message || String(buildErr)) + "</p>" +
-        "<p style=\"color:var(--text-d);font-size:13px\">Va rugam sa reincercati cu datele introduse.</p>" +
-        "<button onclick=\"resetOracle()\" style=\"margin-top:16px;padding:10px 24px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:Raleway,sans-serif;font-size:11px;letter-spacing:3px;cursor:pointer\">&#8635; Incercare noua</button>" +
+        "<p style=\"color:var(--silver);font-size:18px;margin-bottom:10px\">Eroare detectata: " + (buildErr.message || String(buildErr)) + "</p>" +
+        "<p style=\"color:var(--text-d);font-size:16px\">Va rugam sa reincercati cu datele introduse.</p>" +
+        "<button onclick=\"resetOracle()\" style=\"margin-top:16px;padding:10px 24px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:Raleway,sans-serif;font-size:14px;letter-spacing:3px;cursor:pointer\">&#8635; Incercare noua</button>" +
         "</div>";
       RS.classList.add("sh");
     } catch(e2) {}
@@ -4353,9 +4353,9 @@ function hidePalmModal() {
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px">
       <div id="planCardFree" class="plan-card" style="background:rgba(33,31,44,.7);border:1px solid var(--border);padding:20px 16px;text-align:center">
         <div class="plan-current-badge">Planul tau actual</div>
-        <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--text-d);letter-spacing:2px;margin-bottom:8px">FREE</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--text-d);letter-spacing:2px;margin-bottom:8px">FREE</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:14px">0 &euro;</div>
-        <div style="font-size:12px;color:var(--silver);text-align:left;line-height:2">
+        <div style="font-size:15px;color:var(--silver);text-align:left;line-height:2">
           &#10003; Astrologie, Numerologie, Bioritm complete<br>
           &#10003; Istoric ultimele 5 citiri<br>
           &#10003; Maxim 5 favorite<br>
@@ -4368,10 +4368,10 @@ function hidePalmModal() {
       </div>
       <div id="planCardPro" class="plan-card" style="background:var(--gold-f);border:1px solid var(--gold);padding:20px 16px;text-align:center">
         <div class="plan-current-badge">Planul tau actual</div>
-        <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">PRO</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);letter-spacing:2px;margin-bottom:8px">PRO</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:2px">3 &euro;/luna</div>
-        <div style="font-size:11px;color:var(--text-d);margin-bottom:14px">sau 30 &euro;/an <span style="color:var(--jade-l)">(2 luni gratis)</span></div>
-        <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
+        <div style="font-size:14px;color:var(--text-d);margin-bottom:14px">sau 30 &euro;/an <span style="color:var(--jade-l)">(2 luni gratis)</span></div>
+        <div style="font-size:15px;color:var(--silver-l);text-align:left;line-height:2">
           &#10003; Tot ce e in Free, plus:<br>
           &#10003; Istoric nelimitat<br>
           &#10003; Favorite nelimitate<br>
@@ -4384,10 +4384,10 @@ function hidePalmModal() {
       </div>
       <div id="planCardPremium" class="plan-card" style="background:rgba(33,31,44,.7);border:1px solid var(--border-b);padding:20px 16px;text-align:center">
         <div class="plan-current-badge">Planul tau actual</div>
-        <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold-l);letter-spacing:2px;margin-bottom:8px">PREMIUM</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold-l);letter-spacing:2px;margin-bottom:8px">PREMIUM</div>
         <div style="font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);margin-bottom:2px">9 &euro;/luna</div>
-        <div style="font-size:11px;color:var(--text-d);margin-bottom:14px">sau 90 &euro;/an <span style="color:var(--jade-l)">(2 luni gratis)</span></div>
-        <div style="font-size:12px;color:var(--silver-l);text-align:left;line-height:2">
+        <div style="font-size:14px;color:var(--text-d);margin-bottom:14px">sau 90 &euro;/an <span style="color:var(--jade-l)">(2 luni gratis)</span></div>
+        <div style="font-size:15px;color:var(--silver-l);text-align:left;line-height:2">
           &#10003; Tot ce e in Pro, plus:<br>
           &#10003; Human Design complet<br>
           &#10003; Profil Financiar Numerologic<br>
@@ -4396,9 +4396,9 @@ function hidePalmModal() {
         </div>
       </div>
     </div>
-    <div id="planExpiryStatus" style="text-align:center;margin-bottom:14px;font-size:13px"></div>
+    <div id="planExpiryStatus" style="text-align:center;margin-bottom:14px;font-size:16px"></div>
     <div class="sh3">Cum faci upgrade / reinnoiesti (momentan manual)</div>
-    <p style="font-size:13px;color:var(--silver);line-height:1.8">Trimite suma corespunzatoare planului si ciclului dorit (lunar sau anual) prin Revolut la <strong id="plansContact">@trueblood</strong>, mentionand in descrierea platii contul tau (emailul cu care esti inregistrat) si ciclul ales (ex: "Pro anual"). Upgrade-ul/reinnoirea se fac manual in maxim 24h de la confirmarea platii.</p>
+    <p style="font-size:16px;color:var(--silver);line-height:1.8">Trimite suma corespunzatoare planului si ciclului dorit (lunar sau anual) prin Revolut la <strong id="plansContact">@trueblood</strong>, mentionand in descrierea platii contul tau (emailul cu care esti inregistrat) si ciclul ales (ex: "Pro anual"). Upgrade-ul/reinnoirea se fac manual in maxim 24h de la confirmarea platii.</p>
   </div>
 </div>
 
@@ -4869,19 +4869,19 @@ async function openAdminModal() {
     tableHtml += "<td>" + escapeHtml(p.full_name || "-") + "</td>";
     tableHtml += "<td>" + escapeHtml(p.email || "-") + "</td>";
     tableHtml += "<td>" + escapeHtml(p.birth_date || "-") + "</td>";
-    tableHtml += "<td><select id=\"" + selId + "\" class=\"ip\" style=\"padding:5px 8px;font-size:12px\">" +
+    tableHtml += "<td><select id=\"" + selId + "\" class=\"ip\" style=\"padding:5px 8px;font-size:15px\">" +
       "<option value=\"free\"" + (tier==="free"?" selected":"") + ">FREE</option>" +
       "<option value=\"pro\"" + (tier==="pro"?" selected":"") + ">PRO</option>" +
       "<option value=\"premium\"" + (tier==="premium"?" selected":"") + ">PREMIUM</option>" +
       "</select></td>";
-    tableHtml += "<td style=\"font-size:11px;white-space:nowrap\">" + expCell + "</td>";
+    tableHtml += "<td style=\"font-size:14px;white-space:nowrap\">" + expCell + "</td>";
     tableHtml += "<td>" + (p.is_admin ? "&#9733;" : "") + "</td>";
     tableHtml += "<td>" + regDate + "</td>";
     tableHtml += "<td style=\"white-space:nowrap\">";
-    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px;margin-right:4px\" onclick=\"adminSetTier('" + p.user_id + "','" + selId + "')\">Salveaza Nivel</button>";
-    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px;margin-right:4px\" onclick=\"adminExtendPlan('" + p.user_id + "','monthly')\">+1 Luna</button>";
-    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px;margin-right:4px\" onclick=\"adminExtendPlan('" + p.user_id + "','annual')\">+1 An</button>";
-    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:9px\" onclick=\"adminToggleAdmin('" + p.user_id + "'," + (!p.is_admin) + ")\">" + (p.is_admin ? "Revoca Admin" : "Fa Admin") + "</button>";
+    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:12px;margin-right:4px\" onclick=\"adminSetTier('" + p.user_id + "','" + selId + "')\">Salveaza Nivel</button>";
+    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:12px;margin-right:4px\" onclick=\"adminExtendPlan('" + p.user_id + "','monthly')\">+1 Luna</button>";
+    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:12px;margin-right:4px\" onclick=\"adminExtendPlan('" + p.user_id + "','annual')\">+1 An</button>";
+    tableHtml += "<button class=\"au-btn\" style=\"padding:4px 8px;font-size:12px\" onclick=\"adminToggleAdmin('" + p.user_id + "'," + (!p.is_admin) + ")\">" + (p.is_admin ? "Revoca Admin" : "Fa Admin") + "</button>";
     tableHtml += "</td>";
     tableHtml += "</tr>";
   }
